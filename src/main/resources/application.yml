@@ -1,0 +1,43 @@
+spring:
+  application :
+    name: evcs
+  datasource:
+    url: jdbc:oracle:thin:@112.221.156.34:12345:xe
+    username: KH07_KYS
+    password: KH1234
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+  profiles:
+    include: private
+  mvc:
+    static-path-pattern: /uploads/**
+  web: 
+    resources:
+      static-locations: file:uploads/  
+  restart:
+    enabled: false
+  livereload:
+    enabled: false
+
+server : 
+ port : 80
+
+ servlet:
+   multipart:
+     max-file-size : 100MB
+     max-request-size : 100MB
+  
+ mybatis:
+   configuration:
+     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+     jdbc-type-for-null: VARCHAR
+   mapper-locations: classpath:mapper/*.xml
+
+ logging:
+   level:
+     org.apache.ibatis: DEBUG
+     java.sql: DEBUG
+     jdbc.sqlonly: DEBUG
+     jdbc.resultset: DEBUG
+     jdbc.audit: DEBUG
+
+  
