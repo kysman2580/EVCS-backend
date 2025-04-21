@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.example.evcs.member.model.dao.MemberMapper">
+	  <insert id="signUp">
+		  INSERT INTO EL_MEMBER (
+		    MEMBER_NO,
+		    EMAIL,
+		    MEMBER_PW,
+		    MEMBER_NICKNAME
+		  ) VALUES (
+		    EL_MEMBER_SEQ_NO.NEXTVAL,
+		    #{email},
+		    #{memberPw},
+		    #{memberNickname}
+		  )
+	</insert>
+	
+	<select id="isVerified">
+		  SELECT CASE WHEN VERIFIED = 'Y' THEN 1 ELSE 0 END
+		  FROM EMAIL_VERIFICATION
+		  WHERE EMAIL = #{email}
+	</select>
+
+	
+	
+	<select id="getMemberByEmail">
+		SELECT MEMBER_NO,
+			   EMAIL,
+			   MEMBER_PW,
+			   EMAIL_VERIFIED,
+			   MEMBER_NICKNAME,
+			   ROLE,
+			   CREATED_AT
+		FROM EL_MEMBER
+		WHERE EMAIL = #{email}
+	</select>
+	
+	
+	<select id="getEmailVerificationStatus">
+	    SELECT EMAIL_VERIFIED
+	    FROM EL_MEMBER
+	    WHERE EMAIL = #{email}
+	</select>
+
+
+
+  
+  
+  
+  
+  
+  </mapper>
+  
+  
