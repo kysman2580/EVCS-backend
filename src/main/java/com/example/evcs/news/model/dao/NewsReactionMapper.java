@@ -2,34 +2,35 @@ package com.example.evcs.news.model.dao;
 
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface NewsReactionMapper {
 
-    int countLikeByNews(long newsNo);
+	    int countLikeByNews(@Param("newsNo") long newsNo);
+	    
+	    int countHateByNews(@Param("newsNo") long newsNo);
+	    
+	    int hasLiked(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
 
-    int countHateByNews(long newsNo);
+	    void insertLike(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
 
-    int hasLiked(Long newsNo, Long memberNo);
+	    void deleteLike(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
 
-    void insertLike(Long newsNo, Long memberNo);
+	    int hasHated(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
 
-    void deleteLike(Long newsNo, Long memberNo);
+	    void insertHate(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
 
-    int hasHated(Long newsNo, Long memberNo);
+	    void deleteHate(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
 
-    void insertHate(Long newsNo, Long memberNo);
+	    void insertComment(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo, @Param("content") String content);
 
-    void deleteHate(Long newsNo, Long memberNo);
+	    int countUserComments(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
 
-    void insertComment(Long newsNo, Long memberNo, String content);
+	    int countBookmarks(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
 
-    int countUserComments(Long newsNo, Long memberNo);
+	    void insertBookmark(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
 
-    int countBookmarks(Long newsNo, Long memberNo);
-
-    void insertBookmark(Long newsNo, Long memberNo);
-
-    void deleteBookmark(Long newsNo, Long memberNo);
+	    void deleteBookmark(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
 }
 

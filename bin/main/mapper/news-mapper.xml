@@ -4,7 +4,9 @@
   
   <mapper namespace="com.example.evcs.news.model.dao.NewsMapper">
   
-	<select id="findByTitleAndUrl" parameterType="map" resultType="com.example.evcs.news.model.dto.NewsDTO">
+	<select id="findByTitleAndUrl" 
+			parameterType="com.example.evcs.news.model.dto.NewsDTO" 
+			resultType="com.example.evcs.news.model.dto.NewsDTO">
 	    SELECT n.NEWS_NO as newsNo,
 	           n.NEWS_TITLE as title,
 	           n.NEWS_ORIGIN_URL as originUrl,
