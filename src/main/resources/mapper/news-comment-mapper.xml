@@ -1,0 +1,23 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.example.evcs.news.model.dao.CommentMapper">
+  
+	<select id="findByNews" parameterType="map" resultType="com.example.evcs.news.model.dto.CommentDTO">
+	    SELECT c.NEWS_CMT_ID as commentId,
+	           c.NEWS_CMT_CONTENT as content,
+	           c.NEWS_CMT_DATE as commentDate,
+	           m.MEMBER_NICKNAME as memberNickname
+	    FROM TB_NEWS_CMT c
+	    JOIN EL_MEMBER m ON c.MEMBER_NO = m.MEMBER_NO
+	    JOIN TB_NEWS n ON c.NEWS_NO = n.NEWS_NO
+	    WHERE n.NEWS_TITLE = #{title}
+	      AND n.NEWS_ORIGIN_URL = #{originUrl}
+	      AND c.NEWS_CMT_STATUS = 'Y'
+	    ORDER BY c.NEWS_CMT_DATE DESC
+	</select>
+	
+  </mapper>
+  
+  

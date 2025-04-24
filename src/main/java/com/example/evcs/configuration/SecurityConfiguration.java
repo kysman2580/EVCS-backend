@@ -33,6 +33,8 @@ public class SecurityConfiguration {
 						   .authorizeHttpRequests(requests -> {
 							   requests.requestMatchers(HttpMethod.POST, "/**").permitAll();
 							   requests.requestMatchers(HttpMethod.GET, "/**").permitAll();
+							   requests.requestMatchers(HttpMethod.DELETE, "/**").permitAll();
+							   requests.requestMatchers(HttpMethod.PUT, "/**").permitAll();
 						   })
 						   .sessionManagement(manager ->
 						   manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
