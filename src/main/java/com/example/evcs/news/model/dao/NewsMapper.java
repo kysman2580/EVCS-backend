@@ -10,7 +10,7 @@ public interface NewsMapper {
 
      NewsDTO findByTitleAndUrl(@Param("title") String title, @Param("originUrl") String originUrl);
      
-     void insert(@Param("dto") NewsDTO dto);
+     void insert(NewsDTO dto);
      
      void imageInsert(@Param("newsNo") Long newsNo, @Param("imageUrl") String imageUrl);
      

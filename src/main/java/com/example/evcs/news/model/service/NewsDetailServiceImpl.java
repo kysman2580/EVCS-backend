@@ -39,14 +39,16 @@ public class NewsDetailServiceImpl implements NewsDetailService {
     @Override
     @Transactional
     public NewsDetailResponse insertAndReturn(NewsDTO dto) {
-        System.out.println("이미지 링크 오긴 함?" + dto.getImageUrl());
+        System.out.println("---이미지 링크 오긴 함? : " + dto.getImageUrl() + "dto야 넌 뭔 값을 가지고 있니 : " + dto.getQuery());
     	// 뉴스 정보 저장
         newsMapper.insert(dto);
         
         // 생성된 뉴스 번호 가져오기
         Long newsNo = newsMapper.getLastInsertId();
         
+        
         newsMapper.incrementWatchCount(newsNo);
+        
         
         // 이미지 URL이 있으면 이미지 정보 저장
         if (dto.getImageUrl() != null && !dto.getImageUrl().isEmpty()) {

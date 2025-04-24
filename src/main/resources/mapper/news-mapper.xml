@@ -23,20 +23,37 @@
 	      AND n.NEWS_STATUS = 'Y'
 	</select>
 	
-	<insert id="insert" parameterType="com.example.evcs.news.model.dto.NewsDTO">
-	    INSERT INTO TB_NEWS (NEWS_NO, NEWS_CATEGORY_NO, NEWS_TITLE, NEWS_DESCRIPTION,
-	                         NEWS_ORIGIN_URL, NEWS_NAVER_DATE, NEWS_ENROLLDATE, 
-	                         NEWS_STATUS, NEWS_WATCHED)
+	<insert id="insert"         
+		parameterType="com.example.evcs.news.model.dto.NewsDTO">
+	    INSERT INTO TB_NEWS (NEWS_NO, 
+	    					 NEWS_CATEGORY_NO, 
+	    					 NEWS_TITLE, 
+	    					 NEWS_DESCRIPTION,
+	                         NEWS_ORIGIN_URL, 
+	                         NEWS_NAVER_DATE, 
+	                         NEWS_ENROLLDATE, 
+	                         NEWS_STATUS, 
+	                         NEWS_WATCHED)
 	    VALUES (NEWS_SEQ.NEXTVAL,
 	           (SELECT NEWS_CATEGORY_NO FROM TB_NEWS_CATEGORY WHERE NEWS_CATEGORY = #{query} OR ROWNUM = 1),
-	           #{title}, #{description}, #{originUrl}, 
-	           TO_DATE(#{pubDate}, 'YYYY-MM-DD HH24:MI:SS'), SYSDATE, 'Y', 0)
+	           #{title}, 
+	           #{description}, 
+	           #{originUrl}, 
+	           TO_DATE(#{pubDate}, 'YYYY. MM. DD.'), 
+	           SYSDATE, 
+	           'Y', 
+	           0)
 	</insert>
 	
 	<insert id="imageInsert" parameterType="map">
-	    INSERT INTO TB_NEWS_IMG (NEWS_NO, NEWS_IMG_URL)
-	    VALUES (#{newsNo}, #{imageUrl})
+	  INSERT INTO TB_NEWS_IMG (
+	    NEWS_NO, NEWS_IMG_URL
+	  )
+	  VALUES (
+	    #{newsNo}, #{imageUrl}
+	  )
 	</insert>
+
 	
 	<select id="getLastInsertId" resultType="Long">
 	    SELECT NEWS_SEQ.CURRVAL FROM DUAL
