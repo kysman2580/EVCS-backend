@@ -21,7 +21,7 @@ public class MemberServiceImpl implements MemberService {
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
-	public void signUp(MemberDTO member) {
+    public ResponseEntity<String> signUp(MemberDTO member) {
 		MemberDTO searchEmail = mapper.getMemberByEmail(member.getEmail());
 
 		if (searchEmail != null) {
@@ -31,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
 		String emailVerified = mapper.isVerified(member.getEmail());
 		
 		if(emailVerified == null || "Y".equals(emailVerified)) {
-			throw new RuntimeException("이메일 인증이 완료되지 않았습니다.");
+			throw new EmailNotVerifiedException("이메일 인증이 완료되지 않았습니다.");
 		}
 		
 		
@@ -46,8 +46,9 @@ public class MemberServiceImpl implements MemberService {
 		
 		
 		mapper.signUp(memberValue);
-		ResponseEntity.ok("이메일 인증 및 회원가입 성공");
 		log.info("{}", member);
+		
+		return ResponseEntity.ok("이메일 인증 및 회원가입 성공");
 	}
 
 

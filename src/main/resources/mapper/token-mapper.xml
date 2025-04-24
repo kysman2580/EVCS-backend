@@ -10,8 +10,6 @@
   	VALUES(
 		#{token}
 	   ,#{memberNo}
-	   ,#{refreshToken}
-	   ,#{createdAt}
 	   ,#{expiresAt}
 	)
   </insert>
@@ -19,14 +17,14 @@
   
   <delete id="deleteExpiredRefreshToken">
 		DELETE 
-		FROM TB_BOOT_TOKEN
-		WHERE EXPIRATION &lt; #{now}
+		FROM MEMBER_TOKEN
+		WHERE EXPIRES_AT &lt; #{now}
 	</delete>
 	
 	
 	<select id="findByToken">
-	SELECT TOKEN, MEMBER_NO memberNo, EXPIRATION
-	FROM TB_BOOT_TOKEN
+	SELECT TOKEN, MEMBER_NO memberNo, EXPIRES_AT expiresAt
+	FROM MEMBER_TOKEN
 	WHERE TOKEN = #{token}
 	</select>
   
