@@ -28,6 +28,11 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 		if(user == null) {
 			throw new CustomAuthenticationException("존재하지 않는 사용자입니다.");
 		}
+		System.out.println("DB에서 불러온 비밀번호: " + user.getMemberPw());
+
+		
+		
+		
 		
 		return CustomUserDetails.builder()
 				.memberNo(user.getMemberNo())
@@ -37,15 +42,4 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 				.authorities(Collections.singletonList(new SimpleGrantedAuthority(user.getRole())))
 				.build();
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 }

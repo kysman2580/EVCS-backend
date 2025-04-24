@@ -1,7 +1,5 @@
 package com.example.evcs.token.model.vo;
 
-import java.sql.Date;
-
 import lombok.Builder;
 import lombok.Value;
 
@@ -10,5 +8,5 @@ import lombok.Value;
 public class RefreshToken {
 	private String token;
 	private Long memberNo;
-	private Long expiration;
+	private Long expiresAt;
 }

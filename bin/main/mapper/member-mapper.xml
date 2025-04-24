@@ -27,16 +27,17 @@
 	
 	
 	<select id="getMemberByEmail">
-		SELECT MEMBER_NO,
-			   EMAIL,
-			   MEMBER_PW,
-			   EMAIL_VERIFIED,
-			   MEMBER_NICKNAME,
-			   ROLE,
-			   CREATED_AT
-		FROM EL_MEMBER
-		WHERE EMAIL = #{email}
-	</select>
+	SELECT MEMBER_NO as memberNo,
+	       EMAIL as email,
+	       MEMBER_PW as memberPw,
+	       EMAIL_VERIFIED as emailVerified,
+	       MEMBER_NICKNAME as memberNickname,
+	       ROLE as role,
+	       CREATED_AT as createdAt
+	FROM EL_MEMBER
+	WHERE EMAIL = #{email}
+</select>
+
 	
 	
 	<select id="getEmailVerificationStatus">

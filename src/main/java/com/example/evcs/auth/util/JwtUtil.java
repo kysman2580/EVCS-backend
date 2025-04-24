@@ -33,7 +33,8 @@ public class JwtUtil {
 				   .subject(username)
 				   .issuedAt(new Date())
 				   .expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24))
-				   .signWith(key).compact();
+				   .signWith(key)
+				   .compact();
 	}
 
 	public String getRefreshToken(String username) {
@@ -41,7 +42,8 @@ public class JwtUtil {
 				   .subject(username)
 				   .issuedAt(new Date())
 				   .expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 3))
-				   .signWith(key).compact();
+				   .signWith(key)
+				   .compact();
 	}
 	
 	// AccessToken, refreshToken -> JWT 생성
