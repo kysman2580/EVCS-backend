@@ -19,5 +19,6 @@ public class Member {
 	private char emailVerified;
 	private String memberNickname;
 	private String role;
+	private String memberStatus;
 	private Timestamp createdAt;	
 }
