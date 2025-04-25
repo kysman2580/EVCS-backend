@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.evcs.auth.service.AuthService;
 import com.example.evcs.member.model.dto.MemberDTO;
 import com.example.evcs.token.model.service.TokenService;
-import com.nimbusds.oauth2.sdk.Response;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
