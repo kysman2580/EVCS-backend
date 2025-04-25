@@ -21,7 +21,7 @@ public interface MemberMapper {
 	String getEmailVerificationStatus(String email);
 	
 	String isVerified(String email);
-
+	
 	@Select("SELECT VERIFICATION_CODE FROM EMAIL_VERIFICATION WHERE EMAIL = #{email} AND EXPIRY_DATE > CURRENT_TIMESTAMP")
 	String getVerificationCode(String email);
 
