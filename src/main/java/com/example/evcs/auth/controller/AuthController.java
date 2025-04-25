@@ -30,7 +30,7 @@ public class AuthController {
 	
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@Valid @RequestBody MemberDTO member){
-		Map<String, String> loginResponse = authService.login(member);
+		Map<String, Object> loginResponse = authService.login(member);
 		log.info("loginResponse : {}", loginResponse);
 		return ResponseEntity.ok(loginResponse);
 	}
@@ -39,7 +39,7 @@ public class AuthController {
 	@PostMapping("/refresh")
 	public ResponseEntity<?> refresh(@RequestBody Map<String, String> token){
 		String refreshToken = token.get("refreshToken");
-		Map<String, String> newToken = tokenService.refreshToken(refreshToken);
+		Map<String, Object> newToken = tokenService.refreshToken(refreshToken);
 		return ResponseEntity.status(HttpStatus.CREATED).body(newToken);
 	}
 

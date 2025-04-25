@@ -4,10 +4,16 @@ import java.util.Map;
 
 public interface TokenService {
 
-	Map<String, String> generateToken(String username, Long memberNo);
+	Map<String, Object> generateToken(String username, Long memberNo);
 	
 	
 	
-	Map<String, String> refreshToken(String refreshToken);
+	Map<String, Object> refreshToken(String refreshToken);
+
+
+
+
+
+
 	
 }

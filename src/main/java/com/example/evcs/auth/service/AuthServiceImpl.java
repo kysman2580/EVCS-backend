@@ -27,7 +27,7 @@ public class AuthServiceImpl implements AuthService {
 	
 
 	@Override
-	public Map<String, String> login(MemberDTO member) {
+	public Map<String, Object> login(MemberDTO member) {
 		Authentication authentication = null;
 		
 		try {
@@ -42,11 +42,12 @@ public class AuthServiceImpl implements AuthService {
 		log.info("로그인 성공!  하이 마이네임 이즈 영수킴");
 		log.info("인증에 성공한 사용자의 정보 : {}", user);
 		
-		Map<String, String> loginResponse = tokenService.generateToken(user.getUsername(), 
+		Map<String, Object> loginResponse = tokenService.generateToken(user.getUsername(), 
 																	   user.getMemberNo());
 		
-		loginResponse.put("memberId", user.getUsername());
+		loginResponse.put("email", user.getUsername());
 		loginResponse.put("memberName", user.getMemberName());
+		loginResponse.put("memberNo", user.getMemberNo());
 		
 		return loginResponse;
 	}

@@ -11,4 +11,5 @@ build/
 *.log
 .DS_Store
 Thumbs.db
-application-private.yml
+application-private.ymlbin/
+src/main/resources/application-private.yml

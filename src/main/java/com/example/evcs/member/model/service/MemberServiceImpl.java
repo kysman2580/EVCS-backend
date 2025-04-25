@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.evcs.exception.EmailNotVerifiedException;
 import com.example.evcs.exception.MemberEmailDuplicationException;
 import com.example.evcs.member.model.dao.MemberMapper;
 import com.example.evcs.member.model.dto.MemberDTO;
