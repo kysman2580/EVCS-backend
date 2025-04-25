@@ -71,5 +71,10 @@ public class ReactionServiceImpl implements ReactionService {
     public int getHateCount(Long newsNo) {
         return newsreactionMapper.countHateByNews(newsNo);
     }
+    
+    @Override
+    public boolean hasBookmarked(Long newsNo, Long memberNo) {
+        return newsreactionMapper.countBookmarks(newsNo, memberNo) > 0;
+    }
 
 }

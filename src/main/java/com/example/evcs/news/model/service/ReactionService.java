@@ -11,5 +11,6 @@ public interface ReactionService {
     void writeComment(Long newsNo, Long memberNo, String content);
     
     void toggleBookmark(Long newsNo, Long memberNo);
+    boolean hasBookmarked(Long newsNo, Long memberNo);
 
 }

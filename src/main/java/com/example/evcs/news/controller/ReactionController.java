@@ -62,4 +62,11 @@ public class ReactionController {
         reactionService.toggleBookmark(body.get("newsNo"), body.get("memberNo"));
         return "bookmarked or unbookmarked";
     }
+    
+    @GetMapping("/bookmark/status")
+    public boolean hasBookmarked(@RequestParam("newsNo") Long newsNo, @RequestParam("memberNo") Long memberNo) {
+    	System.out.println("회원 번호가 왜 문자열이야" + memberNo.TYPE);
+        return reactionService.hasBookmarked(newsNo, memberNo);
+    }
+
 }

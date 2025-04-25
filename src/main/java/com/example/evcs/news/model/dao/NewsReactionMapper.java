@@ -27,10 +27,10 @@ public interface NewsReactionMapper {
 
 	    int countUserComments(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
 
-	    int countBookmarks(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
-
 	    void insertBookmark(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
 
 	    void deleteBookmark(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
+	    
+	    int countBookmarks(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
 }
 
