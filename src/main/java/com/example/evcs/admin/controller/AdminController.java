@@ -1,4 +1,4 @@
-package com.example.evcs.admin.model.controller;
+package com.example.evcs.admin.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
