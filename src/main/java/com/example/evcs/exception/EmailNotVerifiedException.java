@@ -1,4 +1,4 @@
-package com.example.evcs.member.model.service;
+package com.example.evcs.exception;
 
 public class EmailNotVerifiedException extends RuntimeException {
 

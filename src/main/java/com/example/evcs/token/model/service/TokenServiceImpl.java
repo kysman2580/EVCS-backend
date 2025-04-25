@@ -24,11 +24,11 @@ public class TokenServiceImpl implements TokenService {
 	private final TokenMapper tokenMapper;
 
 	@Override
-	public Map<String, String> generateToken(String username, Long memberNo) {
+	public Map<String, Object> generateToken(String username, Long memberNo) {
 
-		Map<String, String> tokens = createToken(username);
+		Map<String, Object> tokens = createToken(username);
 
-		saveToken(tokens.get("refreshToken"), memberNo);
+		saveToken((String) tokens.get("refreshToken"), memberNo);
 		tokenMapper.deleteExpiredRefreshToken(System.currentTimeMillis());
 
 		return tokens;
@@ -45,12 +45,12 @@ public class TokenServiceImpl implements TokenService {
 		tokenMapper.saveToken(token);
 	}
 
-	private Map<String, String> createToken(String username) {
+	private Map<String, Object> createToken(String username) {
 		String accessToken = tokenUtil.getAccessToken(username);
 		String refreshToken = tokenUtil.getRefreshToken(username);
 
 
-		Map<String, String> tokens = new HashMap<>();
+		Map<String, Object> tokens = new HashMap<>();
 		tokens.put("accessToken", accessToken);
 		tokens.put("refreshToken", refreshToken);
 
@@ -58,7 +58,7 @@ public class TokenServiceImpl implements TokenService {
 	}
 
 	@Override
-	public Map<String, String> refreshToken(String refreshToken) {
+	public Map<String, Object> refreshToken(String refreshToken) {
 
         log.info("refreshToken 호출, 전달된 토큰: {}", refreshToken);
 

@@ -13,6 +13,8 @@ public interface EmailMapper {
 
 	void saveCode(EmailVerifyDTO emailVerifyDTO);
 
+	EmailVerifyDTO findByEmail(EmailVerifyDTO emailVerifyDTO);
+
 	
 	
 }

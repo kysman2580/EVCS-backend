@@ -12,4 +12,8 @@ build/
 .DS_Store
 Thumbs.db
 application-private.ymlbin/
+<<<<<<< HEAD
 src/main/resources/application-private.yml
+=======
+src/main/resources/application-private.yml
+>>>>>>> c6fd31b6f728c0f972d974b37b8547aae963d388

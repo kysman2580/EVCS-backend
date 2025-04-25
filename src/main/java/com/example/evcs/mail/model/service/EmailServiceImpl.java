@@ -45,9 +45,18 @@ public class EmailServiceImpl implements EmailService {
 		message.setTo(email);
 		message.setSubject("[전기충만] 이메일 인증번호 입니다.");
 		message.setText(buildEmailBody(code));
+		
+		/*
+		 * EmailVerifyDTO findEmail = emailMapper.findByEmail(emailVerifyDTO);
+		 * 
+		 * if(findEmail)
+		 */
+		
 		mailSender.send(message);
+		
+		
+		
 		emailMapper.saveCode(emailVerifyDTO);
-		log.info("ㅎㅇㅎㅇ");
 	}
 	
 	
@@ -74,15 +83,28 @@ public class EmailServiceImpl implements EmailService {
 	
 	private String buildEmailBody(String code) {
 		return String.format("""
-				안녕하세요. 전기충만 입니다.
-				
-				아래 번호를 입력하여 이메일 인증절차 완료해 주세요.
-				
-				인증번호 : %s
-				
-				본 인증번호는 30분 후에 만료됩니다.
-				
-				전기충만 드림
+				<html>
+              <head>
+                <meta charset="UTF-8">
+              </head>
+              <body style="font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background-color: #f5f5f5; padding: 30px;">
+                <table width="100%%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                  <tr>
+                    <td style="padding: 30px; text-align: center;">
+                      <h2 style="color: #2C3E50;">🔋 전기충만 이메일 인증</h2>
+                      <p style="font-size: 16px; color: #444;">안녕하세요, <strong>전기충만</strong>입니다.</p>
+                      <p style="font-size: 16px; color: #444;">아래 <strong style="color: #e74c3c;">인증번호</strong>를 입력하여 이메일 인증을 완료해 주세요.</p>
+                      <div style="margin: 30px auto; width: fit-content; padding: 15px 30px; background-color: #3498db; color: white; font-size: 24px; font-weight: bold; border-radius: 8px;">
+                        인증번호: <span style="letter-spacing: 2px;">%s</span>
+                      </div>
+                      <p style="font-size: 14px; color: #888;">⏰ 해당 인증번호는 발송 시점으로부터 <strong>30분간</strong> 유효합니다.</p>
+                      <br>
+                      <p style="font-size: 14px; color: #999;">감사합니다.<br>전기충만 드림</p>
+                    </td>
+                  </tr>
+                </table>
+              </body>
+            </html>
 				
 				""", code);
 	}
