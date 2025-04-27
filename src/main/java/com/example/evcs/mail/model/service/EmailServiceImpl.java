@@ -4,16 +4,17 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Random;
 
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.example.evcs.mail.dto.EmailVerifyDTO;
 import com.example.evcs.mail.model.dao.EmailMapper;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,26 +32,36 @@ public class EmailServiceImpl implements EmailService {
 	public void sendVerificationCode(EmailVerifyDTO emailVerifyDTO) {
 		String code = generateRandomCode();
 		String email = emailVerifyDTO.getEmail();
-		Timestamp expiresAt = Timestamp.valueOf(LocalDateTime.now().plusMinutes(30)); // 30분 유효
+		Timestamp expiresAt = Timestamp.valueOf(LocalDateTime.now().plusMinutes(5)); // 30분 유효
 
 		emailVerifyDTO.setCode(code);
 		emailVerifyDTO.setExpiresAt(expiresAt);
 		emailVerifyDTO.setVerified('N');
 
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setTo(email);
-		message.setSubject("[전기충만] 이메일 인증번호 입니다.");
-		message.setText(buildEmailBody(code));
+		try {
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-		/*
-		 * EmailVerifyDTO findEmail = emailMapper.findByEmail(emailVerifyDTO);
-		 * 
-		 * if(findEmail)
-		 */
+			helper.setTo(email);
+			helper.setSubject("[전기충만] 이메일 인증번호 입니다.");
+			helper.setText(buildEmailBody(code), true);
 
-		mailSender.send(message);
+		
+			boolean exists = emailMapper.existsByEmail(email) > 0;
+			
+			if(exists) {
+				emailMapper.updateCode(emailVerifyDTO);
+			} else {
+				emailMapper.saveCode(emailVerifyDTO);
 
-		emailMapper.saveCode(emailVerifyDTO);
+			}
+			
+			mailSender.send(message);
+
+
+		} catch (MessagingException e) {
+
+		}
 	}
 
 	public void verifyCode(EmailVerifyDTO emailVerifyDTO) {
@@ -88,7 +99,7 @@ public class EmailServiceImpl implements EmailService {
 						                  <div style="margin: 30px auto; width: fit-content; padding: 15px 30px; background-color: #3498db; color: white; font-size: 24px; font-weight: bold; border-radius: 8px;">
 						                    인증번호: <span style="letter-spacing: 2px;">%s</span>
 						                  </div>
-						                  <p style="font-size: 14px; color: #888;">⏰ 해당 인증번호는 발송 시점으로부터 <strong>30분간</strong> 유효합니다.</p>
+						                  <p style="font-size: 14px; color: #888;">⏰ 해당 인증번호는 발송 시점으로부터 <strong>5분간</strong> 유효합니다.</p>
 						                  <br>
 						                  <p style="font-size: 14px; color: #999;">감사합니다.<br>전기충만 드림</p>
 						                </td>
