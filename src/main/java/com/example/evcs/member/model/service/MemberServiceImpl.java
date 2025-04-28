@@ -27,7 +27,7 @@ public class MemberServiceImpl implements MemberService {
 
 		if (searchEmail != null) {
 			throw new MemberEmailDuplicationException("이미 존재하는 이메일입니다.");
-		}
+		} 
 		
 		String emailVerified = mapper.isVerified(member.getEmail());
 		

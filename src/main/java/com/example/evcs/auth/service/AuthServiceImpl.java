@@ -37,9 +37,9 @@ public class AuthServiceImpl implements AuthService {
 		} catch (AuthenticationException e) {
 			throw new CustomAuthenticationException("아이디 또는 비밀번호를 잘못 입력하셨습니다.");
 		}
-		
+						
 		CustomUserDetails user = (CustomUserDetails)authentication.getPrincipal();
-		log.info("로그인 성공!  하이 마이네임 이즈 영수킴");
+
 		log.info("인증에 성공한 사용자의 정보 : {}", user);
 		
 		Map<String, Object> loginResponse = tokenService.generateToken(user.getUsername(), 
@@ -52,11 +52,11 @@ public class AuthServiceImpl implements AuthService {
 		return loginResponse;
 	}
 
-	@Override
-	public CustomUserDetails getUserDetails() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CustomUserDetails user = (CustomUserDetails)auth.getPrincipal();
-		return user;
-	}
+		@Override
+		public CustomUserDetails getUserDetails() {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			CustomUserDetails user = (CustomUserDetails)auth.getPrincipal();
+			return user;
+		}
 
 }

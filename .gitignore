@@ -14,3 +14,4 @@ Thumbs.db
 application-private.yml
 bin/
 src/main/resources/application-private.yml
+/bin
