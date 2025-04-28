@@ -18,11 +18,22 @@
 		WHERE EMAIL = #{email}
 	</select>
 	
-	<select id="findByEmail">
-		SELECT email
+	<select id="existsByEmail">
+		SELECT COUNT(*)	
 		FROM EMAIL_VERIFICATION
 		WHERE EMAIL = #{email}
 	</select>
+	
+	
+	<update id="updateCode">
+		UPDATE EMAIL_VERIFICATION
+		SET CODE = #{code},
+			EXPIRES_AT = #{expiresAt},
+			VERIFIED = 'N'
+		WHERE EMAIL = #{email}
+	</update>
+	
+	
 	
 	
 	<insert id="saveCode">

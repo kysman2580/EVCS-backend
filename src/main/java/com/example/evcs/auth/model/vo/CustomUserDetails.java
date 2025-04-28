@@ -22,4 +22,11 @@ public class CustomUserDetails implements UserDetails {
 	private String memberName;
 	private Collection<? extends GrantedAuthority> authorities;
 	
+	
+	public boolean isAdmin() {
+	    return this.getAuthorities().stream()
+	            .anyMatch(auth -> "ROLE_ADMIN".equals(auth.getAuthority()));
+	}
+
+	
 }
