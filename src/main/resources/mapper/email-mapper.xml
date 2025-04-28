@@ -7,26 +7,57 @@
   
   
 	 <update id="updateEmailVerified">
-		UPDATE EMAIL_VERIFICATION
+		UPDATE EV_EMAIL_VERIFICATION
 		SET VERIFIED = 'Y'
 		WHERE EMAIL = #{email}
 	 </update>
+	 
+	 
+	 <update id="updateEmailVerifiedByPassword">
+	 	UPDATE PASSWORD_RESET_VERIFICATION
+		SET VERIFIED = 'Y'
+		WHERE EMAIL = #{email}
+	 </update>
+	 
   
 	<select id="getEmailVerification">
 		SELECT email, code, expires_at, verified
-		FROM EMAIL_VERIFICATION
+		FROM EV_EMAIL_VERIFICATION
 		WHERE EMAIL = #{email}
 	</select>
 	
+	
+	<select id="getEmailVerificationByPassword">
+		SELECT email, code, expires_at, verified
+		FROM PASSWORD_RESET_VERIFICATION
+		WHERE EMAIL = #{email}
+	</select>
+	
+	
+	
 	<select id="existsByEmail">
 		SELECT COUNT(*)	
-		FROM EMAIL_VERIFICATION
+		FROM EV_EMAIL_VERIFICATION
+		WHERE EMAIL = #{email}
+	</select>
+	
+	<select id="passwordExistsByEmail">
+		SELECT COUNT(*)	
+		FROM PASSWORD_RESET_VERIFICATION
 		WHERE EMAIL = #{email}
 	</select>
 	
 	
 	<update id="updateCode">
-		UPDATE EMAIL_VERIFICATION
+		UPDATE EV_EMAIL_VERIFICATION
+		SET CODE = #{code},
+			EXPIRES_AT = #{expiresAt},
+			VERIFIED = 'N'
+		WHERE EMAIL = #{email}
+	</update>
+	
+	<update id="passwordUpdateCode">
+		UPDATE PASSWORD_RESET_VERIFICATION
 		SET CODE = #{code},
 			EXPIRES_AT = #{expiresAt},
 			VERIFIED = 'N'
@@ -34,12 +65,19 @@
 	</update>
 	
 	
-	
-	
 	<insert id="saveCode">
-		INSERT INTO EMAIL_VERIFICATION(EMAIL, CODE, EXPIRES_AT, VERIFIED)
+		INSERT INTO EV_EMAIL_VERIFICATION(EMAIL, CODE, EXPIRES_AT, VERIFIED)
 		VALUES(#{email}, #{code}, #{expiresAt}, 'N')
 	</insert>
+	
+	
+	<insert id="passwordSaveCode">
+		INSERT INTO EV_PASSWORD_RESET_VERIFICATION(EMAIL, CODE, EXPIRES_AT, VERIFIED)
+		VALUES(#{email}, #{code}, #{expiresAt}, 'N')
+	</insert>
+	
+	
+	
 
 	
 	

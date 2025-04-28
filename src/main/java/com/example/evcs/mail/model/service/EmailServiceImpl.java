@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.evcs.exception.EmailNotVerifiedException;
 import com.example.evcs.mail.dto.EmailVerifyDTO;
+import com.example.evcs.mail.dto.PassWordEmailVerifyDTO;
 import com.example.evcs.mail.model.dao.EmailMapper;
 
 import jakarta.mail.MessagingException;
@@ -63,6 +65,45 @@ public class EmailServiceImpl implements EmailService {
 
 		}
 	}
+	
+	@Override
+	public void sendPassWordVerificationCode(PassWordEmailVerifyDTO passWordEmailVerifyDTO) {
+		String code = generateRandomCode();
+		String email = passWordEmailVerifyDTO.getEmail();
+		Timestamp expiresAt = Timestamp.valueOf(LocalDateTime.now().plusMinutes(5)); // 30분 유효
+
+		passWordEmailVerifyDTO.setCode(code);
+		passWordEmailVerifyDTO.setExpiresAt(expiresAt);
+		passWordEmailVerifyDTO.setVerified('N');
+
+		try {
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+			helper.setTo(email);
+			helper.setSubject("[전기충만] 이메일 인증번호 입니다.");
+			helper.setText(buildEmailBody(code), true);
+
+		
+			boolean exists = emailMapper.passwordExistsByEmail(email) > 0;
+			
+			if(exists) {
+				emailMapper.passwordUpdateCode(passWordEmailVerifyDTO);
+			} else {
+				emailMapper.passwordSaveCode(passWordEmailVerifyDTO);
+
+			}
+			
+			mailSender.send(message);
+
+
+		} catch (MessagingException e) {
+
+		}
+	}
+	
+	
+	
 
 	public void verifyCode(EmailVerifyDTO emailVerifyDTO) {
 		EmailVerifyDTO verifyCode = emailMapper.getEmailVerification(emailVerifyDTO);
@@ -70,11 +111,28 @@ public class EmailServiceImpl implements EmailService {
 		log.info("이메일: {}, 인증코드: {}", emailVerifyDTO.getEmail(), emailVerifyDTO.getCode());
 
 		if (verifyCode == null || !verifyCode.getCode().equals(emailVerifyDTO.getCode())) {
-			throw new RuntimeException("인증번호가 유효하지 않습니다.");
+			throw new EmailNotVerifiedException("인증번호가 유효하지 않습니다.");
 		}
 
 		emailMapper.updateEmailVerified(emailVerifyDTO);
 	}
+	
+	
+	@Override
+	public void passwordVerifyCode(PassWordEmailVerifyDTO passWordEmailVerifyDTO) {
+		EmailVerifyDTO verifyCode = emailMapper.getEmailVerificationByPassword(passWordEmailVerifyDTO);
+
+		log.info("이메일: {}, 인증코드: {}", passWordEmailVerifyDTO.getEmail(), passWordEmailVerifyDTO.getCode());
+
+		if (verifyCode == null || !verifyCode.getCode().equals(passWordEmailVerifyDTO.getCode())) {
+			throw new EmailNotVerifiedException("인증번호가 유효하지 않습니다.");
+		}
+
+		emailMapper.updateEmailVerifiedByPassword(passWordEmailVerifyDTO);
+	}
+	
+	
+	
 
 	private String generateRandomCode() {
 		Random random = new Random();
@@ -111,5 +169,7 @@ public class EmailServiceImpl implements EmailService {
 						""",
 				code);
 	}
+
+	
 
 }
