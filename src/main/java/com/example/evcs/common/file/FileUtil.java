@@ -1,13 +1,17 @@
 package com.example.evcs.common.file;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.example.evcs.exception.InvalidContentsException;
+import com.example.evcs.exception.InsertFileException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,35 +19,38 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class FileUtil {
 	
-	// 파일 저장할 때 제목, 내용, 작성자 비어있는지 확인하는 메서드
-	public void validateContents(String content , String title, String writer) {
+	private final Path fileLocation;
+	
+	public FileUtil (String fileLoad) {
+		//                  파일의 경로를 가져 fileLoad 를 가리키는 경로를 만들고 , 절대경로로 바꿔준 후, 경로 안에 "..", "." 같은 걸 깔끔하게 정리해준다.
+		this.fileLocation = Paths.get(fileLoad).toAbsolutePath().normalize();
+	}
+	
+	public String saveFile(MultipartFile file) {
 		
-		if(title == null || title.trim().isEmpty() ||
-		   content == null || content.trim().isEmpty() ||
-		   writer == null || writer.trim().isEmpty()) {
-			throw new InvalidContentsException("FileUtil : 유효하지 않은 contents 입니다.");
+		String originalFileName = file.getOriginalFilename();
+		
+		// 파일 이름 변경
+		String changeFileName = makeRandomName(originalFileName);
+		
+		// 파일경로에 이름을 붙여줌
+		Path targetLocation = this.fileLocation.resolve(originalFileName);
+
+		//
+		try {
+			
+			// 파일을 저장함 inputStream 만들어주고, 저장할 경로 입력, 혹시 이름이 같으면 덮어씌운다.
+			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+			
+			return "http://localhost/uploads/" + originalFileName;
+		} catch (IOException e) {
+			throw new InsertFileException("파일 에러에유");
 		}
 	}
 	
-	// 제목이랑 내용에 XSS (Cross-Site Scripting) 막는 메서드
-	public Map<String, String> validateContentAndTitle(String title, String content){
-		
-		Map<String, String> map = new HashMap<>();
-		
-		String changeTitle = title.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n",
-				"<br>");
 
-		String changeContent = content.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n",
-				"<br>");
-		
-		map.put("title", changeTitle);
-		map.put("content", changeContent);
-		
-		return map;
-	}
-	
 	// 파일 저장할 때 이름 바꿔주는 메서드
-	public String makeRandomName (String originalFileName) {
+	private String makeRandomName (String originalFileName) {
 		
 		StringBuilder sb = new StringBuilder();
 		
