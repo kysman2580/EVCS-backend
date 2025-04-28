@@ -5,13 +5,13 @@
   
   <mapper namespace="com.example.evcs.member.model.dao.MemberMapper">
 	  <insert id="signUp">
-		  INSERT INTO EL_MEMBER (
+		  INSERT INTO EV_MEMBER (
 		    MEMBER_NO,
 		    EMAIL,
 		    MEMBER_PW,
 		    MEMBER_NICKNAME
 		  ) VALUES (
-		    EL_MEMBER_SEQ_NO.NEXTVAL,
+		    EV_MEMBER_SEQ_NO.NEXTVAL,
 		    #{email},
 		    #{memberPw},
 		    #{memberNickname}
@@ -20,36 +20,43 @@
 	
 	<select id="isVerified">
 		  SELECT CASE WHEN VERIFIED = 'Y' THEN 1 ELSE 0 END
-		  FROM EMAIL_VERIFICATION
+		  FROM EV_EMAIL_VERIFICATION
 		  WHERE EMAIL = #{email}
 	</select>
 
+	<select id="isVerifiedByPassword">
+		  SELECT VERIFIED
+		  FROM EV_PASSWORD_RESET_VERIFICATION
+		  WHERE EMAIL = #{email}
+	</select>
 	
 	
 	<select id="getMemberByEmail">
-	SELECT MEMBER_NO as memberNo,
-	       EMAIL as email,
-	       MEMBER_PW as memberPw,
-	       EMAIL_VERIFIED as emailVerified,
-	       MEMBER_NICKNAME as memberNickname,
-	       ROLE as role,
-	       CREATED_AT as createdAt
-	FROM EL_MEMBER
-	WHERE EMAIL = #{email}
-</select>
+		SELECT MEMBER_NO as memberNo,
+		       EMAIL as email,
+		       MEMBER_PW as memberPw,
+		       EMAIL_VERIFIED as emailVerified,
+		       MEMBER_NICKNAME as memberNickname,
+		       ROLE as role,
+		       CREATED_AT as createdAt
+		FROM EV_MEMBER
+		WHERE EMAIL = #{email}
+	</select>
 
 	
 	
 	<select id="getEmailVerificationStatus">
 	    SELECT EMAIL_VERIFIED
-	    FROM EL_MEMBER
+	    FROM EV_MEMBER
 	    WHERE EMAIL = #{email}
 	</select>
 
-
-
-  
-  
+   
+   <update id="updatePassword">
+   		UPDATE EV_MEMBER
+   		SET MEMBER_PW = #{encodedPassword}
+   		WHERE EMAIL = #{email}
+   </update>
   
   
   
