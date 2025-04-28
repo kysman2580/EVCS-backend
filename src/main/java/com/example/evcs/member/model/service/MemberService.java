@@ -9,7 +9,7 @@ public interface MemberService {
 	ResponseEntity<String> signUp(MemberDTO member);
 	
 	
-	
+	  
 
 
 }
