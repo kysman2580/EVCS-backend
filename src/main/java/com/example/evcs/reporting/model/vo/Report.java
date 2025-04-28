@@ -14,10 +14,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class Report {
-	private Long boardNo;
-    private String title;
-    private String reporter;
-    private String defendant;
-    private LocalDate applicationDate;
-    private String status;
+	private String rpNo;           // RP_NO (PK)
+    private String keyField;       // Key 컬럼 (Java reserved word 피해서 이름 변경)
+    private Long memberNo;         // MEMBER_NO
+    private String field;          // Field
+    private String content;        // RP_CONTENT
+    private String fileNo;         // FILE_NO
+    private LocalDate enrollDate;  // RP_ENROLLDATE
+    private char status;           // RP_STATUS
 }
+

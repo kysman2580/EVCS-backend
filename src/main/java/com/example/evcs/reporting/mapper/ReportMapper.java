@@ -9,8 +9,33 @@ import com.example.evcs.reporting.model.vo.Report;
 
 @Mapper
 public interface ReportMapper {
+  @Select(
+    "SELECT " +
+    " RP_NO         AS rpNo, " +
+    " \"Key\"        AS keyField, " +
+    " MEMBER_NO     AS memberNo, " +
+    " \"Field\"      AS field, " +
+    " RP_CONTENT    AS content, " +
+    " FILE_NO       AS fileNo, " +
+    " RP_ENROLLDATE AS enrollDate, " +
+    " RP_STATUS     AS status " +
+    "FROM TB_REPORT " +
+    "ORDER BY RP_ENROLLDATE DESC"
+  )
+  List<Report> selectAllReports();
 
-	@Select("SELECT * FROM reports ORDER BY application_date DESC")
-	List<Report> selectAllReports();
-	// 추가: 검색, 페이징, 키워드 필터 메소드 선언
+  @Select(
+    "SELECT " +
+    " RP_NO         AS rpNo, " +
+    " \"Key\"        AS keyField, " +
+    " MEMBER_NO     AS memberNo, " +
+    " \"Field\"      AS field, " +
+    " RP_CONTENT    AS content, " +
+    " FILE_NO       AS fileNo, " +
+    " RP_ENROLLDATE AS enrollDate, " +
+    " RP_STATUS     AS status " +
+    "FROM TB_REPORT WHERE RP_NO = #{rpNo}"
+  )
+  Report selectReportById(String rpNo);
 }
+

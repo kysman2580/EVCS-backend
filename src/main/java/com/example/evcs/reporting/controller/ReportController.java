@@ -14,21 +14,19 @@ import com.example.evcs.reporting.service.ReportService;
 @RequestMapping("/api/reports")
 public class ReportController {
 	private final ReportService service;
-	  public ReportController(ReportService service) {
-	    this.service = service;
-	  }
+    public ReportController(ReportService service) {
+        this.service = service;
+    }
 
-	  @GetMapping
-	  public List<Report> listReports() {
-	    return service.getAllReports();
-	  }
+    // 전체 조회
+    @GetMapping
+    public List<Report> listAll() {
+        return service.getAllReports();
+    }
 
-	  @GetMapping("/{id}")
-	  public Report getReport(@PathVariable Long id) {
-	    return service.getAllReports()
-	                  .stream()
-	                  .filter(r -> r.getBoardNo().equals(id))
-	                  .findFirst()
-	                  .orElseThrow(() -> new RuntimeException("신고를 찾을 수 없습니다."));
-	  }
+    // 단건 조회
+    @GetMapping("/{rpNo}")
+    public Report getOne(@PathVariable String rpNo) {
+        return service.getReport(rpNo);
+    }
 }

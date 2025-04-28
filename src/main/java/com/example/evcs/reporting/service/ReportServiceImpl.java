@@ -10,11 +10,17 @@ import com.example.evcs.reporting.model.vo.Report;
 @Service
 public class ReportServiceImpl implements ReportService {
 	private final ReportMapper mapper;
-	  public ReportServiceImpl(ReportMapper mapper) {
-	    this.mapper = mapper;
-	  }
-	  @Override
-	  public List<Report> getAllReports() {
-	    return mapper.selectAllReports();
-	  }
+    public ReportServiceImpl(ReportMapper mapper) {
+        this.mapper = mapper;
+    }
+
+    @Override
+    public List<Report> getAllReports() {
+        return mapper.selectAllReports();
+    }
+
+    @Override
+    public Report getReport(String rpNo) {
+        return mapper.selectReportById(rpNo);
+    }
 }

@@ -9,5 +9,5 @@ public interface EmailService {
 	void verifyCode(EmailVerifyDTO emailVerifyDTO);
 
 	void sendVerificationCode(EmailVerifyDTO emailVerifyDTO);
-
+	
 }

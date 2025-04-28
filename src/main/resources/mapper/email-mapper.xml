@@ -18,6 +18,12 @@
 		WHERE EMAIL = #{email}
 	</select>
 	
+	<select id="findByEmail">
+		SELECT email
+		FROM EMAIL_VERIFICATION
+		WHERE EMAIL = #{email}
+	</select>
+	
 	
 	<insert id="saveCode">
 		INSERT INTO EMAIL_VERIFICATION(EMAIL, CODE, EXPIRES_AT, VERIFIED)

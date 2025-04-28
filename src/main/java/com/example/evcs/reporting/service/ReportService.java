@@ -6,4 +6,5 @@ import com.example.evcs.reporting.model.vo.Report;
 
 public interface ReportService {
 	List<Report> getAllReports();
+    Report getReport(String rpNo);
 }
