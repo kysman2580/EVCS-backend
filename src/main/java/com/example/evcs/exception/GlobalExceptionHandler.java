@@ -41,4 +41,12 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.badRequest().body(error);
 	}
 	
+	// 게시글 등록 시 제목, 내용, 작성자 비어있을 때 예외
+	@ExceptionHandler(InvalidContentsException.class)
+	public ResponseEntity<?> handlerNotAdminRoleError(InvalidContentsException e){
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+	
 }
