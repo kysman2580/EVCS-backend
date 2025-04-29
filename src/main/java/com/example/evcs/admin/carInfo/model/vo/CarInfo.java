@@ -9,12 +9,11 @@ import lombok.Value;
 @Builder
 public class CarInfo {
 
-	private String carId;
+	private int carNo;
 	private String carName;
 	private String carType;
 	private int carYear;
 	private String carCompany;
 	private String carBattery;
 	private Date enrollDate;
-	private String imageUrl;
 }

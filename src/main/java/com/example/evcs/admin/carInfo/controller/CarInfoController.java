@@ -1,6 +1,10 @@
 package com.example.evcs.admin.carInfo.controller;
 
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,12 +27,19 @@ public class CarInfoController {
 	
 	@PostMapping("/insert")
 	public ResponseEntity<?> insertCar(CarInfoDTO carInfo,
-									   @RequestParam(name="imageUrl") MultipartFile file){
+									   @RequestParam(name="image") MultipartFile file){
+		
+		System.out.println("aaaaa");
+		log.info("carInfo : {},file : {}",carInfo,file);
 		carInfoService.insertCar(carInfo,file);
 		
-		return null;
+		return ResponseEntity.status(HttpStatus.OK).body("차량 등록에 성공하셨습니다~");
 	}
-
-
-
+	
+	@GetMapping
+	public ResponseEntity<?> carList(@RequestParam(name="page",defaultValue="1" ) int page){
+		
+		Map<String, Object> map = carInfoService.carList(page);
+		return ResponseEntity.status(HttpStatus.CREATED).body(map);
+	}
 }

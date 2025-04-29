@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.evcs.auth.model.vo.CustomUserDetails;
-import com.example.evcs.auth.util.JwtUtil;
+import com.example.evcs.util.JwtUtil;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
