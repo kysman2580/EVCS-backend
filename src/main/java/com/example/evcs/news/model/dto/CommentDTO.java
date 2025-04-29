@@ -1,22 +1,21 @@
 package com.example.evcs.news.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class CommentDTO {
     private Long id;
-    private String user;
+    private Long newsNo;
+    private Long memberNo;
+    private String memberNick;
     private String content;
-    private String date;
+    private String commentDate;
+    private Long parentId;
     private int likes;
     private int dislikes;
+    private String status; // "Y" or "N"
 }
