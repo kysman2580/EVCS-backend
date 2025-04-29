@@ -1,5 +1,8 @@
 package com.example.evcs.member.model.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,40 +25,45 @@ public class MemberServiceImpl implements MemberService {
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
-    public ResponseEntity<String> signUp(MemberDTO member) {
+	public ResponseEntity<String> signUp(MemberDTO member) {
 		MemberDTO searchEmail = mapper.getMemberByEmail(member.getEmail());
 
 		if (searchEmail != null) {
 			throw new MemberEmailDuplicationException("이미 존재하는 이메일입니다.");
 		}
-		
+
 		String emailVerified = mapper.isVerified(member.getEmail());
-		
-		if(emailVerified == null || "Y".equals(emailVerified)) {
+
+		if (emailVerified == null || !"Y".equals(emailVerified)) {
 			throw new EmailNotVerifiedException("이메일 인증이 완료되지 않았습니다.");
 		}
-		
-		
-		
-		Member memberValue = Member.builder()
-								   .email(member.getEmail())
-								   .memberPw(passwordEncoder.encode(member.getMemberPw()))
-								   .emailVerified('Y')
-								   .memberNickname(member.getMemberNickname())
-								   .role("USER")
-								   .build();
-		
-		
+
+		Member memberValue = Member.builder().email(member.getEmail())
+				.memberPw(passwordEncoder.encode(member.getMemberPw())).emailVerified('Y')
+				.memberNickname(member.getMemberNickname()).role("USER").build();
+
 		mapper.signUp(memberValue);
 		log.info("{}", member);
-		
+
 		return ResponseEntity.ok("이메일 인증 및 회원가입 성공");
 	}
 
+	@Override
+	public void updatePassword(String email, String newPassword) {
+		String encodedPassword = passwordEncoder.encode(newPassword);
+		log.info("Encoded Password: {}", encodedPassword); 
+		
+		String emailVerified = mapper.isVerifiedByPassword(email);
 
+		if (emailVerified == null || !"Y".equals(emailVerified)) {
+			throw new EmailNotVerifiedException("이메일 인증이 완료되지 않았습니다.");
+		}
+		
+		Map<String, Object> params = new HashMap<>();
+		params.put("email", email);
+		params.put("encodedPassword", encodedPassword);
+		
+		mapper.updatePassword(params);
+	}
 
-	
-	
-	
-	
 }

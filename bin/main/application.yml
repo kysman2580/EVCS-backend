@@ -38,6 +38,8 @@ mybatis:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     jdbc-type-for-null: VARCHAR
   mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: "com.example.evcs.event.model.vo"
+
 
 logging:
   level:

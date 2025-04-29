@@ -18,28 +18,14 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
-	
+
 	private final MemberService memberService;
 
-	
 	@PostMapping
-	public ResponseEntity<?> SignUp(@RequestBody @Valid MemberDTO member){
+	public ResponseEntity<?> SignUp(@RequestBody @Valid MemberDTO member) {
 		memberService.signUp(member);
-		
-		return ResponseEntity.status(201).build();
+		return ResponseEntity.status(200).build();
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
 }
