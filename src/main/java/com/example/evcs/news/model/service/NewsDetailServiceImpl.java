@@ -23,22 +23,22 @@ public class NewsDetailServiceImpl implements NewsDetailService {
     
     @Override
     @Transactional
-    public NewsDetailResponse getOrInsertNewsByTitleAndUrl(NewsDTO news) {
+    public NewsDetailResponse getOrInsertNewsByTitleAndUrl(NewsDTO news, Long memberNo) {
         NewsDTO dto = newsMapper.findByTitleAndUrl(news.getTitle(), news.getOriginUrl());
         if (dto == null) {
-            return insertAndReturn(news);
+            return insertAndReturn(news, memberNo);
         }
         
         System.out.println("NEWS_NO 전달 값: " + dto.getNewsNo());
 
         newsMapper.incrementWatchCount(dto.getNewsNo());
         
-        return buildNewsDetailResponse(dto);
+        return buildNewsDetailResponse(dto, memberNo);
     }
     
     @Override
     @Transactional
-    public NewsDetailResponse insertAndReturn(NewsDTO dto) {
+    public NewsDetailResponse insertAndReturn(NewsDTO dto, Long memberNo) {
         System.out.println("---이미지 링크 오긴 함? : " + dto.getImageUrl() + "dto야 넌 뭔 값을 가지고 있니 : " + dto.getQuery());
     	// 뉴스 정보 저장
         newsMapper.insert(dto);
@@ -58,12 +58,12 @@ public class NewsDetailServiceImpl implements NewsDetailService {
         
         // 저장된 뉴스 정보 조회 및 반환
         NewsDTO inserted = newsMapper.findByTitleAndUrl(dto.getTitle(), dto.getOriginUrl());
-        return buildNewsDetailResponse(inserted);
+        return buildNewsDetailResponse(inserted, memberNo);
     }
     
-    private NewsDetailResponse buildNewsDetailResponse(NewsDTO news) {
+    private NewsDetailResponse buildNewsDetailResponse(NewsDTO news, Long memberNo) {
         Long newsNo = news.getNewsNo();
-        List<CommentDTO> comments = newscommentMapper.findCommentsByNews(newsNo); 
+        List<CommentDTO> comments = newscommentMapper.findCommentsByNews(newsNo, memberNo); 
         int likeCount = newsreactionMapper.countLikeByNews(newsNo);
         int hateCount = newsreactionMapper.countHateByNews(newsNo);
         boolean isBookmarked = newsreactionMapper.countBookmarks(newsNo, 1L) > 0;

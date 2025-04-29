@@ -15,5 +15,5 @@ public interface NewsCommentMapper {
 
     void softDeleteComment(@Param("commentId") Long commentId);
 
-    List<CommentDTO> findCommentsByNews(@Param("newsNo") Long newsNo);
+    List<CommentDTO> findCommentsByNews(@Param("newsNo") Long newsNo, @Param("memberNo") Long memberNo);
 }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.evcs.news.model.dto.NewsDTO;
@@ -24,10 +25,10 @@ public class NewsDetailController {
     private NewsDetailServiceImpl newsDetailService;
     
     @PostMapping("detail")
-    public ResponseEntity<?> getNewsDetail(@RequestBody NewsDTO news) {
-        System.out.println("detail 요청 왔음 - 제목: " + news.getTitle() + ", URL:" + news.getOriginUrl() + ", imageUrl : " + news.getImageUrl());
+    public ResponseEntity<?> getNewsDetail(@RequestBody NewsDTO news, @RequestParam("memberNo") Long memberNo) {
+        System.out.println("detail 요청 왔음 - 제목: " + news.getTitle() + ", URL:" + news.getOriginUrl() + ", imageUrl : " + news.getImageUrl() + "memberNo 옴? : " + memberNo);
         
-        NewsDetailResponse newsDetail = newsDetailService.getOrInsertNewsByTitleAndUrl(news);
+        NewsDetailResponse newsDetail = newsDetailService.getOrInsertNewsByTitleAndUrl(news, memberNo);
         
         Map<String, Object> response = new HashMap<>();
         if (newsDetail != null) {
@@ -45,10 +46,10 @@ public class NewsDetailController {
     }
     
     @PostMapping("insert")
-    public ResponseEntity<?> postNewsDetail(@RequestBody NewsDTO newsDto) {
+    public ResponseEntity<?> postNewsDetail(@RequestBody NewsDTO newsDto,  @RequestParam("memberNo") Long memberNo) {
         System.out.println("post 요청 왔음 - 제목: " + newsDto.getTitle());
         
-        NewsDetailResponse newsDetail = newsDetailService.insertAndReturn(newsDto);
+        NewsDetailResponse newsDetail = newsDetailService.insertAndReturn(newsDto, memberNo);
         
         Map<String, Object> response = new HashMap<>();
         response.put("news", newsDetail.getNews());
