@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.evcs.event.model.dao.EventDAO">
+
+	<insert id="insertEvent"
+		parameterType="Event"
+	>
+		INSERT INTO EV_EVENT VALUES(
+			  #{ eventNo }
+			, #{ writer }
+			, #{ eventName }
+			, #{ startDate }
+			, #{ endDate }
+			, #{ eventContent }
+			, SYSDATE
+			, 'Y'
+		)
+	</insert>
+	
+	<insert id="insertFile"
+		parameterType="string"
+	>
+		INSERT INTO EV_EVENT VALUES(
+			  SEQ_EV_EVENT_FILE.NEXT
+			, #{ changeFileName }
+		)
+	</insert>
+
+
+</mapper>

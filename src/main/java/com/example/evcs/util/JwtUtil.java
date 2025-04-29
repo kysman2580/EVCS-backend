@@ -1,4 +1,4 @@
-package com.example.evcs.auth.util;
+package com.example.evcs.util;
 
 import java.util.Base64;
 import java.util.Date;

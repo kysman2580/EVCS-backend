@@ -48,11 +48,6 @@ public class ReactionServiceImpl implements ReactionService {
     }
 
     @Override
-    public void writeComment(Long newsNo, Long memberNo, String content) {
-    	newsreactionMapper.insertComment(newsNo, memberNo, content);
-    }
-
-    @Override
     public void toggleBookmark(Long newsNo, Long memberNo) {
         int count = newsreactionMapper.countBookmarks(newsNo, memberNo);
         if (count > 0) {
