@@ -1,0 +1,47 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.evcs.news.model.dao.CommentReactionMapper">
+
+    <insert id="insertLike">
+        INSERT INTO EV_NEWS_CMT_LIKE (NEWS_CMT_ID, MEMBER_NO, NEWS_CMT_LIKE_DATE)
+        VALUES (#{newsCmtId}, #{memberNo}, SYSDATE)
+    </insert>
+
+    <delete id="deleteLike">
+        DELETE FROM EV_NEWS_CMT_LIKE
+        WHERE NEWS_CMT_ID = #{newsCmtId} AND MEMBER_NO = #{memberNo}
+    </delete>
+
+    <insert id="insertHate">
+        INSERT INTO EV_NEWS_CMT_HATE (NEWS_CMT_ID, MEMBER_NO, NEWS_CMT_HATE_DATE)
+        VALUES (#{newsCmtId}, #{memberNo}, SYSDATE)
+    </insert>
+
+    <delete id="deleteHate">
+        DELETE FROM EV_NEWS_CMT_HATE
+        WHERE NEWS_CMT_ID = #{newsCmtId} AND MEMBER_NO = #{memberNo}
+    </delete>
+
+    <select id="checkLike" resultType="int">
+        SELECT COUNT(*) FROM EV_NEWS_CMT_LIKE
+        WHERE NEWS_CMT_ID = #{newsCmtId} AND MEMBER_NO = #{memberNo}
+    </select>
+
+    <select id="checkHate" resultType="int">
+        SELECT COUNT(*) FROM EV_NEWS_CMT_HATE
+        WHERE NEWS_CMT_ID = #{newsCmtId} AND MEMBER_NO = #{memberNo}
+    </select>
+
+    <select id="countLikes" resultType="int">
+        SELECT COUNT(*) FROM EV_NEWS_CMT_LIKE
+        WHERE NEWS_CMT_ID = #{newsCmtId}
+    </select>
+
+    <select id="countHates" resultType="int">
+        SELECT COUNT(*) FROM EV_NEWS_CMT_HATE
+        WHERE NEWS_CMT_ID = #{newsCmtId}
+    </select>
+
+</mapper>

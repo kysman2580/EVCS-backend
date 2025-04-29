@@ -1,9 +1,9 @@
 package com.example.evcs.member.model.dao;
 
-import java.sql.Timestamp;
+
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -22,6 +22,8 @@ public interface MemberMapper {
 	
 	String isVerified(String email);
 	
+	String isVerifiedByPassword(String email);
+	
 	@Select("SELECT VERIFICATION_CODE FROM EMAIL_VERIFICATION WHERE EMAIL = #{email} AND EXPIRY_DATE > CURRENT_TIMESTAMP")
 	String getVerificationCode(String email);
 
@@ -30,6 +32,9 @@ public interface MemberMapper {
 
 	@Update("UPDATE EL_MEMBER SET EMAIL_VERIFIED = 'Y' WHERE EMAIL = #{email}")
 	void updateEmailVerified(String email);
+
+	void updatePassword(Map<String, Object> params);
+
 	
 	
 }

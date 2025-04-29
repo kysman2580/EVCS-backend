@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.evcs.news.model.dao.CommentMapper;
+import com.example.evcs.news.model.dao.NewsCommentMapper;
 import com.example.evcs.news.model.dao.NewsMapper;
 import com.example.evcs.news.model.dao.NewsReactionMapper;
 import com.example.evcs.news.model.dto.CommentDTO;
@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 public class NewsDetailServiceImpl implements NewsDetailService {
     
     private NewsMapper newsMapper;
-    private final CommentMapper commentMapper;
+    private final NewsCommentMapper newscommentMapper;
     private final NewsReactionMapper newsreactionMapper;
     
     @Override
@@ -63,7 +63,7 @@ public class NewsDetailServiceImpl implements NewsDetailService {
     
     private NewsDetailResponse buildNewsDetailResponse(NewsDTO news) {
         Long newsNo = news.getNewsNo();
-        List<CommentDTO> comments = commentMapper.findByNews(news.getTitle(), news.getOriginUrl());
+        List<CommentDTO> comments = newscommentMapper.findCommentsByNews(newsNo); 
         int likeCount = newsreactionMapper.countLikeByNews(newsNo);
         int hateCount = newsreactionMapper.countHateByNews(newsNo);
         boolean isBookmarked = newsreactionMapper.countBookmarks(newsNo, 1L) > 0;
