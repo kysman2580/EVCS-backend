@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.evcs.exception.EmailNotVerifiedException;
 import com.example.evcs.exception.MemberEmailDuplicationException;
 import com.example.evcs.member.model.dao.MemberMapper;
 import com.example.evcs.member.model.dto.MemberDTO;
@@ -32,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
 		String emailVerified = mapper.isVerified(member.getEmail());
 		
 		if(emailVerified == null || "Y".equals(emailVerified)) {
-			throw new EmailNotVerifiedException("이메일 인증이 완료되지 않았습니다.");
+			throw new RuntimeException("이메일 인증이 완료되지 않았습니다.");
 		}
 		
 		
