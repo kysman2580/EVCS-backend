@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.example.evcs.auth.util.JwtUtil;
+import com.example.evcs.util.JwtUtil;
 import com.example.evcs.token.model.dao.TokenMapper;
 import com.example.evcs.token.model.vo.RefreshToken;
 
@@ -31,7 +31,7 @@ public class TokenServiceImpl implements TokenService {
 
 		return tokens;
 	}
-
+ 
 	private void saveToken(String refreshToken, Long memberNo) {
 		RefreshToken token = RefreshToken.builder()
 										 .token(refreshToken)

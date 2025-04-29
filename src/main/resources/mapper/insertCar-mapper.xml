@@ -5,18 +5,85 @@
 
 <mapper namespace="com.example.evcs.admin.carInfo.model.dao.CarInfoMapper">
 
-	<insert id="insertCar">
+	<select id="findByCarName"
+				parameterType="CarInfo"
+				resultType="int">
+		SELECT 
+				COUNT(*)		   
+	  	  FROM
+	  	 		CAR_INFO
+	  	 WHERE
+	  	 		CAR_NAME = #{carName}
+	</select>
+	
+	<insert id="insertCar"
+				parameterType="CarInfo">
 		INSERT 
-				INTO 
-	  CAR_INFO
+		  INTO 
+	  			CAR_INFO(
+				    CAR_NAME
+				  , CAR_TYPE
+				  , CAR_YEAR
+				  , CAR_COMPANY
+				  , CAR_BATTERY
+				)
 	  			VALUES(
-					#{carId}
-				  , #{carName}
-				  , #{carCategory}
+				    #{carName}
+				  , #{carType}
 				  , #{carYear}
 				  , #{carCompany}
 				  , #{carBattery}
-				  , #{imageUrl}
 				)
 	</insert>
+	
+	<select id="findCarNoByCarName"
+				parameterType="CarInfo"
+				resultType="int">
+		SELECT 
+				CAR_NO carNo		   
+	  	  FROM
+	  	 		CAR_INFO
+	  	 WHERE
+	  	 		CAR_NAME = #{carName}
+	</select>
+	
+	<insert id="insertCarImage"
+				parameterType="com.example.evcs.admin.carInfo.model.vo.CarImage">
+		INSERT 
+		  INTO 
+	  			CAR_IMAGE
+	  			VALUES(
+					#{carNo}
+				  , #{fileLoad}
+				)
+	</insert>
+	
+	<select id="countAllCar"
+				resultType="int">
+		SELECT
+			   COUNT(*)
+		  FROM
+		  	   CAR_INFO
+	</select>
+	
+	<select id="findAllCar"
+				resultType="com.example.evcs.admin.carInfo.model.dto.CarInfoDTO">
+		SELECT
+			   *
+		  FROM
+		  	   CAR_INFO
+	</select>
+	
+	
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
