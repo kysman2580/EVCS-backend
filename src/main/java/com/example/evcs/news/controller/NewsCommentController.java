@@ -18,8 +18,8 @@ public class NewsCommentController {
     
     // 댓글 목록 조회 추가 (GET 요청 처리)
     @GetMapping("/list")
-    public List<CommentDTO> getCommentList(@RequestParam("newsNo") Long newsNo) {
-        return newsCommentService.findCommentsByNews(newsNo);
+    public List<CommentDTO> getCommentList(@RequestParam("newsNo") Long newsNo, @RequestParam("memberNo") Long memberNo) {
+        return newsCommentService.findCommentsByNews(newsNo, memberNo);
     }
 
 
@@ -39,7 +39,7 @@ public class NewsCommentController {
 
         newsCommentService.writeComment(newsNo, memberNo, content, parentId);
 
-        return newsCommentService.findCommentsByNews(newsNo);
+        return newsCommentService.findCommentsByNews(newsNo, memberNo);
     }
 
     // 댓글 수정
