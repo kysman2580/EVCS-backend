@@ -8,8 +8,6 @@ public interface ReactionService {
     int getLikeCount(Long newsNo);
     int getHateCount(Long newsNo);
     
-    void writeComment(Long newsNo, Long memberNo, String content);
-    
     void toggleBookmark(Long newsNo, Long memberNo);
     boolean hasBookmarked(Long newsNo, Long memberNo);
 

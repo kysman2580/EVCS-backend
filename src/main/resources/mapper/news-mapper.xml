@@ -15,9 +15,9 @@
 	           c.NEWS_CATEGORY as query,
 	           i.NEWS_IMG_URL as imageUrl,
 	           n.NEWS_WATCHED as count
-	    FROM TB_NEWS n
-	    LEFT JOIN TB_NEWS_IMG i ON n.NEWS_NO = i.NEWS_NO
-	    JOIN TB_NEWS_CATEGORY c ON n.NEWS_CATEGORY_NO = c.NEWS_CATEGORY_NO
+	    FROM EV_NEWS n
+	    LEFT JOIN EV_NEWS_IMG i ON n.NEWS_NO = i.NEWS_NO
+	    JOIN EV_NEWS_CATEGORY c ON n.NEWS_CATEGORY_NO = c.NEWS_CATEGORY_NO
 	    WHERE n.NEWS_TITLE = #{title} 
 	      AND n.NEWS_ORIGIN_URL = #{originUrl}
 	      AND n.NEWS_STATUS = 'Y'
@@ -25,28 +25,35 @@
 	
 	<insert id="insert"         
 		parameterType="com.example.evcs.news.model.dto.NewsDTO">
-	    INSERT INTO TB_NEWS (NEWS_NO, 
-	    					 NEWS_CATEGORY_NO, 
-	    					 NEWS_TITLE, 
-	    					 NEWS_DESCRIPTION,
-	                         NEWS_ORIGIN_URL, 
-	                         NEWS_NAVER_DATE, 
-	                         NEWS_ENROLLDATE, 
-	                         NEWS_STATUS, 
-	                         NEWS_WATCHED)
-	    VALUES (NEWS_SEQ.NEXTVAL,
-	           (SELECT NEWS_CATEGORY_NO FROM TB_NEWS_CATEGORY WHERE NEWS_CATEGORY = #{query} OR ROWNUM = 1),
-	           #{title}, 
-	           #{description}, 
-	           #{originUrl}, 
-	           TO_DATE(#{pubDate}, 'YYYY. MM. DD.'), 
-	           SYSDATE, 
-	           'Y', 
-	           0)
+			INSERT INTO EV_NEWS (
+			  NEWS_NO,
+			  NEWS_CATEGORY_NO,
+			  NEWS_TITLE,
+			  NEWS_DESCRIPTION,
+			  NEWS_ORIGIN_URL,
+			  NEWS_NAVER_DATE,
+			  NEWS_ENROLLDATE,
+			  NEWS_STATUS,
+			  NEWS_WATCHED
+			)
+			VALUES (
+			  NEWS_SEQ.NEXTVAL,
+			  (SELECT NEWS_CATEGORY_NO 
+			   FROM EV_NEWS_CATEGORY 
+			   WHERE NEWS_CATEGORY = #{query}
+			   FETCH FIRST 1 ROWS ONLY),
+			  #{title},
+			  #{description},
+			  #{originUrl},
+			  TO_DATE(#{pubDate}, 'YYYY. MM. DD.'),
+			  SYSDATE,
+			  'Y',
+			  0
+			)
 	</insert>
 	
 	<insert id="imageInsert" parameterType="map">
-	  INSERT INTO TB_NEWS_IMG (
+	  INSERT INTO EV_NEWS_IMG (
 	    NEWS_NO, NEWS_IMG_URL
 	  )
 	  VALUES (
@@ -60,7 +67,7 @@
 	</select>
 	
 	<update id="incrementWatchCount" parameterType="long">
-	    UPDATE TB_NEWS
+	    UPDATE EV_NEWS
 	    SET NEWS_WATCHED = NEWS_WATCHED + 1
 	    WHERE NEWS_NO = #{newsNo}
 	</update>

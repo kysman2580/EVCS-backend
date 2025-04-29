@@ -1,23 +1,61 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
-  <mapper namespace="com.example.evcs.news.model.dao.CommentMapper">
-  
-	<select id="findByNews" parameterType="map" resultType="com.example.evcs.news.model.dto.CommentDTO">
-	    SELECT c.NEWS_CMT_ID as commentId,
-	           c.NEWS_CMT_CONTENT as content,
-	           c.NEWS_CMT_DATE as commentDate,
-	           m.MEMBER_NICKNAME as memberNickname
-	    FROM TB_NEWS_CMT c
-	    JOIN EL_MEMBER m ON c.MEMBER_NO = m.MEMBER_NO
-	    JOIN TB_NEWS n ON c.NEWS_NO = n.NEWS_NO
-	    WHERE n.NEWS_TITLE = #{title}
-	      AND n.NEWS_ORIGIN_URL = #{originUrl}
-	      AND c.NEWS_CMT_STATUS = 'Y'
-	    ORDER BY c.NEWS_CMT_DATE DESC
-	</select>
-	
-  </mapper>
-  
-  
+
+<mapper namespace="com.example.evcs.news.model.dao.NewsCommentMapper">
+
+  <!-- 댓글 조회 -->
+  <select id="findCommentsByNews" resultType="com.example.evcs.news.model.dto.CommentDTO">
+    SELECT
+      c.NEWS_CMT_ID AS id,
+      c.NEWS_NO AS newsNo,
+      c.MEMBER_NO AS memberNo,
+      m.MEMBER_NICKNAME AS memberNick,
+      c.NEWS_CMT_CONTENT AS content,
+      c.NEWS_CMT_MODIFY_DATE AS commentDate,
+      c.NEWS_CMT_PARENT_ID AS parentId,
+      c.NEWS_CMT_STATUS AS status
+    FROM EV_NEWS_CMT c
+    JOIN EV_MEMBER m ON c.MEMBER_NO = m.MEMBER_NO
+    WHERE c.NEWS_NO = #{newsNo}
+      AND c.NEWS_CMT_STATUS = 'Y'
+    ORDER BY NVL(c.NEWS_CMT_PARENT_ID, c.NEWS_CMT_ID), c.NEWS_CMT_DATE ASC
+  </select>
+
+  <!-- 댓글 삽입 -->
+  <insert id="insertComment" parameterType="com.example.evcs.news.model.dto.CommentDTO">
+    INSERT INTO EV_NEWS_CMT (
+      NEWS_CMT_ID,
+      NEWS_NO,
+      MEMBER_NO,
+      NEWS_CMT_CONTENT,
+      NEWS_CMT_DATE,
+      NEWS_CMT_PARENT_ID,
+      NEWS_CMT_STATUS
+    ) VALUES (
+      NEWS_CMT_SEQ.NEXTVAL,
+      #{newsNo},
+      #{memberNo},
+      #{content},
+      SYSDATE,
+      #{parentId},
+      'Y'
+    )
+  </insert>
+
+  <!-- 댓글 수정 -->
+  <update id="updateComment" parameterType="com.example.evcs.news.model.dto.CommentDTO">
+    UPDATE EV_NEWS_CMT
+    SET NEWS_CMT_CONTENT = #{content},
+        NEWS_CMT_MODIFY_DATE = SYSDATE
+    WHERE NEWS_CMT_ID = #{commentId}
+  </update>
+
+  <!-- 댓글 삭제 (Soft Delete) -->
+  <update id="softDeleteComment" parameterType="long">
+    UPDATE EV_NEWS_CMT
+    SET NEWS_CMT_STATUS = 'N'
+    WHERE NEWS_CMT_ID = #{commentId}
+  </update>
+
+</mapper>
