@@ -14,7 +14,7 @@
 	 
 	 
 	 <update id="updateEmailVerifiedByPassword">
-	 	UPDATE PASSWORD_RESET_VERIFICATION
+	 	UPDATE EV_PASSWORD_RESET_VERIFICATION
 		SET VERIFIED = 'Y'
 		WHERE EMAIL = #{email}
 	 </update>
@@ -29,7 +29,7 @@
 	
 	<select id="getEmailVerificationByPassword">
 		SELECT email, code, expires_at, verified
-		FROM PASSWORD_RESET_VERIFICATION
+		FROM EV_PASSWORD_RESET_VERIFICATION
 		WHERE EMAIL = #{email}
 	</select>
 	
@@ -43,7 +43,7 @@
 	
 	<select id="passwordExistsByEmail">
 		SELECT COUNT(*)	
-		FROM PASSWORD_RESET_VERIFICATION
+		FROM EV_PASSWORD_RESET_VERIFICATION
 		WHERE EMAIL = #{email}
 	</select>
 	
@@ -57,7 +57,7 @@
 	</update>
 	
 	<update id="passwordUpdateCode">
-		UPDATE PASSWORD_RESET_VERIFICATION
+		UPDATE EV_PASSWORD_RESET_VERIFICATION
 		SET CODE = #{code},
 			EXPIRES_AT = #{expiresAt},
 			VERIFIED = 'N'

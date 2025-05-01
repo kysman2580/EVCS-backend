@@ -47,16 +47,6 @@ public class ReactionController {
         return reactionService.hasHated(newsNo, memberNo);
     }
 
-    @PostMapping("/comment")
-    public String comment(@RequestBody Map<String, Object> body) {
-        reactionService.writeComment(
-            Long.valueOf(body.get("newsNo").toString()),
-            Long.valueOf(body.get("memberNo").toString()),
-            body.get("content").toString()
-        );
-        return "commented";
-    }
-
     @PostMapping("/bookmark")
     public String bookmark(@RequestBody Map<String, Long> body) {
         reactionService.toggleBookmark(body.get("newsNo"), body.get("memberNo"));

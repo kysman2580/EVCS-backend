@@ -13,7 +13,15 @@ spring:
           auth: true
           starttls:
             enable: true
+            required: true
+          ssl:
+            trust: smtp.gmail.com
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+        
 
   mvc:
     static-path-pattern: /uploads/**
@@ -38,7 +46,8 @@ mybatis:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     jdbc-type-for-null: VARCHAR
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: "com.example.evcs.event.model.vo"
+
+  type-aliases-package: com.example.evcs.admin.carInfo.model.vo, com.example.evcs.event.model.vo, com.example.evcs.admin.carInfo.model.dto
 
 
 logging:

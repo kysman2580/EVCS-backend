@@ -38,13 +38,15 @@ public class SecurityConfiguration {
 		return httpSecurity.formLogin(AbstractHttpConfigurer::disable)
 						   .httpBasic(AbstractHttpConfigurer::disable)
 						   .csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(requests->{
-							   requests.requestMatchers(HttpMethod.POST, "/auth/login", "/members").permitAll();
-							   requests.requestMatchers(HttpMethod.GET, "/members/**").permitAll();
+							   requests.requestMatchers(HttpMethod.POST, "/auth/login", "/members" , "/api/reports").permitAll();
+							   requests.requestMatchers(HttpMethod.GET, "/members/**", "/api/**").permitAll();
 						   })
 						   .cors(Customizer.withDefaults())
 						   .authorizeHttpRequests(requests -> {
 							   requests.requestMatchers(HttpMethod.POST, "/**").permitAll();
 							   requests.requestMatchers(HttpMethod.GET, "/**").permitAll();
+							   requests.requestMatchers(HttpMethod.PUT, "/**").permitAll();
+							   requests.requestMatchers(HttpMethod.DELETE, "/**").permitAll();
 						   })
 						   .sessionManagement(manager ->
 				    manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,6 +1,5 @@
 package com.example.evcs.mail.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,9 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class MailController {
 
-	private EmailService emailService;
-	@Autowired
-	private MemberService memberService;
+	private final EmailService emailService;
+	private final MemberService memberService;
 
 	@PostMapping("/send")
 	public ResponseEntity<String> sendVerificationCode(@RequestBody EmailVerifyDTO email) {

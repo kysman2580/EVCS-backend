@@ -9,8 +9,8 @@ public interface NewsDetailService{
 		return title;
 	}
 	
-    NewsDetailResponse getOrInsertNewsByTitleAndUrl(NewsDTO news);
+    NewsDetailResponse getOrInsertNewsByTitleAndUrl(NewsDTO news, Long memberNo);
     
-    NewsDetailResponse insertAndReturn(NewsDTO dto);
+    NewsDetailResponse insertAndReturn(NewsDTO dto, Long memberNo);
 
 }

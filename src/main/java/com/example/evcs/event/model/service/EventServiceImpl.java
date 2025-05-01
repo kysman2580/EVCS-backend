@@ -1,4 +1,3 @@
-/*
 package com.example.evcs.event.model.service;
 
 import java.util.HashMap;
@@ -24,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
-	private final EventMapper eventDAO;
+	private final EventMapper eventMapper;
 	private FileUtil fileUtil = new FileUtil("uploads/event");
 	private final AuthService authService;
 	
@@ -33,6 +32,7 @@ public class EventServiceImpl implements EventService {
 		
 		CustomUserDetails user = authService.getUserDetails();
 		Long memberNo = user.getMemberNo();
+		String memeberName = user.getMemberName();
 		
 		Event requestData = null;
 		
@@ -46,14 +46,13 @@ public class EventServiceImpl implements EventService {
 					.endDate(event.getEndDate())
 					.eventContent(event.getEventContent())
 					.build();
-			
-			eventDAO.insertFile(filePath);
+
+			eventMapper.insertFile(filePath);
 			
 		} else {
 			throw new NoFileException("EventService : 이벤트 사진이 없습니다."); 
 		}
-		
-		eventDAO.insertEvent(requestData);
+		eventMapper.insertEvent(requestData);
 	}
 	
 	@Override
@@ -97,4 +96,3 @@ public class EventServiceImpl implements EventService {
 
 
 }
-*/

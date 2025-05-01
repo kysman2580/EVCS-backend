@@ -98,7 +98,7 @@ public class EmailServiceImpl implements EmailService {
 
 
 		} catch (MessagingException e) {
-
+		    throw new RuntimeException("이메일 전송 실패", e);
 		}
 	}
 	
@@ -169,7 +169,4 @@ public class EmailServiceImpl implements EmailService {
 						""",
 				code);
 	}
-
-	
-
 }
