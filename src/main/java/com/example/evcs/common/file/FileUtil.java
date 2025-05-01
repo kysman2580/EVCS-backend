@@ -1,3 +1,4 @@
+/*
 package com.example.evcs.common.file;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class FileUtil {
 		String changeFileName = makeRandomName(originalFileName);
 		
 		// 파일경로에 이름을 붙여줌
-		Path targetLocation = this.fileLocation.resolve(originalFileName);
+		Path targetLocation = this.fileLocation.resolve(changeFileName);
 
 		//
 		try {
@@ -78,3 +79,4 @@ public class FileUtil {
 	}
 
 }
+*/

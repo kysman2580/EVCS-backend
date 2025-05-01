@@ -1,3 +1,4 @@
+/*
 package com.example.evcs.event.model.service;
 
 import java.util.HashMap;
@@ -96,3 +97,4 @@ public class EventServiceImpl implements EventService {
 
 
 }
+*/

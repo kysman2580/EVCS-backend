@@ -1,3 +1,4 @@
+/*
 package com.example.evcs.event.controller;
 
 import org.springframework.validation.annotation.Validated;
@@ -33,3 +34,4 @@ public class EventController {
 	}
 	
 }
+*/
