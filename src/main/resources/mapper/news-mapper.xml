@@ -38,10 +38,13 @@
 			)
 			VALUES (
 			  NEWS_SEQ.NEXTVAL,
-			  (SELECT NEWS_CATEGORY_NO 
-			   FROM EV_NEWS_CATEGORY 
-			   WHERE NEWS_CATEGORY = #{query}
-			   FETCH FIRST 1 ROWS ONLY),
+			  NVL(
+		      (SELECT NEWS_CATEGORY_NO 
+		       FROM EV_NEWS_CATEGORY 
+		       WHERE NEWS_CATEGORY = #{query}
+		       FETCH FIRST 1 ROWS ONLY),
+		      61
+		      ),
 			  #{title},
 			  #{description},
 			  #{originUrl},

@@ -10,12 +10,12 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.evcs.admin.carInfo.file.FileService;
 import com.example.evcs.admin.carInfo.model.dao.CarInfoMapper;
 import com.example.evcs.admin.carInfo.model.dto.CarImageDTO;
 import com.example.evcs.admin.carInfo.model.dto.CarInfoDTO;
 import com.example.evcs.admin.carInfo.model.vo.CarImage;
 import com.example.evcs.admin.carInfo.model.vo.CarInfo;
+import com.example.evcs.common.file.FileUtil;
 import com.example.evcs.exception.DuplicatedCarInfoException;
 import com.example.evcs.exception.NonExistingException;
 import com.example.evcs.util.model.dto.PageInfo;
@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CarInfoServiceImpl implements CarInfoService{
 
 	private final CarInfoMapper carInfoMapper;
-	private final FileService fileService;
+	private FileUtil fileUtil = new FileUtil("uploads/car");
 	
 	@Override
 	public void insertCar(CarInfoDTO carInfo, MultipartFile file) {
@@ -50,7 +50,7 @@ public class CarInfoServiceImpl implements CarInfoService{
 		
 		if(file != null || file.isEmpty()) {
 			
-			filePath = fileService.save(file);
+			filePath = fileUtil.saveFile(file);
 			
 			carInfoData = CarInfo.builder()
 									.carName(carInfo.getCarName())

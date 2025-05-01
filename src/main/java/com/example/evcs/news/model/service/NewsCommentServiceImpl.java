@@ -29,7 +29,7 @@ public class NewsCommentServiceImpl implements NewsCommentService {
     }
 
     @Override
-    public List<CommentDTO> findCommentsByNews(Long newsNo) {
-        return newsCommentMapper.findCommentsByNews(newsNo);
+    public List<CommentDTO> findCommentsByNews(Long newsNo, Long memberNo) {
+        return newsCommentMapper.findCommentsByNews(newsNo, memberNo);
     }
 }
