@@ -27,7 +27,7 @@ public class FileService {
 		try {
 			Files.copy(file.getInputStream(),targetLocation,StandardCopyOption.REPLACE_EXISTING);
 			
-			return "http://localhost/uploads/car/" + originalFileName; 
+			return "http://localhost/uploads/" + originalFileName; 
 		} catch (IOException e) {
 			throw new RuntimeException("잘못된 파일입니다~");
 		}
