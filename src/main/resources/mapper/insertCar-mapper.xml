@@ -67,13 +67,72 @@
 	</select>
 	
 	<select id="findAllCar"
-				resultType="com.example.evcs.admin.carInfo.model.dto.CarInfoDTO">
+				resultType="CarInfoDTO">
 		SELECT
-			   *
+			    CAR_NO  carNo,
+		        CAR_NAME  carName,
+		        CAR_TYPE  carType,
+		        CAR_YEAR  carYear,
+		        CAR_COMPANY  carCompany,
+		        CAR_BATTERY  carBattery,
+		        ENROLL_DATE  enrollDate
 		  FROM
 		  	   CAR_INFO
+		 ORDER
+		 	BY
+		 	   ENROLL_DATE DESC 
 	</select>
 	
+	<select id="findImageByCarName"
+				parameterType="CarInfo"
+				resultType="com.example.evcs.admin.carInfo.model.dto.CarImageDTO">
+		SELECT
+			    T2.FILE_LOAD fileLoad
+		  FROM
+		  	   CAR_INFO T1
+		  JOIN
+		  	   CAR_IMAGE T2 ON (T1.CAR_NO = T2.CAR_NO)
+		 WHERE
+		 	   T2.CAR_NO = #{carNo}
+
+	</select>
+	
+	<select id="findCarByCarNo"
+				parameterType="CarInfoDTO"
+				resultType="int">
+		SELECT
+				COUNT(*)
+		  FROM
+		  		CAR_INFO
+		 WHERE
+		 		CAR_NO = #{carNo}
+	</select>
+	
+	<update id="updateCar"
+				parameterType="CarInfo">
+		UPDATE
+				CAR_INFO
+		   		SET(
+					CAR_NAME = #{carName}
+				  , CAR_TYPE = #{carType}
+				  , CAR_YEAR = #{carYear}
+				  , CAR_COMPANY = #{carCompany}
+				  , CAR_BATTERY = #{carBattery}
+				  , ENROLL_DATE = SYSDATE
+				)
+		 WHERE
+		 		CAR_NO = #{carNo}			
+	</update>
+
+	<delete id="deleteCar"
+				parameterType="CarInfo">
+		DELETE
+				*
+		  FROM
+		  		CAR_INFO
+		 WHERE
+		 		CAR_NO = #{carNo}
+	</delete>	
 	
 </mapper>
 
