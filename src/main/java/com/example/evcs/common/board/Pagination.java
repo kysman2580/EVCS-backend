@@ -7,7 +7,7 @@ public class Pagination {
 			   int boardLimit,
 			   int pageLimit) {
 
-		int maxPage = (int)Math.ceil((double)count / boardLimit);
+		int maxPage = (int)Math.ceil((double)count / boardLimit) -1;
 		int startPage = (currentPage - 1) / pageLimit * pageLimit + 1;
 		int endPage = startPage + pageLimit -1;
 		
@@ -16,7 +16,7 @@ public class Pagination {
 		return PageInfo.builder()
 		.boardLimit(boardLimit)
 		.count(count)
-		.currentPage(currentPage)
+		.currentPage(currentPage + 1)
 		.startPage(startPage)
 		.endPage(endPage)
 		.maxPage(maxPage)
