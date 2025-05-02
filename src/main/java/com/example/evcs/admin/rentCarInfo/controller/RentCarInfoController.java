@@ -1,6 +1,7 @@
 package com.example.evcs.admin.rentCarInfo.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +33,8 @@ public class RentCarInfoController {
 	
 	@GetMapping("/carInfo")
 	public ResponseEntity<?> getAllCarInfo(){
-		
-		List<CarInfoDTO> allCarInfo = rentCarInfoService.getAllCarInfo();
+		log.info("값이 들어오나요???");
+		Map<String, Object> allCarInfo = rentCarInfoService.getAllCarInfo();
 		return ResponseEntity.status(HttpStatus.CREATED).body(allCarInfo);
 	}
 	

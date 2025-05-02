@@ -23,6 +23,8 @@
 		  		EV_CAR_INFO
 	</select>	
 	
+
+	
 	<select id="getCarInfo"
 				parameterType="String"
 				resultType="CarInfoDTO">

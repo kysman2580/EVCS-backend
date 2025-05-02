@@ -24,6 +24,10 @@ public interface CarInfoMapper {
 	int countAllCar();
 
 	List<CarInfoDTO> findAllCar(RowBounds rowBounds);
+	
+	List<CarInfoDTO> getAllCarInfo();
+	
+	List<CarImageDTO> getAllCarImage();
 
 	CarImageDTO findImageByCarName(CarInfo carInfoData);
 
