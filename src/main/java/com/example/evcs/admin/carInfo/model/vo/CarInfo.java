@@ -14,6 +14,6 @@ public class CarInfo {
 	private String carType;
 	private int carYear;
 	private String carCompany;
-	private String carBattery;
+	private int carBattery;
 	private Date enrollDate;
 }
