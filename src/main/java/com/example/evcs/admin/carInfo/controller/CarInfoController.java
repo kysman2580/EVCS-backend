@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,8 +61,9 @@ public class CarInfoController {
 	// 차종 수정
 	@PostMapping("/update")
 	public ResponseEntity<?> updateCar(CarInfoDTO carInfo,
-										@RequestParam(name="image") MultipartFile file) {
+										@RequestParam(name="image",required = false) MultipartFile file) {
 		
+		log.info("carinfo :{} image : {}",carInfo,file);
 		carInfoService.updateCar(carInfo, file);
 		
 		return ResponseEntity.status(HttpStatus.OK).body("차량정보가 수정되었습니다.");
@@ -69,8 +71,9 @@ public class CarInfoController {
 	
 	// 차종 삭제
 	@PostMapping("/delete")
-	public ResponseEntity<?> updateCar(CarInfoDTO carInfo) {
+	public ResponseEntity<?> updateCar(@RequestBody CarInfoDTO carInfo) {
 		
+		log.info("carinfo :{}",carInfo);
 		carInfoService.deleteCar(carInfo);
 		
 		return ResponseEntity.status(HttpStatus.OK).body("차량이 삭제되었습니다.");
