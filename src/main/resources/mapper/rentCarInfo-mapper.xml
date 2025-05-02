@@ -5,17 +5,34 @@
 
 <mapper namespace="com.example.evcs.admin.rentCarInfo.model.dao.RentCarInfoMapper">
 	
-<!--	<select id="findByCarName"
-				parameterType="String"
-				resultType="int">
-		SELECT 
-				COUNT(*)		   
-	  	  FROM
-	  	 		EV_CAR_INFO
-	  	 WHERE
-	  	 		CAR_NAME = #{carName}
-	</select>-->
+
 	
+	<select id="getRentCarCategory"
+				resultType="String">
+		SELECT
+				CATEGORY_NAME
+		  FROM
+		  		EV_CATEGORY
+	</select>
+
+	<select id="getAllCarInfo"
+				resultType="CarInfoDTO">
+		SELECT
+				*
+		  FROM
+		  		EV_CAR_INFO
+	</select>	
+	
+	<select id="getCarInfo"
+				parameterType="String"
+				resultType="CarInfoDTO">
+		SELECT
+				*
+		  FROM
+		  		EV_CAR_INFO
+		 WHERE
+		 		CAR_NAME = #{carName}
+	</select>	
 		
 	<select id="findCarNoByCarName"
 				parameterType="String"
@@ -71,92 +88,6 @@
 		  	   EV_RENT_CAR_INFO
 	</select>
 	
-	
-	<select id="findAllCar"
-				resultType="CarInfoDTO">
-		SELECT
-			    CAR_NO  carNo,
-		        CAR_NAME  carName,
-		        CAR_TYPE  carType,
-		        CAR_YEAR  carYear,
-		        CAR_COMPANY  carCompany,
-		        CAR_BATTERY  carBattery,
-		        ENROLL_DATE  enrollDate
-		  FROM
-		  	   EV_CAR_INFO
-		 ORDER
-		 	BY
-		 	   ENROLL_DATE DESC 
-	</select>
-	
-	<select id="findImageByCarName"
-				parameterType="CarInfo"
-				resultType="com.example.evcs.admin.carInfo.model.dto.CarImageDTO">
-		SELECT
-			    T2.FILE_LOAD fileLoad
-		  FROM
-		  	   EV_CAR_INFO T1
-		  JOIN
-		  	   EV_CAR_IMAGE T2 ON (T1.CAR_NO = T2.CAR_NO)
-		 WHERE
-		 	   T1.CAR_NAME = #{carName}
-
-	</select>
-	
-	<select id="findCarByCarNo"
-				parameterType="CarInfoDTO"
-				resultType="int">
-		SELECT
-				COUNT(*)
-		  FROM
-		  		EV_CAR_INFO
-		 WHERE
-		 		CAR_NO = #{carNo}
-	</select>
-	
-	<update id="updateCar"
-				parameterType="CarInfo">
-		UPDATE
-				EV_CAR_INFO
-		   		SET
-					CAR_NAME = #{carName}
-				  , CAR_TYPE = #{carType}
-				  , CAR_YEAR = #{carYear}
-				  , CAR_COMPANY = #{carCompany}
-				  , CAR_BATTERY = #{carBattery}
-				
-		 WHERE
-		 		CAR_NO = #{carNo}			
-	</update>
-	
-	<update id="updateCarImage"
-				parameterType="com.example.evcs.admin.carInfo.model.vo.CarImage">
-		UPDATE
-				EV_CAR_IMAGE
-		   		SET
-					FILE_LOAD = #{fileLoad}
-		 WHERE
-		 		CAR_NO = #{carNo}			
-	</update>
-	
-
-	<delete id="deleteCar"
-				parameterType="CarInfo">
-		DELETE
-		  FROM
-		  		EV_CAR_INFO
-		 WHERE
-		 		CAR_NO = #{carNo}
-	</delete>	
-	
-	<delete id="deleteCarImage"
-				parameterType="int">
-		DELETE
-		  FROM
-		  		EV_CAR_IMAGE
-		 WHERE
-		 		CAR_NO = #{carNo}
-	</delete>	
 	
 </mapper>
 

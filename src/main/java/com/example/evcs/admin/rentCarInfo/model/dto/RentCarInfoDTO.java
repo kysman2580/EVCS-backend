@@ -1,4 +1,4 @@
-package com.example.evcs.admin.renCarInfo.model.dto;
+package com.example.evcs.admin.rentCarInfo.model.dto;
 
 import java.sql.Date;
 
