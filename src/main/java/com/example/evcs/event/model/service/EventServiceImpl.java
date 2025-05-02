@@ -1,5 +1,6 @@
 package com.example.evcs.event.model.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.evcs.auth.model.vo.CustomUserDetails;
 import com.example.evcs.auth.service.AuthService;
 import com.example.evcs.common.board.BoardUtil;
+import com.example.evcs.common.board.PageInfo;
+import com.example.evcs.common.board.Pagination;
 import com.example.evcs.common.file.FileUtil;
 import com.example.evcs.event.model.dao.EventMapper;
 import com.example.evcs.event.model.dto.EventDTO;
@@ -63,16 +66,26 @@ public class EventServiceImpl implements EventService {
 	}
 	
 	@Override
-	public List<EventDTO> selctEventAll(Map<String, String> map) {
+	public Map<String, Object> selctEventAll(Map<String, String> map) {
 		int size = 10;
+		Map<String, Object> returnMap = new HashMap();
+		
+		int count = eventMapper.selectTotalCount();
 		
 		RowBounds rowBounds = new RowBounds(Integer.parseInt(map.get("page")) * size, size);
 		
+		PageInfo pi = Pagination.getPageInfo(count, Integer.parseInt(map.get("page")), 10, 5);
+
 		// 특수문자 이스케이프 처리
 		map.put("searchKeyword", boardUtil.escapeLikeParam(map.get("searchKeyword")));
-		log.info("map {}" , map);
+		List<EventDTO> list = new ArrayList();
+		list = eventMapper.selctEventAll(map, rowBounds);
 		
-		return eventMapper.selctEventAll(map, rowBounds);
+		log.info("eventList : {}", list);
+		returnMap.put("eventList", list);
+		returnMap.put("pageInfo", pi);
+		
+		return returnMap;
 	}
 
 	@Override

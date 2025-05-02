@@ -79,7 +79,7 @@ public class EventController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<EventDTO>> selctEventAll(
+	public ResponseEntity<Map<String, Object>> selctEventAll(
 			@RequestParam (name="page", defaultValue="0") int page,
 			@RequestParam (name ="category", required = false) String category,
 			@RequestParam (name ="searchKeyword", required = false) String searchKeyword
@@ -88,11 +88,14 @@ public class EventController {
 		log.info("EventController selctEventAll : page : {} // category : {} // searchKeyword : {}", page, category, searchKeyword);
 		
 		Map <String, String> map = new HashMap<String, String>();
-		map.put("page", String.valueOf(page));
+		map.put("page", String.valueOf(page -1));
 		map.put("category", category);
 		map.put("searchKeyword", searchKeyword);
 		
-		return ResponseEntity.ok(eventService.selctEventAll(map));
+		Map<String, Object> returnMap = eventService.selctEventAll(map);
+		
+		log.info("returnMap : {}" , returnMap);
+		return ResponseEntity.ok(returnMap);
 	}
 	
 	@GetMapping("/{eventNo}")

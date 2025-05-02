@@ -8,6 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class NewsMainResponseDto {
+    private int total;
+    private int start;
+    private int display;
     private List<NewsItem> items;
 }
 

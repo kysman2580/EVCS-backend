@@ -12,7 +12,7 @@ public interface EventService {
 
 	void insertEvent(EventDTO event, MultipartFile file);
 	
-	List<EventDTO> selctEventAll(Map<String, String> map);
+	Map<String , Object> selctEventAll(Map<String, String> map);
 	
 	EventDTO selectByEventNo(Long eventNo);
 	
