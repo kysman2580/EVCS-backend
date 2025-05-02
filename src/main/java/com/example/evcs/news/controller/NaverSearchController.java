@@ -29,6 +29,24 @@ public class NaverSearchController {
         }
     }
     
+
+    @GetMapping("/naver-news-list")
+    public ResponseEntity<NewsMainResponseDto> searchNewsList(
+            @RequestParam(name = "query") String query,
+            @RequestParam(name = "sort", defaultValue = "sim") String sort,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        try {
+            NewsMainResponseDto dto = naverSearchService.searchNewsList(query, sort, page, size);
+            return ResponseEntity.ok(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    
+    
     @GetMapping("/naver-image")  // 🆕 API 엔드포인트 변경
     public ResponseEntity<NewsMainImageDto> searchImage(@RequestParam("query") String query) {
         try {
