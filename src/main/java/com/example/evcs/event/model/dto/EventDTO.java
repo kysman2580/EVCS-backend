@@ -35,5 +35,6 @@ public class EventDTO {
 	
 	private Date enrollDate;
 	private String status;
+	private String memberNickname;
 	
 }

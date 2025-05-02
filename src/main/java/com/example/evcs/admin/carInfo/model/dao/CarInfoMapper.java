@@ -31,6 +31,13 @@ public interface CarInfoMapper {
 	
 	int updateCar(CarInfo carInfo);
 	
+	int updateCarImage(CarImage carImageData);
+	
 	int deleteCar(CarInfo carInfo);
+	
+	int deleteCarImage(int carNo);
+
+
+
 	
 }
