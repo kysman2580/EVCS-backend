@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.evcs.notice.model.dao.NoticeMapper">
+
+  <!-- 모든 공지사항 가져오기 -->
+  <select id="getAllNotices">
+    SELECT 
+      ID, 
+      EVENT_TITLE,
+      EVENT_CONTENT,
+      TO_CHAR(ENROLL_DATE, 'YYYY-MM-DD"T"HH24:MI:SS') AS ENROLL_DATE,
+      STATUS,
+      EVENT_WRITER AS WRITER -- 필드명 수정
+    FROM EV_BOARD
+    ORDER BY ID DESC
+  </select>
+
+  <!-- 특정 ID의 공지사항 가져오기 -->
+  <select id="getNoticeById">
+    SELECT 
+      ID,
+      EVENT_TITLE,
+      EVENT_CONTENT,
+      TO_CHAR(ENROLL_DATE, 'YYYY-MM-DD"T"HH24:MI:SS') AS ENROLL_DATE,
+      STATUS,
+      EVENT_WRITER AS WRITER -- 필드명 수정
+    FROM EV_BOARD
+    WHERE ID = #{id}
+  </select>
+
+  <!-- 공지사항 작성 -->
+  <insert id="insertNotice">
+    INSERT INTO EV_BOARD (
+      ID, 
+      EVENT_TITLE, 
+      EVENT_CONTENT, 
+      ENROLL_DATE, 
+      STATUS, 
+      EVENT_WRITER -- 필드명 수정
+    ) VALUES (
+      EV_BOARD_SEQ.NEXTVAL, 
+      #{eventTitle}, 
+      #{eventContent}, 
+      SYSDATE, 
+      'Y',
+      #{writer} -- 작성자
+    )
+  </insert>
+
+  <!-- 공지사항 수정 -->
+  <update id="updateNotice">
+    UPDATE EV_BOARD
+    SET 
+      EVENT_TITLE = #{eventTitle},
+      EVENT_CONTENT = #{eventContent},
+      EVENT_WRITER = #{writer} -- 작성자 수정
+    WHERE ID = #{id}
+  </update>
+
+  <!-- 공지사항 삭제 -->
+  <delete id="deleteNotice">
+    DELETE FROM EV_BOARD
+    WHERE ID = #{id}
+  </delete>
+
+</mapper>
+
