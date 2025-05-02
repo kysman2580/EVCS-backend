@@ -11,6 +11,7 @@ import lombok.Value;
 @Builder
 public class Event {
 	private Long memberNo;
+	private Long eventNo;
 	private String eventName;
 	private Date startDate;
 	private Date endDate;
