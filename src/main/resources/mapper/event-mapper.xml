@@ -2,14 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
-<mapper namespace="com.example.evcs.event.model.dao.EventDAO">
+<mapper namespace="com.example.evcs.event.model.dao.EventMapper">
+
+	<sql id="eventColumn">
+		SELECT 
+			  EVENT_NO eventNo
+			, E.MEMBER_NO memberNo
+			, EVENT_NAME eventName
+			, START_DATE startDate
+			, END_DATE endDate
+			, EVENT_CONTENT eventContent
+			, ENROLL_DATE enrollDate
+			, STATUS status
+			, MEMBER_NICKNAME memberNickname
+	</sql>
 
 	<insert id="insertEvent"
 		parameterType="Event"
 	>
 		INSERT INTO EV_EVENT VALUES(
-			  #{ eventNo }
-			, #{ writer }
+			  SEQ_EV_EVENT.NEXTVAL
+			, #{ memberNo }
 			, #{ eventName }
 			, #{ startDate }
 			, #{ endDate }
@@ -19,14 +32,100 @@
 		)
 	</insert>
 	
-	<insert id="insertFile"
+	<insert id="insertEventFile"
 		parameterType="string"
 	>
-		INSERT INTO EV_EVENT VALUES(
-			  SEQ_EV_EVENT_FILE.NEXT
+		INSERT INTO EV_EVENT_FILE VALUES(
+			  SEQ_EV_EVENT.CURRVAL
 			, #{ changeFileName }
 		)
 	</insert>
-
+	
+	<select id="selctEventAll"
+			parameterType="map"
+			resultType="EventDTO"
+	>
+		<include refid="eventColumn" />
+		
+		FROM 
+			EV_EVENT E
+		JOIN 
+			EV_MEMBER M 
+		ON 
+			(E.MEMBER_NO = M.MEMBER_NO)	
+	
+		WHERE 1=1
+		<choose>
+		  <when test="category eq 'eventName'">
+		    AND EVENT_NAME LIKE '%' || #{searchKeyword} || '%'
+		  </when>
+		  <when test="category eq 'eventContent'">
+		    AND EVENT_CONTENT LIKE '%' || #{searchKeyword} || '%'
+		  </when>
+		</choose>
+		AND
+			STATUS = 'Y'
+	</select>
+	
+	<select id="selectByEventNo"
+			parameterType="long"
+			resultType="EventDTO"
+	>
+		<include refid="eventColumn" />
+		FROM
+			EV_EVENT E
+		JOIN 
+			EV_MEMBER M 
+			ON 
+				(E.MEMBER_NO = M.MEMBER_NO)
+		WHERE
+			EVENT_NO = #{ eventNo }
+		AND
+			STATUS = 'Y'
+	</select>
+	
+	<update id="updateEvent"
+			parameterType="Event"
+	>
+		UPDATE 
+				EV_EVENT 
+			SET
+				  EVENT_NAME = #{ eventName }
+				, START_DATE = #{ startDate }
+				, END_DATE = #{ endDate }
+				, EVENT_CONTENT = #{ eventContent }
+		WHERE 
+			EVENT_NO = #{ eventNo }
+	</update>
+	
+	<update id="updateEventFile"
+			parameterType="map"
+	>
+		UPDATE
+				EV_EVENT_FILE
+			SET
+				FILE_LOAD = #{ filePath }
+		WHERE EVENT_NO = #{ eventNo }
+	</update>
+	
+	<update id="deleteByEventNo"
+			parameterType="long"
+	>
+		UPDATE 
+				EV_EVENT
+			SET
+				STATUS = 'N'
+		WHERE 
+			EVENT_NO = #{ eventNo }
+	</update>
+	
+	<select id="selectTotalCount"
+			resultType="_int"
+	>
+		SELECT 
+				COUNT(EVENT_NO)
+		FROM 
+			EV_EVENT
+	</select>
 
 </mapper>

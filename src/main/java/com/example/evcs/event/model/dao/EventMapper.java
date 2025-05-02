@@ -1,6 +1,7 @@
 package com.example.evcs.event.model.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
@@ -13,14 +14,17 @@ public interface EventMapper {
 
 	void insertEvent(Event event);
 	
-	void insertFile(String filePath);
+	void insertEventFile(String filePath);
 	
-	List<EventDTO> selctEventAll(RowBounds rb);
+	List<EventDTO> selctEventAll(Map<String, String> map,RowBounds rb);
 	
 	EventDTO selectByEventNo(Long eventNo);
 	
 	void updateEvent(Event event);
 	
+	void updateEventFile(Map event);
+
 	void deleteByEventNo(Long eventNo);
 	
+	int selectTotalCount();
 }

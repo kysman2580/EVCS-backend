@@ -16,11 +16,10 @@ import lombok.ToString;
 @ToString
 public class EventDTO {
 
-	@NotBlank(message = "이벤트 번호가 없습니다.")
 	private Long eventNo;
 	
 	@NotBlank(message = "작성자 번호가 없습니다.")
-	private Long meberNo;
+	private Long memberNo;
 	
 	@NotBlank(message = "이벤트 제목이 없습니다.")
 	private String eventName;
@@ -36,5 +35,6 @@ public class EventDTO {
 	
 	private Date enrollDate;
 	private String status;
+	private String memberNickname;
 	
 }

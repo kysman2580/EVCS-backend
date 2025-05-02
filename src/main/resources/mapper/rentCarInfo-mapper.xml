@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.evcs.admin.rentCarInfo.model.dao.RentCarInfoMapper">
+	
+
+	
+	<select id="getRentCarCategory"
+				resultType="String">
+		SELECT
+				CATEGORY_NAME
+		  FROM
+		  		EV_CATEGORY
+	</select>
+
+	<select id="getAllCarInfo"
+				resultType="CarInfoDTO">
+		SELECT
+				*
+		  FROM
+		  		EV_CAR_INFO
+	</select>	
+	
+	<select id="getCarInfo"
+				parameterType="String"
+				resultType="CarInfoDTO">
+		SELECT
+				*
+		  FROM
+		  		EV_CAR_INFO
+		 WHERE
+		 		CAR_NAME = #{carName}
+	</select>	
+		
+	<select id="findCarNoByCarName"
+				parameterType="String"
+				resultType="int">
+		SELECT 
+				CAR_NO carNo		   
+	  	  FROM
+	  	 		EV_CAR_INFO
+	  	 WHERE
+	  	 		CAR_NAME = #{carName}
+	</select>
+	
+	<select id="findByCarNo"
+				parameterType="String"
+				resultType="int">
+		SELECT 
+				COUNT(*)	   
+	  	  FROM
+	  	 		EV_CAR_INFO
+	  	 WHERE
+	  	 		CAR_NO = #{carNo}
+	</select>
+	
+	<insert id="insertRentCar"
+				parameterType="CarInfo">
+		INSERT 
+		  INTO 
+	  			EV_RENT_CAR_INFO(
+				    RENT_CAR_NO
+				  , CATEGORY_NO
+				  , CAR_NO
+				  , RENT_CAR_PRICE
+				  , ENROLL_PLACE
+				  , ENROLL_DATE
+				  , STATUS
+				)
+	  			VALUES(
+				    #{rentCarNo}
+				  , #{categoryNo}
+				  , #{carNo}
+				  , #{rentCarPrice}
+				  , #{enroll_place}
+				  , #{enroll_date}
+				  , #{status}
+				)
+	</insert>
+
+	<select id="countAllRentCar"
+				resultType="int">
+		SELECT
+			   COUNT(*)
+		  FROM
+		  	   EV_RENT_CAR_INFO
+	</select>
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
