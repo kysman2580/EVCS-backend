@@ -41,6 +41,21 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.badRequest().body(error);
 	}
 	
+
+	@ExceptionHandler(DuplicatedCarInfoException.class)
+	public ResponseEntity<?> DuplicatedCarInfoError(DuplicatedCarInfoException e){
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+  }
+  
+	@ExceptionHandler(NonExistingException.class)
+	public ResponseEntity<?> NonExistingError(NonExistingException e){
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+	
 	// 게시글 등록 시 파일 없으면 예외처리
 	@ExceptionHandler(NoFileException.class)
 	public ResponseEntity<?> handlerNotAdminRoleError(NoFileException e){

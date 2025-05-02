@@ -17,13 +17,12 @@ import lombok.ToString;
 @ToString
 public class CarInfoDTO {
 	
-	private String carId;
+	private int carNo;
 	private String carName;
 	private String carType;
 	private int carYear;
 	private String carCompany;
-	private String carBattery;
+	private int carBattery;
 	private Date enrollDate;
-	private String imageUrl;
 	
 }

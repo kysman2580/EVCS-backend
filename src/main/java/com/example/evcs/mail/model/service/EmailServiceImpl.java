@@ -169,7 +169,4 @@ public class EmailServiceImpl implements EmailService {
 						""",
 				code);
 	}
-
-	
-
 }

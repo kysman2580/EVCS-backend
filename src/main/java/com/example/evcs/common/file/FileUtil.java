@@ -1,4 +1,3 @@
-/*
 package com.example.evcs.common.file;
 
 import java.io.IOException;
@@ -9,7 +8,6 @@ import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.evcs.exception.InsertFileException;
@@ -17,7 +15,6 @@ import com.example.evcs.exception.InsertFileException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
 public class FileUtil {
 	
 	private final Path fileLocation;
@@ -35,17 +32,22 @@ public class FileUtil {
 		String changeFileName = makeRandomName(originalFileName);
 		
 		// 파일경로에 이름을 붙여줌
-		Path targetLocation = this.fileLocation.resolve(originalFileName);
-
-		//
+		Path targetLocation = this.fileLocation.resolve(changeFileName);
+		
+		log.info("{}",targetLocation);
+		log.info("{}",targetLocation);
+		log.info("{}",targetLocation);
+		log.info("{}",targetLocation);
+		log.info("{}",targetLocation);
+		log.info("{}",targetLocation);
 		try {
 			
 			// 파일을 저장함 inputStream 만들어주고, 저장할 경로 입력, 혹시 이름이 같으면 덮어씌운다.
 			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 			
-			return "http://localhost/uploads/" + originalFileName;
+			return "http://localhost/uploads/" + changeFileName;
 		} catch (IOException e) {
-			throw new InsertFileException("파일 에러에유");
+			throw new InsertFileException("FileUtil : 파일 생성중 에러");
 		}
 	}
 	
@@ -79,4 +81,3 @@ public class FileUtil {
 	}
 
 }
-*/
