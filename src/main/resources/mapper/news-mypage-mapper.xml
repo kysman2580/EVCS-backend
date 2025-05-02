@@ -1,0 +1,41 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <mapper namespace="com.example.evcs.news.model.dao.NewsMypageMapper">
+
+  <select id="selectLikedNews" resultType="com.example.evcs.news.model.dto.NewsDTO">
+    SELECT n.NEWS_NO as newsNo,
+           n.NEWS_TITLE as title,
+           n.NEWS_DESCRIPTION as description,
+           n.NEWS_ORIGIN_URL as originUrl,
+           n.NEWS_NAVER_DATE as pubDate,
+           c.NEWS_CATEGORY as query,
+           i.NEWS_IMG_URL as imageUrl,
+           n.NEWS_WATCHED as count
+    FROM EV_NEWS_LIKE l
+    JOIN EV_NEWS n ON l.NEWS_NO = n.NEWS_NO
+    LEFT JOIN EV_NEWS_IMG i ON n.NEWS_NO = i.NEWS_NO
+    JOIN EV_NEWS_CATEGORY c ON n.NEWS_CATEGORY_NO = c.NEWS_CATEGORY_NO
+    WHERE l.MEMBER_NO = #{memberNo}
+    ORDER BY n.NEWS_ENROLLDATE DESC
+  </select>
+
+  <select id="selectBookmarkedNews" resultType="com.example.evcs.news.model.dto.NewsDTO">
+    SELECT n.NEWS_NO as newsNo,
+           n.NEWS_TITLE as title,
+           n.NEWS_DESCRIPTION as description,
+           n.NEWS_ORIGIN_URL as originUrl,
+           n.NEWS_NAVER_DATE as pubDate,
+           c.NEWS_CATEGORY as query,
+           i.NEWS_IMG_URL as imageUrl,
+           n.NEWS_WATCHED as count
+    FROM EV_NEWS_BOOKMARK b
+    JOIN EV_NEWS n ON b.NEWS_NO = n.NEWS_NO
+    LEFT JOIN EV_NEWS_IMG i ON n.NEWS_NO = i.NEWS_NO
+    JOIN EV_NEWS_CATEGORY c ON n.NEWS_CATEGORY_NO = c.NEWS_CATEGORY_NO
+    WHERE b.MEMBER_NO = #{memberNo}
+    ORDER BY n.NEWS_ENROLLDATE DESC
+  </select>
+
+</mapper>
