@@ -78,14 +78,18 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public void changePassword(ChangePasswordDTO changePasswordDTO, String email) {
 		MemberDTO member = mapper.getMemberByEmail(email);
-
+		
+		
+		if(changePasswordDTO.getCurrentPassword() == null || changePasswordDTO.getCurrentPassword().trim().isEmpty()) {
+			throw new PasswordMismatchException("현재 비밀번호를 입력해주세요.");
+		}
 		
 	    if (changePasswordDTO.getNewPassword() == null || changePasswordDTO.getNewPassword().trim().isEmpty()) {
 	        throw new PasswordMismatchException("새 비밀번호를 입력해주세요.");
 	    }
 
-		if(changePasswordDTO.getNewPassword() == null || changePasswordDTO.getConfirmNewPassword() == null) {
-			throw new PasswordMismatchException("새 비밀번호와 비밀번호 확인란을 모두 입력해주세요");
+		if(changePasswordDTO.getConfirmNewPassword() == null || changePasswordDTO.getConfirmNewPassword().trim().isEmpty()) {
+			throw new PasswordMismatchException("비밀번호 확인란을 입력해주세요");
 		}
 		
 		
@@ -94,16 +98,9 @@ public class MemberServiceImpl implements MemberService {
 		}
 		
 		
-		if(changePasswordDTO.getNewPassword().equals(member.getMemberPw())) {
-			throw new PasswordMismatchException("기존 비밀번호와 새 비밀번호는 다르게 입력해주세요.");
-		}
-		
-		/*
 		if(passwordEncoder.matches(changePasswordDTO.getNewPassword(), member.getMemberPw())) {
 		    throw new PasswordMismatchException("기존 비밀번호와 새 비밀번호는 다르게 입력해주세요.");
 		}
-		이거 적용해야함 내일 확인하기
-		*/  
 		
 		
 		if(!passwordEncoder.matches(changePasswordDTO.getCurrentPassword(), member.getMemberPw())){
