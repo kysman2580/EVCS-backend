@@ -26,14 +26,14 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 		 * 4. 존재하지 않는다면 예외처리
 		 */
 		
-		String carName = rentCarInfo.getRentCarNo()
-		rentCarInfoMapper.findCarNoByCarName();
-		
-		
-		rentCarInfoMapper.findByCarNo();
-		
-		
-		rentCarInfoMapper.insertRentCar();
+//		String carName = rentCarInfo.getRentCarNo()
+//		rentCarInfoMapper.findCarNoByCarName();
+//		
+//		
+//		rentCarInfoMapper.findByCarNo();
+//		
+//		
+//		rentCarInfoMapper.insertRentCar();
 		
 		
 		
