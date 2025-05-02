@@ -82,6 +82,7 @@ public class EventServiceImpl implements EventService {
 		list = eventMapper.selctEventAll(map, rowBounds);
 		
 		log.info("eventList : {}", list);
+		log.info("pageInfo : {}", pi);
 		returnMap.put("eventList", list);
 		returnMap.put("pageInfo", pi);
 		

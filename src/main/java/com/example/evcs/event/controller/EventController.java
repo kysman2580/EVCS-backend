@@ -88,7 +88,7 @@ public class EventController {
 		log.info("EventController selctEventAll : page : {} // category : {} // searchKeyword : {}", page, category, searchKeyword);
 		
 		Map <String, String> map = new HashMap<String, String>();
-		map.put("page", String.valueOf(page -1));
+		map.put("page", String.valueOf(page-1));
 		map.put("category", category);
 		map.put("searchKeyword", searchKeyword);
 		
