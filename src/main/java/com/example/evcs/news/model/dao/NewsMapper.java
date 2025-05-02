@@ -19,5 +19,7 @@ public interface NewsMapper {
      
      void incrementWatchCount(@Param("newsNo") Long newsNo);
 
+	NewsDTO findByNewsNo(@Param("newsNo")Long newsNo);
+
 
 }
