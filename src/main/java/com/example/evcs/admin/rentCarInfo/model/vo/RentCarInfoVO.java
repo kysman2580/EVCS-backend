@@ -1,4 +1,4 @@
-package com.example.evcs.admin.renCarInfo.model.vo;
+package com.example.evcs.admin.rentCarInfo.model.vo;
 
 import java.sql.Date;
 

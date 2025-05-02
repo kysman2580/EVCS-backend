@@ -103,8 +103,6 @@ public class CarInfoServiceImpl implements CarInfoService{
 		return map;
 	}
 
-	
-	
 	@Override
 	public CarImageDTO getCarImage(String carName) {
 		
@@ -121,7 +119,6 @@ public class CarInfoServiceImpl implements CarInfoService{
 		} else {
 			throw new NonExistingException("차량이 존재하지 않습니다.");
 		}
-		
 	}
 
 	@Override
@@ -171,8 +168,6 @@ public class CarInfoServiceImpl implements CarInfoService{
 		} else {
 			return;
 		}
-		
-	
 	}
 	
 	public void deleteCar(CarInfoDTO carInfo) {
