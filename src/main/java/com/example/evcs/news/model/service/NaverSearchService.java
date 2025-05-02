@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -68,6 +69,31 @@ public class NaverSearchService {
         } catch (Exception e) {
             throw new RuntimeException("네이버 뉴스 검색 중 오류 발생: " + e.getMessage());
         }
+    }
+    
+    public NewsMainResponseDto searchNewsList(String query, String sort, int page, int size) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Naver-Client-Id", clientId);
+        headers.set("X-Naver-Client-Secret", clientSecret);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        int start = (page - 1) * size + 1;
+
+        URI uri = UriComponentsBuilder
+                .fromUriString(apiUrl)
+                .path("/v1/search/news.json")
+                .queryParam("query", query)
+                .queryParam("display", size)
+                .queryParam("start", start)
+                .queryParam("sort", sort)
+                .build()
+                .encode()
+                .toUri();
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<NewsMainResponseDto> response = restTemplate.exchange(
+                uri, HttpMethod.GET, entity, NewsMainResponseDto.class);
+        return response.getBody();
     }
     
     public NewsMainImageDto searchImage(String title) {

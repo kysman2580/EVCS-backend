@@ -11,7 +11,7 @@
 		SELECT 
 				COUNT(*)		   
 	  	  FROM
-	  	 		CAR_INFO
+	  	 		EV_CAR_INFO
 	  	 WHERE
 	  	 		CAR_NAME = #{carName}
 	</select>
@@ -20,7 +20,7 @@
 				parameterType="CarInfo">
 		INSERT 
 		  INTO 
-	  			CAR_INFO(
+	  			EV_CAR_INFO(
 				    CAR_NAME
 				  , CAR_TYPE
 				  , CAR_YEAR
@@ -42,7 +42,7 @@
 		SELECT 
 				CAR_NO carNo		   
 	  	  FROM
-	  	 		CAR_INFO
+	  	 		EV_CAR_INFO
 	  	 WHERE
 	  	 		CAR_NAME = #{carName}
 	</select>
@@ -51,7 +51,7 @@
 				parameterType="com.example.evcs.admin.carInfo.model.vo.CarImage">
 		INSERT 
 		  INTO 
-	  			CAR_IMAGE
+	  			EV_CAR_IMAGE
 	  			VALUES(
 					#{carNo}
 				  , #{fileLoad}
@@ -63,7 +63,7 @@
 		SELECT
 			   COUNT(*)
 		  FROM
-		  	   CAR_INFO
+		  	   EV_CAR_INFO
 	</select>
 	
 	<select id="findAllCar"
@@ -77,7 +77,7 @@
 		        CAR_BATTERY  carBattery,
 		        ENROLL_DATE  enrollDate
 		  FROM
-		  	   CAR_INFO
+		  	   EV_CAR_INFO
 		 ORDER
 		 	BY
 		 	   ENROLL_DATE DESC 
@@ -89,11 +89,11 @@
 		SELECT
 			    T2.FILE_LOAD fileLoad
 		  FROM
-		  	   CAR_INFO T1
+		  	   EV_CAR_INFO T1
 		  JOIN
-		  	   CAR_IMAGE T2 ON (T1.CAR_NO = T2.CAR_NO)
+		  	   EV_CAR_IMAGE T2 ON (T1.CAR_NO = T2.CAR_NO)
 		 WHERE
-		 	   T2.CAR_NO = #{carNo}
+		 	   T1.CAR_NAME = #{carName}
 
 	</select>
 	
@@ -103,7 +103,7 @@
 		SELECT
 				COUNT(*)
 		  FROM
-		  		CAR_INFO
+		  		EV_CAR_INFO
 		 WHERE
 		 		CAR_NO = #{carNo}
 	</select>
@@ -111,25 +111,43 @@
 	<update id="updateCar"
 				parameterType="CarInfo">
 		UPDATE
-				CAR_INFO
-		   		SET(
+				EV_CAR_INFO
+		   		SET
 					CAR_NAME = #{carName}
 				  , CAR_TYPE = #{carType}
 				  , CAR_YEAR = #{carYear}
 				  , CAR_COMPANY = #{carCompany}
 				  , CAR_BATTERY = #{carBattery}
-				  , ENROLL_DATE = SYSDATE
-				)
+				
 		 WHERE
 		 		CAR_NO = #{carNo}			
 	</update>
+	
+	<update id="updateCarImage"
+				parameterType="com.example.evcs.admin.carInfo.model.vo.CarImage">
+		UPDATE
+				EV_CAR_IMAGE
+		   		SET
+					FILE_LOAD = #{fileLoad}
+		 WHERE
+		 		CAR_NO = #{carNo}			
+	</update>
+	
 
 	<delete id="deleteCar"
 				parameterType="CarInfo">
 		DELETE
-				*
 		  FROM
-		  		CAR_INFO
+		  		EV_CAR_INFO
+		 WHERE
+		 		CAR_NO = #{carNo}
+	</delete>	
+	
+	<delete id="deleteCarImage"
+				parameterType="int">
+		DELETE
+		  FROM
+		  		EV_CAR_IMAGE
 		 WHERE
 		 		CAR_NO = #{carNo}
 	</delete>	

@@ -48,10 +48,10 @@ public class CarInfoServiceImpl implements CarInfoService{
 		CarImage carImageData = null;
 		String filePath = null;
 		
-		if(file != null || file.isEmpty()) {
+		
+		if(file != null && !file.isEmpty()) {
 			
-			filePath = fileUtil.saveFile(file);
-			
+			filePath = fileUtil.saveFile(file).replace("uploads/", "uploads/car/");
 			carInfoData = CarInfo.builder()
 									.carName(carInfo.getCarName())
 									.carType(carInfo.getCarType())
@@ -115,6 +115,8 @@ public class CarInfoServiceImpl implements CarInfoService{
 		int result = carInfoMapper.findByCarName(carInfoData);
 		
 		if(result != 0) {
+			log.info("image :{}",carInfoMapper.findImageByCarName(carInfoData));
+			log.info("image :{}",carInfoMapper.findImageByCarName(carInfoData));
 			return carInfoMapper.findImageByCarName(carInfoData);
 		} else {
 			throw new NonExistingException("차량이 존재하지 않습니다.");
@@ -134,12 +136,15 @@ public class CarInfoServiceImpl implements CarInfoService{
 		 */
 		
 		CarInfo carInfoData = null;
+		CarImage carImageData = null;
+		String filePath = null;
 		
 		int result = carInfoMapper.findCarByCarNo(carInfo);
 		
-		if(result != 0) {
+		if(result == 1) {
 			
 			carInfoData = CarInfo.builder()
+					.carNo(carInfo.getCarNo())
 					.carName(carInfo.getCarName())
 					.carType(carInfo.getCarType())
 					.carYear(carInfo.getCarYear())
@@ -152,6 +157,22 @@ public class CarInfoServiceImpl implements CarInfoService{
 			throw new NonExistingException("존재하지 않는 차량입니다");
 		}
 		
+		if(file != null && !file.isEmpty()) {
+			
+			filePath = fileUtil.saveFile(file).replace("uploads/", "uploads/car/");
+			
+			carImageData = CarImage.builder()
+							.carNo(carInfo.getCarNo())
+							.fileLoad(filePath)
+							.build();
+			
+			int imageResult = carInfoMapper.updateCarImage(carImageData);
+			
+		} else {
+			return;
+		}
+		
+	
 	}
 	
 	public void deleteCar(CarInfoDTO carInfo) {
@@ -163,6 +184,7 @@ public class CarInfoServiceImpl implements CarInfoService{
 		if(result != 0) {
 			
 			carInfoData = CarInfo.builder()
+					.carNo(carInfo.getCarNo())
 					.carName(carInfo.getCarName())
 					.carType(carInfo.getCarType())
 					.carYear(carInfo.getCarYear())
@@ -170,7 +192,9 @@ public class CarInfoServiceImpl implements CarInfoService{
 					.carBattery(carInfo.getCarBattery())
 					.build();
 			
+			
 			carInfoMapper.deleteCar(carInfoData);
+			carInfoMapper.deleteCarImage(carInfo.getCarNo());
 		} else {
 			throw new NonExistingException("존재하지 않는 차량입니다");
 		}
