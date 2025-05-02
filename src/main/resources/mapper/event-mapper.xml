@@ -7,13 +7,14 @@
 	<sql id="eventColumn">
 		SELECT 
 			  EVENT_NO eventNo
-			, MEMBER_NO memberNo
+			, E.MEMBER_NO memberNo
 			, EVENT_NAME eventName
 			, START_DATE startDate
 			, END_DATE endDate
 			, EVENT_CONTENT eventContent
 			, ENROLL_DATE enrollDate
 			, STATUS status
+			, MEMBER_NICKNAME memberNickname
 	</sql>
 
 	<insert id="insertEvent"
@@ -47,7 +48,12 @@
 		<include refid="eventColumn" />
 		
 		FROM 
-			EV_EVENT
+			EV_EVENT E
+		JOIN 
+			EV_MEMBER M 
+		ON 
+			(E.MEMBER_NO = M.MEMBER_NO)	
+	
 		WHERE 1=1
 		<choose>
 		  <when test="category eq 'eventName'">
@@ -66,9 +72,12 @@
 			resultType="EventDTO"
 	>
 		<include refid="eventColumn" />
-		
 		FROM
-			EV_EVENT
+			EV_EVENT E
+		JOIN 
+			EV_MEMBER M 
+			ON 
+				(E.MEMBER_NO = M.MEMBER_NO)
 		WHERE
 			EVENT_NO = #{ eventNo }
 		AND
@@ -109,5 +118,14 @@
 		WHERE 
 			EVENT_NO = #{ eventNo }
 	</update>
+	
+	<select id="selectTotalCount"
+			resultType="_int"
+	>
+		SELECT 
+				COUNT(EVENT_NO)
+		FROM 
+			EV_EVENT
+	</select>
 
 </mapper>

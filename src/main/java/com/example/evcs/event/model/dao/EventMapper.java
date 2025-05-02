@@ -26,4 +26,5 @@ public interface EventMapper {
 
 	void deleteByEventNo(Long eventNo);
 	
+	int selectTotalCount();
 }
