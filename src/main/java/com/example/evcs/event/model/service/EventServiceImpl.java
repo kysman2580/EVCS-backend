@@ -70,14 +70,15 @@ public class EventServiceImpl implements EventService {
 		int size = 10;
 		Map<String, Object> returnMap = new HashMap();
 		
-		int count = eventMapper.selectTotalCount();
+		int count = eventMapper.selectTotalCount(map);
 		
 		RowBounds rowBounds = new RowBounds(Integer.parseInt(map.get("page")) * size, size);
 		
-		PageInfo pi = Pagination.getPageInfo(count, Integer.parseInt(map.get("page")), 10, 5);
+		PageInfo pi = Pagination.getPageInfo(count, Integer.parseInt(map.get("page")) +1, 10, 5);
 
 		// 특수문자 이스케이프 처리
 		map.put("searchKeyword", boardUtil.escapeLikeParam(map.get("searchKeyword")));
+		map.put("ingCategory", boardUtil.escapeLikeParam(map.get("ingCategory")));
 		List<EventDTO> list = new ArrayList();
 		list = eventMapper.selctEventAll(map, rowBounds);
 		
@@ -125,10 +126,7 @@ public class EventServiceImpl implements EventService {
 
 			eventMapper.updateEventFile(map);
 			
-		} else {
-			throw new NoFileException("EventService : 이벤트 사진이 없습니다."); 
-		}
-		
+		} 
 		return null;
 	}
 
@@ -138,7 +136,27 @@ public class EventServiceImpl implements EventService {
 	}
 	
 	
+	@Override
+	public Map<String, Object> selctEventAllUser(int page) {
+		int size = 10;
+		Map<String, Object> returnMap = new HashMap();
+		
+		int count = eventMapper.selectTotalCountUser();
+		
+		RowBounds rowBounds = new RowBounds(page * size, size);
+		
+		PageInfo pi = Pagination.getPageInfo(count, page +1, 10, 5);
 
+		List<EventDTO> list = new ArrayList();
+		list = eventMapper.selctEventAllUser(rowBounds);
+		
+		log.info("eventList : {}", list);
+		log.info("pageInfo : {}", pi);
+		returnMap.put("eventList", list);
+		returnMap.put("pageInfo", pi);
+		
+		return returnMap;
+	}
 
 
 }
