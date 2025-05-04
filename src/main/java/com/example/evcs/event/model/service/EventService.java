@@ -20,6 +20,7 @@ public interface EventService {
 	
 	void deleteByEventNo(Long eventNo);
 	
+	// user interface
 	Map<String , Object> selctEventAllUser(int page);
 	
 }

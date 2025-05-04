@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.evcs.admin.garage.model.dao.GarageMapper">
+
+	<sql id="GarageColumn">
+		SELECT 
+			  G.GARAGE_NO garageNo
+		    , G.ALL_ADDRESS allAddress
+		    , G.REGION_SIDO regionSido
+		    , G.REGION_SIGUNGU regionSigungu
+		    , G.REGION_DONG regionDong
+		    , G.ADDRESS address
+		    , G.POST_ADD postAdd
+			, G.ENROLL_DATE enrollDate
+			, M.MEMBER_NICKNAME memberNickname
+			, CASE 
+				WHEN G.STATUS = 'Y' THEN '사용중'
+				WHEN G.STATUS = 'N' THEN '사용중지'
+				ELSE '알수없음'
+			  END AS statusName
+			, G.WRITER writer
+			, G.STATUS
+	</sql>
+
+	<insert id="insertGarage" 
+			parameterType="GarageDTO"
+	>
+	  INSERT 
+	  	INTO 
+	  		EV_GARAGE (
+			    GARAGE_NO,
+			    ALL_ADDRESS,
+			    REGION_SIDO,
+			    REGION_SIGUNGU,
+			    REGION_DONG,
+			    ADDRESS,
+			    POST_ADD,
+			    ENROLL_DATE,
+			    WRITER,
+			    STATUS
+	  ) VALUES (
+			    SEQ_EV_GARAGE.NEXTVAL,
+			    #{allAddress},
+			    #{regionSido},
+			    #{regionSigungu},
+			    #{regionDong},
+			    #{address},
+			    #{postAdd},
+			    SYSDATE,
+			    #{writer},
+			    'Y'
+	  )
+	</insert>
+	
+	<select id="selectGarageRegion"
+			resultType="GarageRegionDTO"
+	>
+		SELECT 
+			  REGION_SIDO regionSido
+			, REGION_SIGUNGU regionSigungu
+			, REGION_DONG regionDong
+		FROM 
+			EV_GARAGE
+		WHERE 1=1
+		GROUP BY 
+			  REGION_SIDO
+			, REGION_SIGUNGU
+			, REGION_DONG
+		ORDER BY 
+			  REGION_SIDO
+			, REGION_SIGUNGU
+			, REGION_DONG 
+		ASC
+	
+	</select>	
+	
+	<select id="selectGarageAll"
+			parameterType="map"
+			resultType="GarageDTO"
+	>
+		<include refid="GarageColumn" />
+		
+		FROM 
+			EV_GARAGE G
+		JOIN 
+			EV_MEMBER M 
+		ON 
+			(G.WRITER = M.MEMBER_NO)	
+		WHERE 1=1
+			  <if test="regionSido != null and regionSido != ''">
+			    AND REGION_SIDO = #{regionSido}
+			  </if>
+			  <if test="regionSigungu != null and regionSigungu != ''">
+			    AND REGION_SIGUNGU = #{regionSigungu} 
+			  </if>
+			  <if test="regionDong != null and regionDong != ''">
+			    AND REGION_DONG = #{regionDong} 
+			  </if>
+			  <if test="'ing'.equals(status)">
+			  	AND G.STATUS = 'Y'
+			  </if>
+			  <if test="'noIng'.equals(status)">
+			  	AND G.STATUS = 'N'
+			  </if>
+			  <if test="searchKeyword != null and searchKeyword != ''">
+				AND G.ADDRESS LIKE '%' || #{searchKeyword} || '%'
+			  </if>
+		ORDER BY 
+			G.ENROLL_DATE ASC
+	</select>
+	
+
+
+	<select id="selectByGarageNo"
+			parameterType="long"
+			resultType="GarageDTO"
+	>
+		<include refid="GarageColumn" />
+		FROM
+			EV_GARAGE G
+		JOIN 
+			EV_MEMBER M 
+			ON 
+				(G.WRITER = M.MEMBER_NO)
+		WHERE
+			G.GARAGE_NO = #{ garageNo }
+	</select>
+	
+	<update id="updateGarage"
+			parameterType="Garage"
+	>
+		UPDATE 
+				EV_GARAGE 
+			SET
+				  ALL_ADDRESS = #{allAddress}
+				, REGION_SIDO = #{regionSido}
+				, REGION_SIGUNGU = #{regionSigungu}
+				, REGION_DONG = #{regionDong}
+				, ADDRESS = #{address}
+				, POST_ADD = #{postAdd}
+		WHERE 
+			GARAGE_NO = #{ garageNo }
+	</update>
+	
+
+	<update id="deleteByGarageNo"
+			parameterType="long"
+	>
+		UPDATE 
+				EV_GARAGE
+			SET
+				STATUS = 'N'
+		WHERE 
+			GARAGE_NO = #{ garageNo }
+	</update>
+	
+
+</mapper>
