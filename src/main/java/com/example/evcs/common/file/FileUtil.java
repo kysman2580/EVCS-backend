@@ -48,6 +48,9 @@ public class FileUtil {
 			if("event".equals(parentPath)) {
 				return "http://localhost/uploads/event/" + changeFileName;
 			}
+			if("car".equals(parentPath)) {
+				return "http://localhost/uploads/car/" + changeFileName;
+			}
 			
 			return null;
 		} catch (IOException e) {
