@@ -23,32 +23,26 @@
 		  		EV_CAR_INFO
 	</select>	
 	
-
-	
-	<select id="getCarInfo"
-				parameterType="String"
-				resultType="CarInfoDTO">
+	<select id="getTimeRentCarInfo"
+				resultType="RentCarInfoDTO">
 		SELECT
-				*
+				    CI.RENT_CAR_NO rentCarNo
+				  , CG.CATEGORY_NAME categoryName
+				  , CI.CAR_NO carNo
+				  , CI.RENT_CAR_PRICE rentCarPrice
+				  , CI.ENROLL_PLACE enrollPlace
+				  , CI.ENROLL_DATE enrollDate
+				  , CI.STATUS status
 		  FROM
-		  		EV_CAR_INFO
+		  		EV_RENT_CAR_INFO CI
+		  JOIN
+		  		EV_CATEGORY CG ON (CG.CATEGORY_NO = CI.CATEGORY_NO)
 		 WHERE
-		 		CAR_NAME = #{carName}
+		 		CI.CATEGORY_NO = 1
 	</select>	
 		
-	<select id="findCarNoByCarName"
-				parameterType="String"
-				resultType="int">
-		SELECT 
-				CAR_NO carNo		   
-	  	  FROM
-	  	 		EV_CAR_INFO
-	  	 WHERE
-	  	 		CAR_NAME = #{carName}
-	</select>
-	
 	<select id="findByCarNo"
-				parameterType="String"
+				parameterType="int"
 				resultType="int">
 		SELECT 
 				COUNT(*)	   
@@ -58,8 +52,19 @@
 	  	 		CAR_NO = #{carNo}
 	</select>
 	
+	<select id="findCategoryNoByCategoryName"
+				parameterType="String"	
+				resultType="int">
+		SELECT
+				CATEGORY_NO
+		  FROM
+		  		EV_CATEGORY
+		 WHERE
+		 		CATEGORY_NAME = #{categoryName}
+	</select>
+	
 	<insert id="insertRentCar"
-				parameterType="CarInfo">
+				parameterType="RentCarInfoVo">
 		INSERT 
 		  INTO 
 	  			EV_RENT_CAR_INFO(
@@ -68,8 +73,6 @@
 				  , CAR_NO
 				  , RENT_CAR_PRICE
 				  , ENROLL_PLACE
-				  , ENROLL_DATE
-				  , STATUS
 				)
 	  			VALUES(
 				    #{rentCarNo}
@@ -77,8 +80,6 @@
 				  , #{carNo}
 				  , #{rentCarPrice}
 				  , #{enroll_place}
-				  , #{enroll_date}
-				  , #{status}
 				)
 	</insert>
 
@@ -90,6 +91,75 @@
 		  	   EV_RENT_CAR_INFO
 	</select>
 	
+	<select id="getRentCarList"
+				resultType="RentCarInfoDTO">
+		SELECT
+			   		E1.RENT_CAR_NO rentCarNo
+				  , E2.CATEGORY_NAME categoryName
+				  , E1.CAR_NO carNo
+				  , E1.RENT_CAR_PRICE rentCarPrice
+				  , E1.ENROLL_PLACE enrollPlace
+				  , E1.ENROLL_DATE enrollDate
+				  , E1.STATUS status
+		  FROM
+		  	   EV_RENT_CAR_INFO E1
+		  JOIN
+		  	   EV_CATEGORY E2 ON (E1.CATEGORY_NO = E2.CATEGORY_NO)
+		 ORDER
+		 	BY
+		 		E1.ENROLL_DATE DESC
+	</select>
+	
+	<select id="getCarList"
+				resultType="CarInfoDTO">
+		SELECT
+					E1.CAR_NO carNo
+			   	  , E1.CAR_NAME carName
+				  , E1.CAR_TYPE carType
+				  , E1.CAR_YEAR carYear
+				  , E1.CAR_COMPANY carCompany
+				  , E1.CAR_BATTERY carBattery
+		  FROM
+		  	   EV_CAR_INFO E1
+		  JOIN
+		  	   EV_RENT_CAR_INFO E2 ON (E1.CAR_NO = E2.CAR_NO)
+		 ORDER
+		 	BY
+		 		E2.ENROLL_DATE DESC
+	</select>
+	
+	<select id="findByRentCarNo"
+				parameterType="String"
+				resultType="int">
+		SELECT 
+				COUNT(*)	   
+	  	  FROM
+	  	 		EV_RENT_CAR_INFO
+	  	 WHERE
+	  	 		RENT_CAR_NO = #{rentCarNo}
+	</select>
+	
+	<update id="updateRentCar"
+				parameterType = "RentCarInfoVO">
+		UPDATE
+				EV_RENT_CAR_INFO
+		   SET 
+		   		  CATEGORY_NO = #{categoryNo}
+		   		, RENT_CAR_PRICE = #{rentCarPrice}
+		   		, ENROLL_PLACE = #{enrollPlace}
+		   		, STATUS = #{status}
+		 WHERE
+		  		RENT_CAR_NO = #{rentCarNo}
+	</update>
+	
+	<delete id="deleteRentCar"
+				parameterType = "String">
+		DELETE
+		  FROM
+				EV_RENT_CAR_INFO
+		 WHERE
+		 		RENT_CAR_NO = #{rentCarNo}
+	</delete>
 	
 </mapper>
 
