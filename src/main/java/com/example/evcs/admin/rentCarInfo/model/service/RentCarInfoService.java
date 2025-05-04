@@ -13,8 +13,15 @@ public interface RentCarInfoService {
 	
 	public Map<String, Object> getAllCarInfo();
 	
-	public CarInfoDTO getCarInfo(String carName);
 	
 	public void insertRentCar(RentCarInfoDTO rentCarInfo);
+
+	public Map<String, Object> rentCarList(int currentPage);
+
+	public void updateRentCar(RentCarInfoDTO rentCarInfo);
+
+	public void deleteRentCar(RentCarInfoDTO rentCarInfo);
+
+	public Map<String, Object> getTimeRentCarInfo();
 
 }
