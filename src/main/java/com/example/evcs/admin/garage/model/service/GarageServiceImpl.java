@@ -62,9 +62,9 @@ public class GarageServiceImpl implements GarageService{
 		list = garageMapper.selectGarageAll(map);
 		regionList = garageMapper.selectGarageRegion();
 		
-		log.info("eventList : {}", list);
+		log.info("garageList : {}", list);
 		log.info("regionList : {}", regionList);
-		returnMap.put("eventList", list);
+		returnMap.put("garageList", list);
 		returnMap.put("regionList", regionList);
 		
 		return returnMap;
@@ -99,8 +99,8 @@ public class GarageServiceImpl implements GarageService{
 	}
 
 	@Override
-	public void deleteByGarageNo(Long eventNo) {
-		garageMapper.deleteByGarageNo(eventNo);
+	public void deleteByGarageNo(Long garageNo) {
+		garageMapper.deleteByGarageNo(garageNo);
 		
 	}
 	

@@ -63,7 +63,6 @@
 		FROM 
 			EV_GARAGE
 		WHERE 1=1
-			AND STATUS = 'Y'
 		GROUP BY 
 			  REGION_SIDO
 			, REGION_SIGUNGU
@@ -98,7 +97,15 @@
 			  <if test="regionDong != null and regionDong != ''">
 			    AND REGION_DONG = #{regionDong} 
 			  </if>
-			AND G.ADDRESS LIKE '%' || #{searchKeyword} || '%'
+			  <if test="'ing'.equals(status)">
+			  	AND G.STATUS = 'Y'
+			  </if>
+			  <if test="'noIng'.equals(status)">
+			  	AND G.STATUS = 'N'
+			  </if>
+			  <if test="searchKeyword != null and searchKeyword != ''">
+				AND G.ADDRESS LIKE '%' || #{searchKeyword} || '%'
+			  </if>
 		ORDER BY 
 			G.ENROLL_DATE ASC
 	</select>
