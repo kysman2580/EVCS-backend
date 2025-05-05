@@ -83,6 +83,37 @@
 		 	   ENROLL_DATE DESC 
 	</select>
 	
+	<select id="getAllCarInfo"
+				resultType="CarInfoDTO">
+		SELECT
+			    CAR_NO  carNo,
+		        CAR_NAME  carName,
+		        CAR_TYPE  carType,
+		        CAR_YEAR  carYear,
+		        CAR_COMPANY  carCompany,
+		        CAR_BATTERY  carBattery,
+		        ENROLL_DATE  enrollDate
+		  FROM
+		  	   EV_CAR_INFO
+		 ORDER
+		 	BY
+		 	   CAR_NO DESC 
+	</select>
+	
+	<select id="getAllCarImage"
+				resultType="com.example.evcs.admin.carInfo.model.vo.CarImage">
+		SELECT
+			   CAR_NO carNo,
+			   FILE_LOAD fileLoad
+		  FROM
+		  	   EV_CAR_IMAGE
+		 ORDER
+		    BY
+		       CAR_NO DESC
+	</select>
+	
+	
+	
 	<select id="findImageByCarName"
 				parameterType="CarInfo"
 				resultType="com.example.evcs.admin.carInfo.model.dto.CarImageDTO">

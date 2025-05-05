@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Validated
 @RequiredArgsConstructor
-@RequestMapping("/events")
+@RequestMapping("/admin-events")
 public class EventController {
 
 	private final EventService eventService;
@@ -48,14 +48,16 @@ public class EventController {
 	public ResponseEntity<Map<String, Object>> selctEventAll(
 			@RequestParam (name="page", defaultValue="0") int page,
 			@RequestParam (name ="category", required = false) String category,
+			@RequestParam (name ="ingCategory", required = false) String ingCategory,
 			@RequestParam (name ="searchKeyword", required = false) String searchKeyword
 			){
 		
-		log.info("EventController selctEventAll : page : {} // category : {} // searchKeyword : {}", page, category, searchKeyword);
+		log.info("EventController selctEventAll : page : {} // category : {} // ingCategory : {} // searchKeyword : {}", page, category, ingCategory, searchKeyword);
 		
 		Map <String, String> map = new HashMap<String, String>();
-		map.put("page", String.valueOf(page -1));
+		map.put("page", String.valueOf(page-1));
 		map.put("category", category);
+		map.put("ingCategory", ingCategory);
 		map.put("searchKeyword", searchKeyword);
 		
 		Map<String, Object> returnMap = eventService.selctEventAll(map);
@@ -71,10 +73,13 @@ public class EventController {
 	}
 	
 	@PutMapping("/{eventNo}")
-	public ResponseEntity<EventDTO> updateEvent(EventDTO event, @RequestParam(name="file") MultipartFile file){
-		
+	public ResponseEntity<EventDTO> updateEvent(EventDTO event,@PathVariable("eventNo") Long eventNo, @RequestParam(name="file", required = false) MultipartFile file){
+		event.setEventNo(eventNo);
+		 
 		log.info("EventController updateEvent : event : {} , file : {}", event,file);
-		return ResponseEntity.ok(eventService.updateEvent(event, file));
+		eventService.updateEvent(event, file);
+		
+	    return ResponseEntity.noContent().build();
 	}
 	
 	@DeleteMapping("/{eventNo}")

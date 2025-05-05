@@ -74,6 +74,21 @@
 	    SET NEWS_WATCHED = NEWS_WATCHED + 1
 	    WHERE NEWS_NO = #{newsNo}
 	</update>
+	
+	<select id="findByNewsNo" resultType="com.example.evcs.news.model.dto.NewsDTO">
+	  SELECT n.NEWS_NO as newsNo,
+	         n.NEWS_TITLE as title,
+	         n.NEWS_ORIGIN_URL as originUrl,
+	         n.NEWS_DESCRIPTION as description,
+	         n.NEWS_NAVER_DATE as pubDate,
+	         c.NEWS_CATEGORY as query,
+	         i.NEWS_IMG_URL as imageUrl,
+	         n.NEWS_WATCHED as count
+	  FROM EV_NEWS n
+	  LEFT JOIN EV_NEWS_IMG i ON n.NEWS_NO = i.NEWS_NO
+	  JOIN EV_NEWS_CATEGORY c ON n.NEWS_CATEGORY_NO = c.NEWS_CATEGORY_NO
+	  WHERE n.NEWS_NO = #{newsNo}
+	</select>
 
   
   

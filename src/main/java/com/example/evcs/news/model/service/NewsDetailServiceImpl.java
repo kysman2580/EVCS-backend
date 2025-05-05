@@ -66,7 +66,18 @@ public class NewsDetailServiceImpl implements NewsDetailService {
         List<CommentDTO> comments = newscommentMapper.findCommentsByNews(newsNo, memberNo); 
         int likeCount = newsreactionMapper.countLikeByNews(newsNo);
         int hateCount = newsreactionMapper.countHateByNews(newsNo);
-        boolean isBookmarked = newsreactionMapper.countBookmarks(newsNo, 1L) > 0;
+        boolean isBookmarked = newsreactionMapper.countBookmarks(newsNo, memberNo) > 0;
         return new NewsDetailResponse(news, comments, likeCount, hateCount, isBookmarked);
     }
+    
+    public NewsDetailResponse getByNewsNo(Long newsNo, Long memberNo) {
+        NewsDTO news = newsMapper.findByNewsNo(newsNo);
+        List<CommentDTO> comments = newscommentMapper.findCommentsByNews(newsNo, memberNo);
+        int likeCount = newsreactionMapper.countLikeByNews(newsNo);
+        int hateCount = newsreactionMapper.countHateByNews(newsNo);
+        boolean isBookmarked = newsreactionMapper.countBookmarks(newsNo, memberNo) > 0;
+
+        return new NewsDetailResponse(news, comments, likeCount, hateCount, isBookmarked);
+    }
+
 }

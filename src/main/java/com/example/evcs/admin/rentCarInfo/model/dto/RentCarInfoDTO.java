@@ -16,7 +16,7 @@ import lombok.ToString;
 public class RentCarInfoDTO {
 
 	private String rentCarNo;
-	private int categoryNo;
+	private String categoryName;
 	private int carNo;
 	private int rentCarPrice;
 	private String enrollPlace;

@@ -1,12 +1,20 @@
 package com.example.evcs.admin.rentCarInfo.model.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 
+import com.example.evcs.admin.carInfo.model.dao.CarInfoMapper;
+import com.example.evcs.admin.carInfo.model.dto.CarImageDTO;
 import com.example.evcs.admin.carInfo.model.dto.CarInfoDTO;
 import com.example.evcs.admin.rentCarInfo.model.dao.RentCarInfoMapper;
 import com.example.evcs.admin.rentCarInfo.model.dto.RentCarInfoDTO;
+import com.example.evcs.admin.rentCarInfo.model.vo.RentCarInfoVO;
+import com.example.evcs.util.model.dto.PageInfo;
+import com.example.evcs.util.template.Pagination;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RentCarInfoServiceImpl implements RentCarInfoService {
 
 	private final RentCarInfoMapper rentCarInfoMapper;
-	
+	private final CarInfoMapper carInfoMapper;
 	
 	@Override
 	public List<String> getRentCarCategory() {
@@ -29,52 +37,154 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 	
 
 	@Override
-	public List<CarInfoDTO> getAllCarInfo() {
-		List<CarInfoDTO> result = rentCarInfoMapper.getAllCarInfo();
-		log.info("123123123123 : {}",result);
+	public Map<String, Object> getAllCarInfo() {
+		
+		Map<String, Object> result = new HashMap();
+		
+		List<CarInfoDTO> carInfoResult = carInfoMapper.getAllCarInfo();
+		List<CarImageDTO> imageResult = carInfoMapper.getAllCarImage();
+		
+		result.put("carInfoResult", carInfoResult);
+		result.put("imageResult",imageResult);
+		
+		log.info("123123123123 : {}",imageResult);
 		return result;
 	}
 
-
-
-	@Override
-	public CarInfoDTO getCarInfo(String carName) {
-		rentCarInfoMapper.getCarInfo(carName);
-		return null;
-	}
-
-	
-	
 	
 	
 	@Override
 	public void insertRentCar(RentCarInfoDTO rentCarInfo) {
 		
 		/*
-		 * 1. 모델명으로 carNo조회하기
+		 * 1. carNo으로 존재하는 렌트카인지 확인
 		 * 
-		 * 2. carNo으로 존재하는 렌트카인지 확인
+		 * 2. 존재한다면 렌터카 추가하기(categoryName으로 categoryNo 얻어와야함)
 		 * 
-		 * 3. 존재한다면 렌터카 추가하기
-		 * 
-		 * 4. 존재하지 않는다면 예외처리
+		 * 3. 존재하지 않는다면 예외처리
 		 */
 		
-//		String carName = rentCarInfo.getRentCarNo()
-//		rentCarInfoMapper.findCarNoByCarName();
-//		
-//		
-//		rentCarInfoMapper.findByCarNo();
-//		
-//		
-//		rentCarInfoMapper.insertRentCar();
+		int carNo = rentCarInfo.getCarNo();
+
+		int countCar = rentCarInfoMapper.findByCarNo(carNo);
+		
+		if(countCar != 0) {
+			
+			log.info("categoryName : {}",rentCarInfo.getCategoryName());
+			int categoryNo = rentCarInfoMapper.findCategoryNoByCategoryName(rentCarInfo.getCategoryName());
+			log.info("categoryNo : {}",categoryNo);
+			RentCarInfoVO rentCarInfoVo = RentCarInfoVO.builder()
+											.rentCarNo(rentCarInfo.getRentCarNo())
+											.categoryNo(categoryNo)
+											.carNo(carNo)
+											.rentCarPrice(rentCarInfo.getRentCarPrice())
+											.enrollPlace(rentCarInfo.getEnrollPlace())
+											.build();
+											
+			
+			
+			rentCarInfoMapper.insertRentCar(rentCarInfoVo);
+		}
+
 		
 		
 		
 		
 		
 		
+	}
+
+
+	@Override
+	public Map<String, Object> rentCarList(int currentPage) {
 		
+		Map<String, Object> map = new HashMap();
+		
+		int carNoPerPage = 10;
+		int pageSize = 5;
+		
+		RowBounds rowBounds = new RowBounds((currentPage-1)*carNoPerPage,carNoPerPage);
+		int totalRentCarNo = rentCarInfoMapper.countAllRentCar();
+		
+		PageInfo pageInfo = Pagination.getPageInfo(currentPage,  pageSize, carNoPerPage,totalRentCarNo);
+		
+		log.info("pageInfo : {}",pageInfo);
+		
+		List<RentCarInfoDTO> rentCarInfo = rentCarInfoMapper.getRentCarList(rowBounds);
+		
+		log.info("rentCarInfo : {}",rentCarInfo);
+		
+		List<CarInfoDTO> carInfo = rentCarInfoMapper.getCarList(rowBounds);
+		
+		log.info("carInfo : {}",carInfo);
+				
+		map.put("pageInfo", pageInfo);
+		map.put("rentCarInfo", rentCarInfo);
+		map.put("carInfo", carInfo);
+		
+		return map;
+	}
+
+
+	@Override
+	public void updateRentCar(RentCarInfoDTO rentCarInfo) {
+		
+		/*
+		 * 1. 존재하는 렌터카인지 확인
+		 * 
+		 * 2. 존재한다면 수정(categoryNo 얻어와야함)
+		 * 
+		 * 3. 존재하지 않는다면 예외처리
+		 */
+		
+		
+		
+		String rentCarNo = rentCarInfo.getRentCarNo();
+		
+		int countRentCar = rentCarInfoMapper.findByRentCarNo(rentCarNo);
+		
+		if(countRentCar == 1) {
+			int categoryNo = rentCarInfoMapper.findCategoryNoByCategoryName(rentCarInfo.getCategoryName());
+			
+			RentCarInfoVO rentCarInfoVo = RentCarInfoVO.builder()
+					.rentCarNo(rentCarInfo.getRentCarNo())
+					.categoryNo(categoryNo)
+					.carNo(rentCarInfo.getCarNo())
+					.rentCarPrice(rentCarInfo.getRentCarPrice())
+					.enrollPlace(rentCarInfo.getEnrollPlace())
+					.status(rentCarInfo.getStatus())
+					.build();
+			log.info("rentCarInfoVo : {}",rentCarInfoVo);
+			rentCarInfoMapper.updateRentCar(rentCarInfoVo);
+			
+		}
+	}
+
+
+	@Override
+	public void deleteRentCar(RentCarInfoDTO rentCarInfo) {
+
+		String rentCarNo = rentCarInfo.getRentCarNo();
+		
+		int countRentCar = rentCarInfoMapper.findByRentCarNo(rentCarNo);
+		
+		if(countRentCar == 1) {
+			
+			rentCarInfoMapper.deleteRentCar(rentCarNo);
+		}
+	}
+
+
+	@Override
+	public Map<String, Object> getTimeRentCarInfo() {
+		Map<String, Object> result = new HashMap();
+		
+		List<RentCarInfoDTO> timeRentCarResult = rentCarInfoMapper.getTimeRentCarInfo();
+		
+		log.info("시간별 렌트카 목록 : {}",timeRentCarResult);
+		result.put("timeRentCarResult", timeRentCarResult);
+		
+		return result;
 	}
 
 

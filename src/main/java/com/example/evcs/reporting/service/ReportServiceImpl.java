@@ -1,4 +1,3 @@
-// ReportServiceImpl.java
 package com.example.evcs.reporting.service;
 
 import java.util.List;
@@ -22,5 +21,15 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public Report getReportById(Long rpNo) {
         return mapper.selectReportById(rpNo);
+    }
+    
+    @Override
+    public List<Report> getReportsWithPaging(String startDate, String endDate, String title, int offset, int size) {
+        return mapper.selectReportsWithPaging(startDate, endDate, title, offset, size);
+    }
+
+    @Override
+    public int getTotalReportCount(String startDate, String endDate, String title) {
+        return mapper.countReports(startDate, endDate, title);
     }
 }

@@ -9,6 +9,7 @@ import com.example.evcs.admin.carInfo.model.dto.CarImageDTO;
 import com.example.evcs.admin.carInfo.model.dto.CarInfoDTO;
 import com.example.evcs.admin.carInfo.model.vo.CarImage;
 import com.example.evcs.admin.carInfo.model.vo.CarInfo;
+import com.example.evcs.admin.rentCarInfo.model.dto.RentCarInfoDTO;
 
 @Mapper
 public interface CarInfoMapper {
@@ -24,6 +25,10 @@ public interface CarInfoMapper {
 	int countAllCar();
 
 	List<CarInfoDTO> findAllCar(RowBounds rowBounds);
+	
+	List<CarInfoDTO> getAllCarInfo();
+	
+	List<CarImageDTO> getAllCarImage();
 
 	CarImageDTO findImageByCarName(CarInfo carInfoData);
 
@@ -36,6 +41,8 @@ public interface CarInfoMapper {
 	int deleteCar(CarInfo carInfo);
 	
 	int deleteCarImage(int carNo);
+
+	
 
 
 
