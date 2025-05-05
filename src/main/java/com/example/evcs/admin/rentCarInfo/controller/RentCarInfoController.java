@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.evcs.admin.carInfo.model.dto.CarInfoDTO;
 import com.example.evcs.admin.rentCarInfo.model.dto.RentCarInfoDTO;
 import com.example.evcs.admin.rentCarInfo.model.service.RentCarInfoService;
 
@@ -42,12 +40,6 @@ public class RentCarInfoController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(allCarInfo);
 	}
 	
-	@GetMapping("/timeRentCarInfo")
-	public ResponseEntity<?> getTimeRentCarInfo(){
-		log.info("값이 들어오나요???");
-		Map<String, Object> allCarInfo = rentCarInfoService.getTimeRentCarInfo();
-		return ResponseEntity.status(HttpStatus.CREATED).body(allCarInfo);
-	}
 	
 	@PostMapping("/insert")
 	public ResponseEntity<?> insertRentCar(@RequestBody RentCarInfoDTO rentCarInfo) {
@@ -84,7 +76,13 @@ public class RentCarInfoController {
 		return ResponseEntity.status(HttpStatus.OK).body("차량 삭제 완료");
 	}
 	
-	
+	@GetMapping("/timeRentCarInfo")
+	public ResponseEntity<?> getTimeRentCarInfo(){
+		log.info("값이 들어오나요???");
+		Map<String, Object> allCarInfo = rentCarInfoService.getTimeRentCarInfo();
+		log.info("allCarInfo : {} " ,allCarInfo);
+		return ResponseEntity.status(HttpStatus.CREATED).body(allCarInfo);
+	}
 	
 	
 	

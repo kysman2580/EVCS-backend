@@ -39,6 +39,9 @@
 		  		EV_CATEGORY CG ON (CG.CATEGORY_NO = CI.CATEGORY_NO)
 		 WHERE
 		 		CI.CATEGORY_NO = 1
+         ORDER
+		 	BY
+		 	   	CI.CAR_NO DESC 
 	</select>	
 		
 	<select id="findByCarNo"
@@ -79,7 +82,7 @@
 				  , #{categoryNo}
 				  , #{carNo}
 				  , #{rentCarPrice}
-				  , #{enroll_place}
+				  , #{enrollPlace}
 				)
 	</insert>
 
@@ -161,8 +164,29 @@
 		 		RENT_CAR_NO = #{rentCarNo}
 	</delete>
 	
-</mapper>
+	<select id="getCarInfoByCategoryNo"
+				resultType="CarInfoDTO">
+		SELECT
+			    E1.CAR_NO  carNo,
+		        E1.CAR_NAME  carName,
+		        E1.CAR_TYPE  carType,
+		        E1.CAR_YEAR  carYear,
+		        E1.CAR_COMPANY  carCompany,
+		        E1.CAR_BATTERY  carBattery,
+		        E1.ENROLL_DATE  enrollDate
+		  FROM
+		  	    EV_CAR_INFO E1
+		  JOIN
+		  		EV_RENT_CAR_INFO E2 ON (E1.CAR_NO = E2.CAR_NO)
+		 WHERE
+		 		E2.CATEGORY_NO = 1
+		 ORDER
+		 	BY
+		 	   	E1.CAR_NO DESC 
+		</select>
 
+	
+</mapper>
 
 
 
