@@ -1,6 +1,7 @@
 package com.example.evcs.admin.rentCarInfo.model.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
@@ -22,7 +23,7 @@ public interface RentCarInfoMapper {
 
 	
 	// 2. 렌터카 조회하기
-	List<RentCarInfoDTO> getRentCarList(RowBounds rowBounds);
+	List<RentCarInfoDTO> getRentCarList(Map<String, String> map, RowBounds rowBounds);
 	
 	int countAllRentCar();
 	List<CarInfoDTO> getCarList(RowBounds rowBouds);
