@@ -13,6 +13,10 @@ spring:
           auth: true
           starttls:
             enable: true
+            required: true
+          ssl:
+            trust: smtp.gmail.com
+
   servlet:
     multipart:
       max-file-size: 10MB
