@@ -41,6 +41,8 @@
 		WHERE EMAIL = #{email}
 	</select>
 	
+	
+	
 	<select id="passwordExistsByEmail">
 		SELECT COUNT(*)	
 		FROM EV_PASSWORD_RESET_VERIFICATION

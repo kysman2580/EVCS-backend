@@ -33,7 +33,7 @@ public class MemberController {
 	
 	
 	@PostMapping("/changePassword")
-	public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO, 
+	public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDTO changePasswordDTO, 
 											@AuthenticationPrincipal UserDetails userDetails){
 		
 		String email = userDetails.getUsername();

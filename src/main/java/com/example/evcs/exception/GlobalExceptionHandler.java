@@ -12,80 +12,112 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-	
+
 	@ExceptionHandler(MemberEmailDuplicationException.class)
-	public ResponseEntity<?> handlerMemberEmailDuplicationError(MemberEmailDuplicationException e){
+	public ResponseEntity<?> handlerMemberEmailDuplicationError(MemberEmailDuplicationException e) {
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
-	
+
 	@ExceptionHandler(EmailNotVerifiedException.class)
-	public ResponseEntity<?> handlerEmailNotVerificationError(EmailNotVerifiedException e){
+	public ResponseEntity<?> handlerEmailNotVerificationError(EmailNotVerifiedException e) {
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
-	
+
 	@ExceptionHandler(CustomAuthenticationException.class)
-	public ResponseEntity<?> handlerCustomAuthenticationError(CustomAuthenticationException e){
+	public ResponseEntity<?> handlerCustomAuthenticationError(CustomAuthenticationException e) {
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
-	
+
 	@ExceptionHandler(NotAdminRoleException.class)
-	public ResponseEntity<?> handlerNotAdminRoleError(NotAdminRoleException e){
+	public ResponseEntity<?> handlerNotAdminRoleError(NotAdminRoleException e) {
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
-	
+
 	@ExceptionHandler(EmailNotFoundException.class)
-	public ResponseEntity<?> EmailNotFoundExceptionError(EmailNotFoundException e){
+	public ResponseEntity<?> EmailNotFoundExceptionError(EmailNotFoundException e) {
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
-	
+
+	@ExceptionHandler(MissingEmailException.class)
+	public ResponseEntity<?> MissingEmailExceptionError(MissingEmailException e) {
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+
 	@ExceptionHandler(PasswordMismatchException.class)
-	public ResponseEntity<?> PasswordMismatchExceptionError(PasswordMismatchException e){
+	public ResponseEntity<?> PasswordMismatchExceptionError(PasswordMismatchException e) {
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
-	
-	
-	
+
+	@ExceptionHandler(InvalidVerificationCodeException.class)
+	public ResponseEntity<?> InvalidVerificationCodeExceptionError(InvalidVerificationCodeException e) {
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+
+	@ExceptionHandler(VerificationCodeMismatchException.class)
+	public ResponseEntity<?> VerificationCodeMismatchExceptionError(VerificationCodeMismatchException e) {
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+
+	@ExceptionHandler(MissingNewPasswordException.class)
+	public ResponseEntity<?> MissingNewPasswordExceptionError(MissingNewPasswordException e) {
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+
+	@ExceptionHandler(MissingConfirmPasswordException.class)
+	public ResponseEntity<?> MissingConfirmPasswordExceptionError(MissingConfirmPasswordException e) {
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
 
 	@ExceptionHandler(DuplicatedCarInfoException.class)
-	public ResponseEntity<?> DuplicatedCarInfoError(DuplicatedCarInfoException e){
-		Map<String, String> error = new HashMap<>();
-		error.put("message", e.getMessage());
-		return ResponseEntity.badRequest().body(error);
-  }
-  
-	@ExceptionHandler(NonExistingException.class)
-	public ResponseEntity<?> NonExistingError(NonExistingException e){
+	public ResponseEntity<?> DuplicatedCarInfoError(DuplicatedCarInfoException e) {
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
-	
+
+	@ExceptionHandler(NonExistingException.class)
+	public ResponseEntity<?> NonExistingError(NonExistingException e) {
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+
 	// 게시글 등록 시 파일 없으면 예외처리
 	@ExceptionHandler(NoFileException.class)
-	public ResponseEntity<?> handlerNotAdminRoleError(NoFileException e){
+	public ResponseEntity<?> handlerNotAdminRoleError(NoFileException e) {
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
-	
+
 	// 파일 등록시 에러
 	@ExceptionHandler(InsertFileException.class)
-	public ResponseEntity<?> handlerNotAdminRoleError(InsertFileException e){
+	public ResponseEntity<?> handlerNotAdminRoleError(InsertFileException e) {
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
-	
+
 }

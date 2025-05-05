@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import com.example.evcs.exception.EmailNotFoundException;
 import com.example.evcs.exception.EmailNotVerifiedException;
 import com.example.evcs.exception.MemberEmailDuplicationException;
+import com.example.evcs.exception.MissingConfirmPasswordException;
+import com.example.evcs.exception.MissingEmailException;
+import com.example.evcs.exception.MissingNewPasswordException;
 import com.example.evcs.exception.PasswordMismatchException;
 import com.example.evcs.member.model.dao.MemberMapper;
 import com.example.evcs.member.model.dto.ChangePasswordDTO;
@@ -56,10 +59,26 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public void updatePassword(String email, String newPassword) {
-		String encodedPassword = passwordEncoder.encode(newPassword);
-		log.info("Encoded Password: {}", encodedPassword);
+	public void updatePassword(String email, String newPassword, String confirmNewPassword) {
+		
+		if (email == null || email.trim().isEmpty()) {
+	        throw new MissingEmailException("이메일이 입력되지 않았습니다.");
+	    }
 
+	    if (newPassword == null || newPassword.trim().isEmpty()) {
+	        throw new MissingNewPasswordException("신규 비밀번호를 입력해주세요.");
+	    }
+	    
+	    if (confirmNewPassword == null || confirmNewPassword.trim().isEmpty()) {
+	        throw new MissingConfirmPasswordException("신규 비밀번호 확인란을 입력해주세요.");
+	    }
+	    
+	    if (!newPassword.equals(confirmNewPassword)) {
+	        throw new PasswordMismatchException("새 비밀번호와 재확인 비밀번호가 일치하지 않습니다.");
+	    }
+	    
+
+		String encodedPassword = passwordEncoder.encode(newPassword);
 		String emailVerified = mapper.isVerifiedByPassword(email);
 
 		if (emailVerified == null || !"Y".equals(emailVerified)) {
@@ -107,8 +126,10 @@ public class MemberServiceImpl implements MemberService {
 			throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
 		}	
 		
+		
+		
 		member.setMemberPw(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
-		mapper.changePassword(member);
+		mapper.changePassword(member); 
 		
 	}
 
