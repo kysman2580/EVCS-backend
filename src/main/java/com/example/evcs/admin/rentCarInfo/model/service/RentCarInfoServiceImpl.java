@@ -78,30 +78,22 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 											.categoryNo(categoryNo)
 											.carNo(carNo)
 											.rentCarPrice(rentCarInfo.getRentCarPrice())
-											.enrollPlace(rentCarInfo.getEnrollPlace())
+											.garageNo(rentCarInfo.getGarageNo())
 											.build();
-											
-			
 			
 			rentCarInfoMapper.insertRentCar(rentCarInfoVo);
 		}
-
-		
-		
-		
-		
-		
-		
 	}
 
 
 	@Override
-	public Map<String, Object> rentCarList(int currentPage) {
+	public Map<String, Object> rentCarList(Map<String, String> map) {
 		
-		Map<String, Object> map = new HashMap();
+		Map<String, Object> returnmap = new HashMap();
 		
 		int carNoPerPage = 10;
 		int pageSize = 5;
+		int currentPage = Integer.parseInt(map.get("currentPage"));
 		
 		RowBounds rowBounds = new RowBounds((currentPage-1)*carNoPerPage,carNoPerPage);
 		int totalRentCarNo = rentCarInfoMapper.countAllRentCar();
@@ -110,7 +102,7 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 		
 		log.info("pageInfo : {}",pageInfo);
 		
-		List<RentCarInfoDTO> rentCarInfo = rentCarInfoMapper.getRentCarList(rowBounds);
+		List<RentCarInfoDTO> rentCarInfo = rentCarInfoMapper.getRentCarList(map, rowBounds);
 		
 		log.info("rentCarInfo : {}",rentCarInfo);
 		
@@ -118,11 +110,11 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 		
 		log.info("carInfo : {}",carInfo);
 				
-		map.put("pageInfo", pageInfo);
-		map.put("rentCarInfo", rentCarInfo);
-		map.put("carInfo", carInfo);
+		returnmap.put("pageInfo", pageInfo);
+		returnmap.put("rentCarInfo", rentCarInfo);
+		returnmap.put("carInfo", carInfo);
 		
-		return map;
+		return returnmap;
 	}
 
 
@@ -151,7 +143,7 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 					.categoryNo(categoryNo)
 					.carNo(rentCarInfo.getCarNo())
 					.rentCarPrice(rentCarInfo.getRentCarPrice())
-					.enrollPlace(rentCarInfo.getEnrollPlace())
+					.garageNo(rentCarInfo.getGarageNo())
 					.status(rentCarInfo.getStatus())
 					.build();
 			log.info("rentCarInfoVo : {}",rentCarInfoVo);

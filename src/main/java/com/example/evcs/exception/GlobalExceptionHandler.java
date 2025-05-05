@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
 	
 	// 게시글 등록 시 파일 없으면 예외처리
 	@ExceptionHandler(NoFileException.class)
-	public ResponseEntity<?> handlerNotAdminRoleError(NoFileException e){
+	public ResponseEntity<?> NoFileException(NoFileException e){
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
 	
 	// 파일 등록시 에러
 	@ExceptionHandler(InsertFileException.class)
-	public ResponseEntity<?> handlerNotAdminRoleError(InsertFileException e){
+	public ResponseEntity<?> InsertFileException(InsertFileException e){
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
