@@ -51,6 +51,7 @@ mybatis:
     com.example.evcs.admin.carInfo.model.vo , com.example.evcs.admin.carInfo.model.dto, com.example.evcs.admin.rentCarInfo.model.dto, com.example.evcs.admin.rentCarInfo.model.vo 
     com.example.evcs.event.model.vo, com.example.evcs.event.model.dto
     com.example.evcs.admin.garage.model.vo, com.example.evcs.admin.garage.model.dto
+    com.example.evcs.admin.hotdeal.model.vo, com.example.evcs.admin.hotdeal.model.dto
 
 logging:
   level:
