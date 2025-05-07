@@ -41,8 +41,11 @@
 	     	<foreach collection="carNos" item="carNo" open="(" separator="," close=")">
 	       		#{carNo}
 	     	</foreach>
-	     	AND H.START_DATE &lt; #{endDate}
-	     	AND H.END_DATE   &gt; #{startDate}
+	     	<if test="hotdealNo != null">
+		     	AND H.HOT_DEAL_NO != #{hotdealNo}  
+	     	</if>
+	     	AND H.START_DATE &lt;= #{endDate}
+	     	AND H.END_DATE   &gt;= #{startDate}
 	</select>
 
 	
@@ -105,12 +108,16 @@
 		ON 
 			(H.WRITER = M.MEMBER_NO)	
 		WHERE 1=1
-		      <if test="startDate != null and startDate != '' ">
-		        AND H.END_DATE &gt;= #{startDate}
+		      <if test="startDate != null and startDate != '' and endDate   != null and endDate   != ''">
+		         AND H.START_DATE &lt;= #{endDate}
+		         AND H.END_DATE   &gt;= #{startDate}
 		      </if>
-		      <if test="endDate != null and endDate != '' ">
-		        AND H.START_DATE &lt;= #{endDate}
-		      </if>
+		      <if test="startDate != null and startDate != '' and (endDate == null or endDate == '')">
+			     AND H.END_DATE &gt;= #{startDate}
+			  </if>
+			  <if test="endDate != null and endDate != '' and (startDate == null or startDate == '')">
+				  AND H.START_DATE &lt;= #{endDate}
+			  </if>
 			  <if test="'ing'.equals(ing)">
 			  	AND H.STATUS = 'Y'
 			  </if>
@@ -118,7 +125,7 @@
 			  	AND H.STATUS = 'N'
 			  </if>
 			  <if test="searchKeyword != null and searchKeyword != ''">
-				AND H.HOT_DEAL_NAME LIKE '%' || #{searchKeyword} || '%'
+				AND UPPER(H.HOT_DEAL_NAME) LIKE '%' || UPPER(#{searchKeyword}) || '%'
 			  </if>
 		ORDER BY 
 			H.ENROLL_DATE ASC
@@ -156,77 +163,161 @@
 			H.ENROLL_DATE ASC
 	</select>
 	
+	<delete id="deleteHotdealCars" parameterType="long">
+	  DELETE 
+	  	FROM 
+	  		EV_ING_HOTDEAL
+	  WHERE 
+	  		HOT_DEAL_NO = #{hotdealNo}
+	</delete>
 	
-	<select id="selectAllRentCar"
-				parameterType="map"
-				resultType="RentCarInfoDTO">
-		SELECT
-			   		E1.RENT_CAR_NO rentCarNo
-				  , E2.CATEGORY_NAME categoryName
-				  , E1.CAR_NO carNo
-				  , E1.RENT_CAR_PRICE rentCarPrice
-				  , G.ALL_ADDRESS enrollPlace
-  				  , G.POST_ADD postAdd
-  				  , G.GARAGE_NO garageNo
-				  , E1.ENROLL_DATE enrollDate
-				  , E1.STATUS status
-				  , CASE 
-						WHEN E1.STATUS = 'Y' THEN '사용중'
-						WHEN E1.STATUS = 'N' THEN '사용불가'
-						ELSE '알수없음'
-			  		END AS statusName
-			  	  , (SELECT FILE_LOAD FROM EV_CAR_IMAGE I1 WHERE I1.CAR_NO = E1.CAR_NO) fileLoad
-			  	  , CI.CAR_COMPANY carCompany
-			  	  , CI.CAR_TYPE carType
-			  	  , CI.CAR_NAME carName
-			  	  , CI.CAR_YEAR carYear
-		  FROM
-		  	   EV_RENT_CAR_INFO E1
-		  LEFT JOIN
-		  	   EV_CATEGORY E2 ON (E1.CATEGORY_NO = E2.CATEGORY_NO)
-	 	  LEFT JOIN
-  		       EV_GARAGE G ON (G.GARAGE_NO = E1.GARAGE_NO)
-  		  LEFT JOIN
-  		  		EV_CAR_INFO CI ON (E1.CAR_NO = CI.CAR_NO)
-  		 WHERE 1=1
-	  		 <choose>
-	  		 	<when test="'ing'.equals(useStatus)">
-	  		 		AND E1.STATUS = 'Y'
-	  		 	</when>
-	  		 	<when test="'noIng'.equals(useStatus)">
-	  		 		AND E1.STATUS = 'N'
-	  		 	</when>
-	  		 </choose>
-			  <choose>
-		  		<when test="'timeRentCar'.equals(carCategory)">
-	  				AND E2.CATEGORY_NO = 1
-		  		</when>
-		  		<when test="'longRentCar'.equals(carCategory)">
-	  				AND E2.CATEGORY_NO = 2
-		  		</when>
-		  		<when test="'subsRentCar'.equals(carCategory)">
-	  				AND E2.CATEGORY_NO = 3
-		  		</when>
-			  </choose>
-			  <choose>
-			  	<when test="'allAddress'.equals(searchCategory)">
-			  		AND G.ALL_ADDRESS LIKE '%' || #{searchKeyword} || '%'
-			  	</when>
-			  	<when test="'carType'.equals(searchCategory)">
-			  		AND CI.CAR_TYPE LIKE '%' || #{searchKeyword} || '%'
-			  	</when>
-			  	<when test="'carCompany'.equals(searchCategory)">
-			  		AND CI.CAR_COMPANY LIKE '%' || #{searchKeyword} || '%'
-			  	</when>
-			  	<when test="'carName'.equals(searchCategory)">
-			  		AND CI.CAR_NAME LIKE '%' || #{searchKeyword} || '%'
-			  	</when>
-			  </choose>
-		 ORDER
-		 	BY
-		 		E1.ENROLL_DATE DESC
+	
+	<select id="selectAllRentCar" parameterType="map" resultType="RentCarInfoDTO">
+	  SELECT
+	      E1.RENT_CAR_NO      AS rentCarNo,
+	      E2.CATEGORY_NAME    AS categoryName,
+	      E1.CAR_NO           AS carNo,
+	      E1.RENT_CAR_PRICE   AS rentCarPrice,
+	      G.ALL_ADDRESS       AS enrollPlace,
+	      G.POST_ADD          AS postAdd,
+	      G.GARAGE_NO         AS garageNo,
+	      E1.ENROLL_DATE      AS enrollDate,
+	      E1.STATUS           AS status,
+	      CASE
+	        WHEN E1.STATUS = 'Y' THEN '사용중'
+	        WHEN E1.STATUS = 'N' THEN '사용불가'
+	        ELSE '알수없음'
+	      END                 AS statusName,
+	      (SELECT FILE_LOAD
+	         FROM EV_CAR_IMAGE I1
+	        WHERE I1.CAR_NO = E1.CAR_NO
+	          AND ROWNUM = 1
+	      )                   AS fileLoad,
+	      CI.CAR_COMPANY      AS carCompany,
+	      CI.CAR_TYPE         AS carType,
+	      CI.CAR_NAME         AS carName,
+	      CI.CAR_YEAR         AS carYear
+	  FROM EV_RENT_CAR_INFO E1
+	  LEFT  JOIN EV_CATEGORY  E2 ON E1.CATEGORY_NO = E2.CATEGORY_NO
+	  LEFT  JOIN EV_GARAGE    G  ON G.GARAGE_NO     = E1.GARAGE_NO
+	  LEFT  JOIN EV_CAR_INFO  CI ON CI.CAR_NO       = E1.CAR_NO
+	
+	  WHERE 1=1
+	    <choose>
+	      <when test="'ing'.equals(useStatus)">
+	        AND E1.STATUS = 'Y'
+	      </when>
+	      <when test="'noIng'.equals(useStatus)">
+	        AND E1.STATUS = 'N'
+	      </when>
+	    </choose>
+	
+	    <choose>
+	      <when test="'timeRentCar'.equals(carCategory)">
+	        AND E2.CATEGORY_NO = 1
+	      </when>
+	      <when test="'longRentCar'.equals(carCategory)">
+	        AND E2.CATEGORY_NO = 2
+	      </when>
+	      <when test="'subsRentCar'.equals(carCategory)">
+	        AND E2.CATEGORY_NO = 3
+	      </when>
+	    </choose>
+	
+	    <choose>
+	      <when test="'allAddress'.equals(searchCategory)">
+	        AND G.ALL_ADDRESS LIKE '%' || #{searchKeyword} || '%'
+	      </when>
+	      <when test="'carType'.equals(searchCategory)">
+	        AND UPPER(CI.CAR_TYPE) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	      </when>
+	      <when test="'carCompany'.equals(searchCategory)">
+	        AND UPPER(CI.CAR_COMPANY) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	      </when>
+	      <when test="'carName'.equals(searchCategory)">
+	        AND UPPER(CI.CAR_NAME) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	      </when>
+	    </choose>
+	
+	  ORDER BY E1.ENROLL_DATE DESC
 	</select>
 	
+	<select id="selectAllHotdealRentCar" parameterType="map" resultType="RentCarInfoDTO">
+	  SELECT
+	      E1.RENT_CAR_NO      AS rentCarNo,
+	      E2.CATEGORY_NAME    AS categoryName,
+	      E1.CAR_NO           AS carNo,
+	      E1.RENT_CAR_PRICE   AS rentCarPrice,
+	      G.ALL_ADDRESS       AS enrollPlace,
+	      G.POST_ADD          AS postAdd,
+	      G.GARAGE_NO         AS garageNo,
+	      E1.ENROLL_DATE      AS enrollDate,
+	      E1.STATUS           AS status,
+	      CASE
+	        WHEN E1.STATUS = 'Y' THEN '사용중'
+	        WHEN E1.STATUS = 'N' THEN '사용불가'
+	        ELSE '알수없음'
+	      END                 AS statusName,
+	      (SELECT FILE_LOAD
+	         FROM EV_CAR_IMAGE I1
+	        WHERE I1.CAR_NO = E1.CAR_NO
+	          AND ROWNUM = 1
+	      )                   AS fileLoad,
+	      CI.CAR_COMPANY      AS carCompany,
+	      CI.CAR_TYPE         AS carType,
+	      CI.CAR_NAME         AS carName,
+	      CI.CAR_YEAR         AS carYear,
+	      IH.HOT_DEAL_NO      AS hotdealNo
+	  FROM EV_RENT_CAR_INFO E1
+	  INNER JOIN EV_ING_HOTDEAL IH 
+	    ON E1.RENT_CAR_NO = IH.RENT_CAR_NO
+	   <if test="hotdealNo != null and hotdealNo != ''">
+	   		AND IH.HOT_DEAL_NO = #{hotdealNo}       
+	   </if>
+	  LEFT  JOIN EV_CATEGORY  E2 ON E1.CATEGORY_NO = E2.CATEGORY_NO
+	  LEFT  JOIN EV_GARAGE    G  ON G.GARAGE_NO     = E1.GARAGE_NO
+	  LEFT  JOIN EV_CAR_INFO  CI ON CI.CAR_NO       = E1.CAR_NO
+	
+	  WHERE 1=1
+	    <choose>
+	      <when test="'ing'.equals(useStatus)">
+	        AND E1.STATUS = 'Y'
+	      </when>
+	      <when test="'noIng'.equals(useStatus)">
+	        AND E1.STATUS = 'N'
+	      </when>
+	    </choose>
+	
+	    <choose>
+	      <when test="'timeRentCar'.equals(carCategory)">
+	        AND E2.CATEGORY_NO = 1
+	      </when>
+	      <when test="'longRentCar'.equals(carCategory)">
+	        AND E2.CATEGORY_NO = 2
+	      </when>
+	      <when test="'subsRentCar'.equals(carCategory)">
+	        AND E2.CATEGORY_NO = 3
+	      </when>
+	    </choose>
+	
+	    <choose>
+	      <when test="'allAddress'.equals(searchCategory)">
+	        AND G.ALL_ADDRESS LIKE '%' || #{searchKeyword} || '%'
+	      </when>
+	      <when test="'carType'.equals(searchCategory)">
+	        AND UPPER(CI.CAR_TYPE) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	      </when>
+	      <when test="'carCompany'.equals(searchCategory)">
+	        AND UPPER(CI.CAR_COMPANY) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	      </when>
+	      <when test="'carName'.equals(searchCategory)">
+	        AND UPPER(CI.CAR_NAME) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	      </when>
+	    </choose>
+	
+	  ORDER BY E1.ENROLL_DATE DESC
+	</select>
+		
 	<update id="updateHotdeal"
 			parameterType="Hotdeal"
 	>
@@ -241,6 +332,26 @@
 		WHERE 
 			HOT_DEAL_NO = #{ hotdealNo }
 	</update>
+	
+	<insert id="updateInsertIngHotdeal" 
+			parameterType="Hotdeal"
+	>
+	  INSERT ALL
+	  
+	  <foreach collection="carNos" item="carNo">
+	    INTO 
+	    	EV_ING_HOTDEAL 
+	    		(
+					  HOT_DEAL_NO
+					, RENT_CAR_NO
+				)
+	    VALUES (
+					 #{hotdealNo}
+					, #{carNo})
+	  </foreach>
+	  SELECT * FROM DUAL
+
+	</insert>
 	
 	<update id="deleteByHotdealNo"
 			parameterType="long"

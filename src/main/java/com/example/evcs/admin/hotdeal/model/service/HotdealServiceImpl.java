@@ -99,12 +99,30 @@ public class HotdealServiceImpl implements HotdealService {
 		
 		return returnMap;
 	}
+	
+	@Override
+	public Map<String, Object> selectAllHotdealRentCar(Map<String, String> map) {
+		Map<String, Object> returnMap = new HashMap();
+		
+		// 특수문자 이스케이프 처리
+		map.put("searchKeyword", boardUtil.escapeLikeParam(map.get("searchKeyword")));
+		
+		List<RentCarInfoDTO> list = new ArrayList();
+		
+		list = hotdealMapper.selectAllHotdealRentCar(map);
+		
+		log.info("rentCarList : {}", list);
+		returnMap.put("rentCarList", list);
+		
+		return returnMap;
+	}
 
 	@Override
 	public void updateHotdeal(HotdealDTO hotdeal) {
 		CustomUserDetails user = authService.getUserDetails();
 		Long memberNo = user.getMemberNo();
 
+		
 		Hotdeal requestData = null;
 		
 		requestData = Hotdeal.builder()
@@ -114,7 +132,17 @@ public class HotdealServiceImpl implements HotdealService {
 				.dealPercent(hotdeal.getDealPercent())
 				.startDate(hotdeal.getStartDate())
 				.endDate(hotdeal.getEndDate())
+				.carNos(hotdeal.getCarNos()) 
 				.build();
+		
+		// 입력한 기간에 이미 핫딜이 진행중인 렌트카가 있는지 체크
+		List<String> conflict = hotdealMapper.selectDuplicateHotdeal(requestData);
+	    if (!conflict.isEmpty()) {
+	        throw new DuplicateHotdealException(conflict);
+	    }
+		
+		hotdealMapper.deleteHotdealCars(hotdeal.getHotdealNo());
+		hotdealMapper.updateInsertIngHotdeal(requestData);
 
 		hotdealMapper.updateHotdeal(requestData);
 	}

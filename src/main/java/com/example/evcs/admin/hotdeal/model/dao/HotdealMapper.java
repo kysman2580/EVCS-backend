@@ -22,7 +22,13 @@ public interface HotdealMapper {
 	List<HotdealDTO> selectHotdealAll(Map<String, String> map);
 
 	List<RentCarInfoDTO> selectAllRentCar(Map<String, String> map);
+
+	List<RentCarInfoDTO> selectAllHotdealRentCar(Map<String, String> map);
 	
+	void deleteHotdealCars(Long hotdealNo);
+	
+	void updateInsertIngHotdeal(Hotdeal hotdeal);
+
 	void updateHotdeal(Hotdeal hotdeal);
 	
 	void deleteByHotdealNo(Long hotdealNo);

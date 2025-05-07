@@ -11,6 +11,8 @@ public interface HotdealService {
 	Map<String , Object> selectHotdealAll(Map<String, String> map);
 	
 	Map<String , Object> selectAllRentCar(Map<String, String> map);
+
+	Map<String , Object> selectAllHotdealRentCar(Map<String, String> map);
 	
 	void updateHotdeal(HotdealDTO hotdeal);
 	

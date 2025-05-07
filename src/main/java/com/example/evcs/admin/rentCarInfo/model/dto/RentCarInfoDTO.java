@@ -30,4 +30,5 @@ public class RentCarInfoDTO {
 	private String carType;
 	private String carName;
 	private String carYear;
+	private String hotdealNo;
 }
