@@ -32,4 +32,20 @@ public class ReportServiceImpl implements ReportService {
     public int getTotalReportCount(String startDate, String endDate, String title) {
         return mapper.countReports(startDate, endDate, title);
     }
+    
+    @Override
+    public void updateReportStatus(Long rpNo, String status) {
+        mapper.updateReportStatus(rpNo, status);
+    }
+
+	@Override
+	public List<Report> getReportsForUser(Long memberNo, String startDate, String endDate, String title, int offset,
+			int size) {
+		return null;
+	}
+
+	@Override
+	public int getTotalReportCountForUser(Long memberNo, String startDate, String endDate, String title) {
+		return 0;
+	}
 }

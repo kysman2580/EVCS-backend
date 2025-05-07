@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.example.evcs.reporting.model.vo.Report;
 
@@ -112,4 +113,38 @@ public interface ReportMapper {
         ORDER BY b.RP_ENROLLDATE DESC
     """)
     List<Report> selectAllReports();
+    
+    /** RP_STATUS 컬럼을 Y → N 으로 업데이트 */
+    @Update("""
+          UPDATE EV_RP_BULLETIN
+          SET RP_STATUS = #{status}
+          WHERE RP_NO = #{rpNo}
+    """)
+    void updateReportStatus(@Param("rpNo") Long rpNo,
+                            @Param("status") String status);
+    
+    @Select("""
+    	    SELECT * FROM (
+    	        SELECT inner_query.*, ROWNUM AS rn
+    	        FROM (
+    	            SELECT ...
+    	            FROM EV_RP_BULLETIN b
+    	            WHERE b.MEMBER_NO = #{memberNo}
+    	              AND (#{title} IS NULL OR b.RP_TITLE LIKE '%' || #{title} || '%')
+    	              AND (#{startDate} IS NULL OR b.RP_ENROLLDATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD'))
+    	              AND (#{endDate} IS NULL OR b.RP_ENROLLDATE <= TO_DATE(#{endDate}, 'YYYY-MM-DD'))
+    	            ORDER BY b.RP_ENROLLDATE DESC
+    	        ) inner_query
+    	        WHERE ROWNUM <= #{offset} + #{size}
+    	    )
+    	    WHERE rn > #{offset}
+    	""")
+    List<Report> selectReportsForUser(
+    	    @Param("memberNo") Long memberNo,
+    	    @Param("startDate") String startDate,
+    	    @Param("endDate") String endDate,
+    	    @Param("title") String title,
+    	    @Param("offset") int offset,
+    	    @Param("size") int size
+    	);
 }

@@ -6,14 +6,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.evcs.auth.model.vo.CustomUserDetails;
 import com.example.evcs.reporting.model.vo.Report;
 import com.example.evcs.reporting.service.ReportService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @RestController
 @RequestMapping("/api/reports")
@@ -47,9 +50,8 @@ public class ReportController {
         return ResponseEntity.ok(result);
     }
 
-    /** [GET] /api/reports/{rpNo} — 상세 조회 */
     @GetMapping("/{rpNo}")
-    public ResponseEntity<Report> detail(@PathVariable Long rpNo) {
+    public ResponseEntity<Report> detail(@PathVariable("rpNo") Long rpNo) {
         Report rpt = service.getReportById(rpNo);
         if (rpt == null) {
             return ResponseEntity.notFound().build();
