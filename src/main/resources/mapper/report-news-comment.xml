@@ -1,0 +1,26 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.example.evcs.reporting.mapper.NewsCommentReportMapper">
+
+    <insert id="insertCommentReport" parameterType="com.example.evcs.reporting.model.dto.NewsCommentReportDTO">
+	 INSERT INTO EV_RE_COMMENTS01 (
+	        RE_NO,
+	        MEMBER_NO,
+	        RE_MEMBER_NO,
+	        RE_CONTENT,
+	        RE_ENROLLDATE,
+	        COMMENT_DEPTH,
+	        COMMENT_GROUP_NO
+	    ) VALUES (
+	        FLOOR(DBMS_RANDOM.VALUE(1000000000, 9999999999)),
+	        #{reporter},
+	        (SELECT MEMBER_NO FROM EV_NEWS_CMT WHERE NEWS_CMT_ID = #{newsCmtId}),
+	        #{reportReason},
+	        SYSDATE,
+	        DECODE((SELECT NEWS_CMT_PARENT_ID FROM EV_NEWS_CMT WHERE NEWS_CMT_ID = #{newsCmtId}), NULL, 0, 1),
+	        NVL((SELECT NEWS_CMT_PARENT_ID FROM EV_NEWS_CMT WHERE NEWS_CMT_ID = #{newsCmtId}), #{newsCmtId})
+	    )
+    </insert>
+</mapper>
