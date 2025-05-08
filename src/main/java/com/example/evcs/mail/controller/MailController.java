@@ -1,4 +1,3 @@
-/*
 package com.example.evcs.mail.controller;
 
 import org.springframework.http.ResponseEntity;
@@ -61,4 +60,3 @@ public class MailController {
 	}
 
 }
-*/
