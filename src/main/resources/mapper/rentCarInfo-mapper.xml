@@ -119,6 +119,7 @@
 						WHEN E1.STATUS = 'N' THEN '사용불가'
 						ELSE '알수없음'
 			  		END AS statusName
+			  	  , (SELECT FILE_LOAD FROM EV_CAR_IMAGE I1 WHERE I1.CAR_NO = E1.CAR_NO) fileLoad
 		  FROM
 		  	   EV_RENT_CAR_INFO E1
 		  JOIN

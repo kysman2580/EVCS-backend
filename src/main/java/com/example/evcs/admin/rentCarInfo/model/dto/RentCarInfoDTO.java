@@ -25,4 +25,12 @@ public class RentCarInfoDTO {
 	private String enrollPlace;
 	private String postAdd;
 	private String statusName;
+	private String fileLoad;
+	private String carCompany;
+	private String carType;
+	private String carName;
+	private String carYear;
+	private String hotdealNo;
+	private String regionSido;
+	private String ingHotdeal;
 }
