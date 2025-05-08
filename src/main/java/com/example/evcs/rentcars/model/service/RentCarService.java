@@ -7,4 +7,6 @@ import com.example.evcs.admin.rentCarInfo.model.dto.RentCarInfoDTO;
 public interface RentCarService {
 
 	List<RentCarInfoDTO> selectAllRentCar(int category);
+	
+	RentCarInfoDTO selectRentCarByRentCarNo(Long rentCarNo);
 }
