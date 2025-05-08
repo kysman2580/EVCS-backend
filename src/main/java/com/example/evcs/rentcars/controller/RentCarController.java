@@ -33,13 +33,13 @@ public class RentCarController {
 		return ResponseEntity.ok(list);
 	}
 
-	@GetMapping("/{rentCarNo}")
-	public ResponseEntity<RentCarInfoDTO> selectRentCarByRentCarNo(@PathVariable("rentCarNo") Long rentCarNo){
-	
-		RentCarInfoDTO rentCar = rentCarService.selectRentCarByRentCarNo(rentCarNo);
-		
-		log.info("returnList : {}" , rentCar);
-		return ResponseEntity.ok(rentCar);
-	}
+//	@GetMapping("/{rentCarNo}")
+//	public ResponseEntity<RentCarInfoDTO> selectRentCarByRentCarNo(@PathVariable("rentCarNo") Long rentCarNo){
+//	
+//		RentCarInfoDTO rentCar = rentCarService.selectRentCarByRentCarNo(rentCarNo);
+//		
+//		log.info("returnList : {}" , rentCar);
+//		return ResponseEntity.ok(rentCar);
+//	}
 	
 }

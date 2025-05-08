@@ -1,5 +1,6 @@
 package com.example.evcs.admin.carInfo.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,27 @@ public class CarInfoController {
 		carInfoService.insertCar(carInfo,file);
 		
 		return ResponseEntity.status(HttpStatus.OK).body("차량 등록에 성공하셨습니다~");
+	}
+	
+	// 차종 관리 메인 페이지 전체 조회
+	@GetMapping
+	public ResponseEntity<?> selectAllCarInfo(
+			@RequestParam (name ="carCompanyNo", required = false) String carCompanyNo,
+			@RequestParam (name ="carTypeNo", required = false) String carTypeNo,
+			@RequestParam (name ="searchKeyword", required = false) String searchKeyword
+			){
+		
+		log.info("CarInfoController selectAllCarInfo : carCompanyNo : {} // carTypeNo : {} // searchKeyword : {}"
+				, carCompanyNo, carTypeNo, searchKeyword);
+		
+		Map<String, String> map = new HashMap();
+		map.put("carCompanyNo", carCompanyNo);
+		map.put("carTypeNo", carTypeNo);
+		map.put("searchKeyword", searchKeyword);
+		
+		Map<String, Object> returnMap = carInfoService.selectAllCarInfo(map);
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(returnMap);
 	}
 	
 	// 차종 조회
