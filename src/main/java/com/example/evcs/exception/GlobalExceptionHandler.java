@@ -71,5 +71,12 @@ public class GlobalExceptionHandler {
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
+
+	@ExceptionHandler(NoticeNotFoundException.class)
+	public ResponseEntity<?> NonExistingError(NoticeNotFoundException e){
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
 	
 }
