@@ -3,6 +3,7 @@ package com.example.evcs.notice.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,19 +42,26 @@ public class NoticeController {
     }
 
     @PostMapping
-    public NoticeDto createNotice(@RequestBody NoticeDto dto) {
-    	
-        return noticeService.createNotice(dto);
+    public ResponseEntity<Void> createNotice(@RequestBody NoticeDto dto) {
+        noticeService.createNotice(dto);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
-    public NoticeDto updateNotice(@PathVariable Long id, @RequestBody NoticeDto dto) {
+    public NoticeDto updateNotice(@PathVariable("id") Long id, @RequestBody NoticeDto dto) {
         return noticeService.updateNotice(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteNotice(@PathVariable Long id) {
-        noticeService.deleteNotice(id);
+    public ResponseEntity<?> deleteNotice(@PathVariable("id") Long id) {
+        try {
+            noticeService.deleteNotice(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("공지사항 삭제 실패: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body("삭제 실패: " + e.getMessage());
+        }
     }
+
 }
 
