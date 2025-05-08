@@ -103,8 +103,6 @@ public class CarInfoServiceImpl implements CarInfoService{
 		return map;
 	}
 
-	
-	
 	@Override
 	public CarImageDTO getCarImage(String carName) {
 		
@@ -121,7 +119,6 @@ public class CarInfoServiceImpl implements CarInfoService{
 		} else {
 			throw new NonExistingException("차량이 존재하지 않습니다.");
 		}
-		
 	}
 
 	@Override
@@ -159,7 +156,8 @@ public class CarInfoServiceImpl implements CarInfoService{
 		
 		if(file != null && !file.isEmpty()) {
 			
-			filePath = fileUtil.saveFile(file).replace("uploads/", "uploads/car/");
+			filePath = fileUtil.saveFile(file);
+//			filePath = fileUtil.saveFile(file).replace("uploads/", "uploads/car/");
 			
 			carImageData = CarImage.builder()
 							.carNo(carInfo.getCarNo())
@@ -171,8 +169,6 @@ public class CarInfoServiceImpl implements CarInfoService{
 		} else {
 			return;
 		}
-		
-	
 	}
 	
 	public void deleteCar(CarInfoDTO carInfo) {

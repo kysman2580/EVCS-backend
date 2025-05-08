@@ -6,14 +6,22 @@
 
 	<sql id="eventColumn">
 		SELECT 
-			  EVENT_NO eventNo
-			, MEMBER_NO memberNo
-			, EVENT_NAME eventName
-			, START_DATE startDate
-			, END_DATE endDate
-			, EVENT_CONTENT eventContent
-			, ENROLL_DATE enrollDate
-			, STATUS status
+			  E.EVENT_NO eventNo
+			, E.MEMBER_NO memberNo
+			, E.EVENT_NAME eventName
+			, E.START_DATE startDate
+			, E.END_DATE endDate
+			, E.EVENT_CONTENT eventContent
+			, E.ENROLL_DATE enrollDate
+			, E.STATUS status
+			, M.MEMBER_NICKNAME memberNickname
+			, F.FILE_LOAD filePath
+			, CASE 
+				WHEN E.STATUS = 'Y' THEN '진행중'
+				WHEN E.STATUS = 'N' THEN '마감'
+				ELSE '알수없음'
+			  END AS statusName
+			, STATUS
 	</sql>
 
 	<insert id="insertEvent"
@@ -47,7 +55,15 @@
 		<include refid="eventColumn" />
 		
 		FROM 
-			EV_EVENT
+			EV_EVENT E
+		JOIN 
+			EV_MEMBER M 
+		ON 
+			(E.MEMBER_NO = M.MEMBER_NO)	
+		LEFT JOIN 
+			EV_EVENT_FILE F 
+		ON 
+			(E.EVENT_NO = F.EVENT_NO)
 		WHERE 1=1
 		<choose>
 		  <when test="category eq 'eventName'">
@@ -57,8 +73,18 @@
 		    AND EVENT_CONTENT LIKE '%' || #{searchKeyword} || '%'
 		  </when>
 		</choose>
-		AND
-			STATUS = 'Y'
+		<choose>
+			<when test="ingCategory neq 'allEvent'">
+				<if test="ingCategory eq 'ingEvent'">
+					AND STATUS = 'Y'
+				</if>
+				<if test="ingCategory eq 'endEvent'">
+					AND STATUS = 'N'
+				</if>
+			</when>
+		</choose>
+		ORDER BY 
+			E.EVENT_NO ASC
 	</select>
 	
 	<select id="selectByEventNo"
@@ -66,9 +92,16 @@
 			resultType="EventDTO"
 	>
 		<include refid="eventColumn" />
-		
 		FROM
-			EV_EVENT
+			EV_EVENT E
+		JOIN 
+			EV_MEMBER M 
+			ON 
+				(E.MEMBER_NO = M.MEMBER_NO)
+		LEFT JOIN 
+    			EV_EVENT_FILE F 
+    		ON 
+    			(E.EVENT_NO = F.EVENT_NO)
 		WHERE
 			EVENT_NO = #{ eventNo }
 		AND
@@ -109,5 +142,67 @@
 		WHERE 
 			EVENT_NO = #{ eventNo }
 	</update>
-
+	
+	<select id="selectTotalCount"
+			parameterType="map"
+			resultType="_int"
+	>
+		SELECT 
+				COUNT(EVENT_NO)
+		FROM 
+			EV_EVENT
+		WHERE 1 = 1
+ 		<choose>
+		  <when test="category eq 'eventName'">
+		    AND EVENT_NAME LIKE '%' || #{searchKeyword} || '%'
+		  </when>
+		  <when test="category eq 'eventContent'">
+		    AND EVENT_CONTENT LIKE '%' || #{searchKeyword} || '%'
+		  </when>
+		</choose>
+				<choose>
+			<when test="ingCategory neq 'allEvent'">
+				<if test="ingCategory eq 'ingEvent'">
+					AND STATUS = 'Y'
+				</if>
+				<if test="ingCategory eq 'endEvent'">
+					AND STATUS = 'N'
+				</if>
+			</when>
+		</choose>
+	</select>
+	
+	<select id="selctEventAllUser"
+			parameterType="map"
+			resultType="EventDTO"
+	>
+		<include refid="eventColumn" />
+		
+		FROM 
+			EV_EVENT E
+		JOIN 
+			EV_MEMBER M 
+		ON 
+			(E.MEMBER_NO = M.MEMBER_NO)	
+		LEFT JOIN 
+			EV_EVENT_FILE F 
+		ON 
+			(E.EVENT_NO = F.EVENT_NO)
+		WHERE 1=1
+			AND STATUS = 'Y'
+		ORDER BY 
+			E.ENROLL_DATE ASC
+	</select>
+	
+	<select id="selectTotalCountUser"
+			parameterType="_int"
+			resultType="_int"
+	>
+		SELECT 
+				COUNT(EVENT_NO)
+		FROM 
+			EV_EVENT
+		WHERE 1 = 1
+			AND STATUS = 'Y'
+	</select>
 </mapper>

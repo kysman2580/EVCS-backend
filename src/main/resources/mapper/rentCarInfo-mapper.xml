@@ -5,31 +5,54 @@
 
 <mapper namespace="com.example.evcs.admin.rentCarInfo.model.dao.RentCarInfoMapper">
 	
-<!--	<select id="findByCarName"
-				parameterType="String"
-				resultType="int">
-		SELECT 
-				COUNT(*)		   
-	  	  FROM
-	  	 		EV_CAR_INFO
-	  	 WHERE
-	  	 		CAR_NAME = #{carName}
-	</select>-->
+
 	
-		
-	<select id="findCarNoByCarName"
-				parameterType="String"
-				resultType="int">
-		SELECT 
-				CAR_NO carNo		   
-	  	  FROM
-	  	 		EV_CAR_INFO
-	  	 WHERE
-	  	 		CAR_NAME = #{carName}
+	<select id="getRentCarCategory"
+				resultType="String">
+		SELECT
+				CATEGORY_NAME
+		  FROM
+		  		EV_CATEGORY
 	</select>
+
+	<select id="getAllCarInfo"
+				resultType="CarInfoDTO">
+		SELECT
+				  CAR_NO carNo
+				, CAR_NAME carName
+				, CAR_TYPE carType
+				, CAR_YEAR carYear
+				, CAR_COMPANY carCompany
+				, CAR_BATTERY carBattery
+				, ENROLL_DATE enrollDate
+		  FROM
+		  		EV_CAR_INFO
+	</select>	
 	
+	<select id="getTimeRentCarInfo"
+				resultType="RentCarInfoDTO">
+		SELECT
+				    CI.RENT_CAR_NO rentCarNo
+				  , CG.CATEGORY_NAME categoryName
+				  , CI.CAR_NO carNo
+				  , CI.RENT_CAR_PRICE rentCarPrice
+				  , G.ALL_ADDRESS enrollPlace
+				  , G.POST_ADD postAdd
+				  , G.GARAGE_NO garageNo
+				  , CI.ENROLL_DATE enrollDate
+				  , CI.STATUS status
+		  FROM
+		  		EV_RENT_CAR_INFO CI
+		  JOIN
+		  		EV_CATEGORY CG ON (CG.CATEGORY_NO = CI.CATEGORY_NO)
+		  JOIN
+		  		EV_GARAGE G ON (G.GARAGE_NO = CI.GARAGE_NO)
+		 WHERE
+		 		CI.CATEGORY_NO = 1
+	</select>	
+		
 	<select id="findByCarNo"
-				parameterType="String"
+				parameterType="int"
 				resultType="int">
 		SELECT 
 				COUNT(*)	   
@@ -39,8 +62,19 @@
 	  	 		CAR_NO = #{carNo}
 	</select>
 	
+	<select id="findCategoryNoByCategoryName"
+				parameterType="String"	
+				resultType="int">
+		SELECT
+				CATEGORY_NO
+		  FROM
+		  		EV_CATEGORY
+		 WHERE
+		 		CATEGORY_NAME = #{categoryName}
+	</select>
+	
 	<insert id="insertRentCar"
-				parameterType="CarInfo">
+				parameterType="RentCarInfoVo">
 		INSERT 
 		  INTO 
 	  			EV_RENT_CAR_INFO(
@@ -48,18 +82,14 @@
 				  , CATEGORY_NO
 				  , CAR_NO
 				  , RENT_CAR_PRICE
-				  , ENROLL_PLACE
-				  , ENROLL_DATE
-				  , STATUS
+				  , GARAGE_NO
 				)
 	  			VALUES(
 				    #{rentCarNo}
 				  , #{categoryNo}
 				  , #{carNo}
 				  , #{rentCarPrice}
-				  , #{enroll_place}
-				  , #{enroll_date}
-				  , #{status}
+				  , #{garageNo}
 				)
 	</insert>
 
@@ -71,95 +101,107 @@
 		  	   EV_RENT_CAR_INFO
 	</select>
 	
-	
-	<select id="findAllCar"
-				resultType="CarInfoDTO">
+	<select id="getRentCarList"
+				parameterType="map"
+				resultType="RentCarInfoDTO">
 		SELECT
-			    CAR_NO  carNo,
-		        CAR_NAME  carName,
-		        CAR_TYPE  carType,
-		        CAR_YEAR  carYear,
-		        CAR_COMPANY  carCompany,
-		        CAR_BATTERY  carBattery,
-		        ENROLL_DATE  enrollDate
+			   		E1.RENT_CAR_NO rentCarNo
+				  , E2.CATEGORY_NAME categoryName
+				  , E1.CAR_NO carNo
+				  , E1.RENT_CAR_PRICE rentCarPrice
+				  , G.ALL_ADDRESS enrollPlace
+  				  , G.POST_ADD postAdd
+  				  , G.GARAGE_NO garageNo
+				  , E1.ENROLL_DATE enrollDate
+				  , E1.STATUS status
+				  , CASE 
+						WHEN E1.STATUS = 'Y' THEN '사용중'
+						WHEN E1.STATUS = 'N' THEN '사용불가'
+						ELSE '알수없음'
+			  		END AS statusName
+			  	  , (SELECT FILE_LOAD FROM EV_CAR_IMAGE I1 WHERE I1.CAR_NO = E1.CAR_NO) fileLoad
 		  FROM
-		  	   EV_CAR_INFO
+		  	   EV_RENT_CAR_INFO E1
+		  JOIN
+		  	   EV_CATEGORY E2 ON (E1.CATEGORY_NO = E2.CATEGORY_NO)
+	 	  JOIN
+  		       EV_GARAGE G ON (G.GARAGE_NO = E1.GARAGE_NO)
+  		 WHERE 1=1
+			  <if test="'ing'.equals(useStatus)">
+			  	AND E1.STATUS = 'Y'
+			  </if>
+			  <if test="'noIng'.equals(useStatus)">
+			  	AND E1.STATUS = 'N'
+			  </if>
+			  <choose>
+			  	<when test="'allAddress'.equals(category)">
+			  		AND G.ALL_ADDRESS LIKE '%' || #{searchKeyword} || '%'
+			  	</when>
+			  	<when test="'postAdd'.equals(category)">
+			  		AND G.POST_ADD LIKE '%' || #{searchKeyword} || '%'
+			  	</when>
+			  	<when test="'carNo'.equals(category)">
+			  		AND E1.RENT_CAR_NO LIKE '%' || #{searchKeyword} || '%'
+			  	</when>
+			  </choose>
 		 ORDER
 		 	BY
-		 	   ENROLL_DATE DESC 
+		 		E1.ENROLL_DATE DESC
 	</select>
 	
-	<select id="findImageByCarName"
-				parameterType="CarInfo"
-				resultType="com.example.evcs.admin.carInfo.model.dto.CarImageDTO">
+	<select id="getCarList"
+				resultType="CarInfoDTO">
 		SELECT
-			    T2.FILE_LOAD fileLoad
+					E1.CAR_NO carNo
+			   	  , E1.CAR_NAME carName
+				  , E1.CAR_TYPE carType
+				  , E1.CAR_YEAR carYear
+				  , E1.CAR_COMPANY carCompany
+				  , E1.CAR_BATTERY carBattery
 		  FROM
-		  	   EV_CAR_INFO T1
+		  	   EV_CAR_INFO E1
 		  JOIN
-		  	   EV_CAR_IMAGE T2 ON (T1.CAR_NO = T2.CAR_NO)
-		 WHERE
-		 	   T1.CAR_NAME = #{carName}
-
+		  	   EV_RENT_CAR_INFO E2 ON (E1.CAR_NO = E2.CAR_NO)
+		 ORDER
+		 	BY
+		 		E2.ENROLL_DATE DESC
 	</select>
 	
-	<select id="findCarByCarNo"
-				parameterType="CarInfoDTO"
+	<select id="findByRentCarNo"
+				parameterType="String"
 				resultType="int">
-		SELECT
-				COUNT(*)
-		  FROM
-		  		EV_CAR_INFO
-		 WHERE
-		 		CAR_NO = #{carNo}
+		SELECT 
+				COUNT(*)	   
+	  	  FROM
+	  	 		EV_RENT_CAR_INFO
+	  	 WHERE
+	  	 		RENT_CAR_NO = #{rentCarNo}
 	</select>
 	
-	<update id="updateCar"
-				parameterType="CarInfo">
+	<update id="updateRentCar"
+				parameterType = "RentCarInfoVO">
 		UPDATE
-				EV_CAR_INFO
-		   		SET
-					CAR_NAME = #{carName}
-				  , CAR_TYPE = #{carType}
-				  , CAR_YEAR = #{carYear}
-				  , CAR_COMPANY = #{carCompany}
-				  , CAR_BATTERY = #{carBattery}
-				
+				EV_RENT_CAR_INFO
+		   SET 
+		   		  CATEGORY_NO = #{categoryNo}
+		   		, RENT_CAR_PRICE = #{rentCarPrice}
+		   		, GARAGE_NO = #{garageNo}
+		   		, STATUS = #{status}
 		 WHERE
-		 		CAR_NO = #{carNo}			
+		  		RENT_CAR_NO = #{rentCarNo}
 	</update>
 	
-	<update id="updateCarImage"
-				parameterType="com.example.evcs.admin.carInfo.model.vo.CarImage">
-		UPDATE
-				EV_CAR_IMAGE
-		   		SET
-					FILE_LOAD = #{fileLoad}
-		 WHERE
-		 		CAR_NO = #{carNo}			
-	</update>
-	
-
-	<delete id="deleteCar"
-				parameterType="CarInfo">
-		DELETE
-		  FROM
-		  		EV_CAR_INFO
-		 WHERE
-		 		CAR_NO = #{carNo}
-	</delete>	
-	
-	<delete id="deleteCarImage"
-				parameterType="int">
-		DELETE
-		  FROM
-		  		EV_CAR_IMAGE
-		 WHERE
-		 		CAR_NO = #{carNo}
-	</delete>	
+	<delete id="deleteRentCar"
+				parameterType = "String">
+		UPDATE 
+				EV_RENT_CAR_INFO
+			SET
+				STATUS = 'N'
+		WHERE 
+			RENT_CAR_NO = #{ rentCarNo }
+	</delete>
 	
 </mapper>
-
 
 
 

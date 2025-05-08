@@ -34,18 +34,24 @@ public class FileUtil {
 		// 파일경로에 이름을 붙여줌
 		Path targetLocation = this.fileLocation.resolve(changeFileName);
 		
-		log.info("{}",targetLocation);
-		log.info("{}",targetLocation);
-		log.info("{}",targetLocation);
-		log.info("{}",targetLocation);
-		log.info("{}",targetLocation);
-		log.info("{}",targetLocation);
 		try {
 			
 			// 파일을 저장함 inputStream 만들어주고, 저장할 경로 입력, 혹시 이름이 같으면 덮어씌운다.
 			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 			
-			return "http://localhost/uploads/" + changeFileName;
+			// 경로 마지막 짤라서 뒤에 부분에 맞게 리턴
+			String fullPath = String.valueOf(this.fileLocation);
+					
+			String parentPath = fullPath.substring(fullPath.lastIndexOf("\\") + 1);
+			
+			if("event".equals(parentPath)) {
+				return "http://localhost/uploads/event/" + changeFileName;
+			}
+			if("car".equals(parentPath)) {
+				return "http://localhost/uploads/car/" + changeFileName;
+			}
+			
+			return null;
 		} catch (IOException e) {
 			throw new InsertFileException("FileUtil : 파일 생성중 에러");
 		}

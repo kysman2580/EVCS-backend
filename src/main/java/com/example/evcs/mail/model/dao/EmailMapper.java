@@ -14,7 +14,7 @@ public interface EmailMapper {
 
 
 	int existsByEmail(String email);
-
+	
 	void updateCode(EmailVerifyDTO emailVerifyDTO);
 
 	void saveCode(EmailVerifyDTO emailVerifyDTO);
@@ -28,6 +28,8 @@ public interface EmailMapper {
 	EmailVerifyDTO getEmailVerificationByPassword(PassWordEmailVerifyDTO passWordEmailVerifyDTO);
 
 	void updateEmailVerifiedByPassword(PassWordEmailVerifyDTO passWordEmailVerifyDTO);
+
+	
 
 
 

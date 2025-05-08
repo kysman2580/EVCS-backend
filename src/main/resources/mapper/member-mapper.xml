@@ -58,6 +58,11 @@
    		WHERE EMAIL = #{email}
    </update>
   
+  <update id="changePassword">
+  		UPDATE EV_MEMBER
+  		SET MEMBER_PW = #{memberPw}
+  		WHERE EMAIL = #{email}
+  </update>
   
   
   </mapper>

@@ -10,10 +10,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.evcs.exception.EmailNotFoundException;
 import com.example.evcs.exception.EmailNotVerifiedException;
+import com.example.evcs.exception.InvalidVerificationCodeException;
+import com.example.evcs.exception.MissingEmailException;
+import com.example.evcs.exception.VerificationCodeMismatchException;
 import com.example.evcs.mail.dto.EmailVerifyDTO;
 import com.example.evcs.mail.dto.PassWordEmailVerifyDTO;
 import com.example.evcs.mail.model.dao.EmailMapper;
+import com.example.evcs.member.model.service.MemberService;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -32,8 +37,15 @@ public class EmailServiceImpl implements EmailService {
 	@Override
 	@Transactional
 	public void sendVerificationCode(EmailVerifyDTO emailVerifyDTO) {
-		String code = generateRandomCode();
 		String email = emailVerifyDTO.getEmail();
+		boolean exists = emailMapper.existsByEmail(email) > 0;
+		
+		if(email == null || email.trim().isEmpty()) {
+	        throw new EmailNotFoundException("이메일을 입력해주세요.");
+		}
+		
+		
+		String code = generateRandomCode();
 		Timestamp expiresAt = Timestamp.valueOf(LocalDateTime.now().plusMinutes(5)); // 30분 유효
 
 		emailVerifyDTO.setCode(code);
@@ -48,28 +60,31 @@ public class EmailServiceImpl implements EmailService {
 			helper.setSubject("[전기충만] 이메일 인증번호 입니다.");
 			helper.setText(buildEmailBody(code), true);
 
-		
-			boolean exists = emailMapper.existsByEmail(email) > 0;
 			
-			if(exists) {
+
+			if (exists) {
 				emailMapper.updateCode(emailVerifyDTO);
 			} else {
 				emailMapper.saveCode(emailVerifyDTO);
 
 			}
-			
+
 			mailSender.send(message);
 
-
 		} catch (MessagingException e) {
-
+	        throw new RuntimeException("인증 메일 발송 중 오류가 발생했습니다.", e);
 		}
 	}
-	
+
 	@Override
 	public void sendPassWordVerificationCode(PassWordEmailVerifyDTO passWordEmailVerifyDTO) {
-		String code = generateRandomCode();
 		String email = passWordEmailVerifyDTO.getEmail();
+
+		if (email == null || email.trim().isEmpty()) {
+			throw new MissingEmailException ("이메일 주소가 입력되지 않았습니다.");
+		}
+
+		String code = generateRandomCode();
 		Timestamp expiresAt = Timestamp.valueOf(LocalDateTime.now().plusMinutes(5)); // 30분 유효
 
 		passWordEmailVerifyDTO.setCode(code);
@@ -84,31 +99,24 @@ public class EmailServiceImpl implements EmailService {
 			helper.setSubject("[전기충만] 이메일 인증번호 입니다.");
 			helper.setText(buildEmailBody(code), true);
 
-		
 			boolean exists = emailMapper.passwordExistsByEmail(email) > 0;
-			
-			if(exists) {
+
+			if (exists) {
 				emailMapper.passwordUpdateCode(passWordEmailVerifyDTO);
 			} else {
 				emailMapper.passwordSaveCode(passWordEmailVerifyDTO);
 
 			}
-			
+
 			mailSender.send(message);
 
-
 		} catch (MessagingException e) {
-
+			throw new RuntimeException("이메일 전송 실패", e);
 		}
 	}
-	
-	
-	
 
 	public void verifyCode(EmailVerifyDTO emailVerifyDTO) {
 		EmailVerifyDTO verifyCode = emailMapper.getEmailVerification(emailVerifyDTO);
-
-		log.info("이메일: {}, 인증코드: {}", emailVerifyDTO.getEmail(), emailVerifyDTO.getCode());
 
 		if (verifyCode == null || !verifyCode.getCode().equals(emailVerifyDTO.getCode())) {
 			throw new EmailNotVerifiedException("인증번호가 유효하지 않습니다.");
@@ -116,23 +124,24 @@ public class EmailServiceImpl implements EmailService {
 
 		emailMapper.updateEmailVerified(emailVerifyDTO);
 	}
-	
-	
+
 	@Override
 	public void passwordVerifyCode(PassWordEmailVerifyDTO passWordEmailVerifyDTO) {
 		EmailVerifyDTO verifyCode = emailMapper.getEmailVerificationByPassword(passWordEmailVerifyDTO);
 
-		log.info("이메일: {}, 인증코드: {}", passWordEmailVerifyDTO.getEmail(), passWordEmailVerifyDTO.getCode());
 
-		if (verifyCode == null || !verifyCode.getCode().equals(passWordEmailVerifyDTO.getCode())) {
-			throw new EmailNotVerifiedException("인증번호가 유효하지 않습니다.");
+		if (passWordEmailVerifyDTO.getCode() == null || passWordEmailVerifyDTO.getCode().trim().isEmpty()) {
+		    throw new InvalidVerificationCodeException("인증번호를 입력해주세요.");
 		}
+
+		if (!verifyCode.getCode().equals(passWordEmailVerifyDTO.getCode())) {
+		    throw new VerificationCodeMismatchException("입력한 인증번호가 일치하지 않습니다.");
+		}
+		
+
 
 		emailMapper.updateEmailVerifiedByPassword(passWordEmailVerifyDTO);
 	}
-	
-	
-	
 
 	private String generateRandomCode() {
 		Random random = new Random();

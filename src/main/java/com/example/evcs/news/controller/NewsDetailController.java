@@ -60,4 +60,15 @@ public class NewsDetailController {
         
         return ResponseEntity.ok(response);
     }
+    
+    @PostMapping("detail/by-id")
+    public ResponseEntity<?> getNewsDetailById(@RequestBody Map<String, Object> body) {
+        Long newsNo = Long.valueOf(body.get("newsNo").toString());
+        Long memberNo = Long.valueOf(body.get("memberNo").toString());
+
+        NewsDetailResponse detail = newsDetailService.getByNewsNo(newsNo, memberNo);
+
+        return ResponseEntity.ok(detail);
+    }
+
 }

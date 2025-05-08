@@ -26,4 +26,9 @@ public interface EventMapper {
 
 	void deleteByEventNo(Long eventNo);
 	
+	int selectTotalCount(Map<String, String> map);
+
+	List<EventDTO> selctEventAllUser(RowBounds rb);
+
+	int selectTotalCountUser();
 }
