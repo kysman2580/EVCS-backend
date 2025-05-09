@@ -14,7 +14,10 @@
 	      	  ) AS fileLoad
 			, E1.RENT_CAR_PRICE AS rentCarPrice 
 			, G.REGION_SIDO AS regionSido 
-			, CI.CAR_TYPE AS carType
+			, CT.CAR_TYPE_NO AS carTypeNo
+			, CT.CAR_TYPE_NAME AS carTypeName
+			, CC.COMPANY_NO AS companyNo
+			, CC.COMPANY_NAME AS companyName
 			, CI.CAR_NAME AS carName
 			, CI.CAR_YEAR AS carYear
 			, E1.RENT_CAR_NO rentCarNo
@@ -38,19 +41,70 @@
 	  	JOIN EV_GARAGE G ON G.GARAGE_NO = E1.GARAGE_NO
 	  LEFT  
 	  	JOIN EV_CAR_INFO CI ON CI.CAR_NO = E1.CAR_NO
+  	  LEFT 
+  	  	JOIN EV_CAR_COMPANY CC ON CI.COMPANY_NO = CC.COMPANY_NO
+	  LEFT 
+	  	JOIN EV_CAR_TYPE CT ON CI.CAR_TYPE_NO = CT.CAR_TYPE_NO
+	  
 	  WHERE 1=1
 	  	AND E1.CATEGORY_NO = #{category}
 	
 	</select>
 	
 	<select id="selectRentCarByRentCarNo"
-			parameterType="_int"
+			parameterType="string"
 			resultType="RentCarInfoDTO"
 	>
 	
-	
-	
-	
+		SELECT 
+	      	  (SELECT FILE_LOAD
+	         	FROM EV_CAR_IMAGE I1
+	         	WHERE I1.CAR_NO = E1.CAR_NO
+	          	AND ROWNUM = 1
+	      	  ) AS fileLoad
+			, E1.RENT_CAR_PRICE AS rentCarPrice 
+			, G.REGION_SIDO AS regionSido 
+			, CT.CAR_TYPE_NO AS carTypeNo
+			, CT.CAR_TYPE_NAME AS carTypeName
+			, CC.COMPANY_NO AS companyNo
+			, CC.COMPANY_NAME AS companyName
+			, CI.CAR_NAME AS carName
+			, CI.CAR_YEAR AS carYear
+			, E1.RENT_CAR_NO rentCarNo
+			, CASE
+			    WHEN EXISTS (
+			      SELECT 1
+			      FROM EV_ING_HOTDEAL ih
+			      JOIN EV_HOT_DEAL   h  ON ih.HOT_DEAL_NO = h.HOT_DEAL_NO
+			      WHERE ih.RENT_CAR_NO = E1.RENT_CAR_NO
+			        AND h.STATUS = 'Y'                           
+			        AND SYSDATE BETWEEN h.START_DATE AND h.END_DATE     
+			    )
+		   		THEN 1
+		   		ELSE 0
+  				END AS ingHotdeal
+  			, (SELECT H.DEAL_PERCENT
+			   FROM EV_ING_HOTDEAL IH
+			   JOIN EV_HOT_DEAL H ON IH.HOT_DEAL_NO = H.HOT_DEAL_NO
+			   WHERE IH.RENT_CAR_NO = E1.RENT_CAR_NO
+			     AND H.STATUS = 'Y'
+			     AND SYSDATE BETWEEN H.START_DATE AND H.END_DATE
+			     AND ROWNUM = 1
+			  ) AS dealPercent
+	  FROM 
+	  	EV_RENT_CAR_INFO E1
+	  LEFT  JOIN 
+	  	EV_CATEGORY E2 ON E1.CATEGORY_NO = E2.CATEGORY_NO
+	  LEFT  
+	  	JOIN EV_GARAGE G ON G.GARAGE_NO = E1.GARAGE_NO
+	  LEFT  
+	  	JOIN EV_CAR_INFO CI ON CI.CAR_NO = E1.CAR_NO
+  	  LEFT 
+  	  	JOIN EV_CAR_COMPANY CC ON CI.COMPANY_NO = CC.COMPANY_NO
+	  LEFT 
+	  	JOIN EV_CAR_TYPE CT ON CI.CAR_TYPE_NO = CT.CAR_TYPE_NO
+	  WHERE
+	  	E1.RENT_CAR_NO = #{rentCarNo}
 	</select>
 
 </mapper>

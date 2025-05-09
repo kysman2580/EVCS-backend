@@ -11,13 +11,17 @@ import com.example.evcs.admin.carInfo.model.dto.CarInfoDTO;
 import com.example.evcs.admin.carInfo.model.dto.CarTypeDTO;
 import com.example.evcs.admin.rentCarInfo.model.dto.CategoryDTO;
 import com.example.evcs.admin.rentCarInfo.model.dto.RentCarInfoDTO;
+import com.example.evcs.admin.rentCarInfo.model.dto.RentCarOptionDTO;
 import com.example.evcs.admin.rentCarInfo.model.vo.RentCarInfoVO;
+import com.example.evcs.admin.rentCarInfo.model.vo.RentCarOption;
 
 @Mapper
 public interface RentCarInfoMapper {
  
 	// 1. 렌터카 추가하기
 	void insertRentCar(RentCarInfoVO rentCarInfo);
+
+	void insertCarOptions(RentCarOption rentCarOption);
 	
 	List<CategoryDTO> getRentCarCategory();
 	List<CarInfoDTO> getAllCarInfo();
@@ -49,5 +53,11 @@ public interface RentCarInfoMapper {
 
 
 	List<CarTypeDTO> getCarTypeInfo();
+	
+	List<RentCarOptionDTO> getOptions();
+
+	List<RentCarOptionDTO> getRentCarOptions(String rentCarNo);
+	
+	int deleteCarOptions(String rentCarNo);
 	
 }

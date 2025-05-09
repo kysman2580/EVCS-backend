@@ -26,12 +26,8 @@ public class RentCarServiceImpl implements RentCarService{
 	}
 
 	@Override
-	public RentCarInfoDTO selectRentCarByRentCarNo(Long rentCarNo) {
-		
-		
+	public RentCarInfoDTO selectRentCarByRentCarNo(String rentCarNo) {
 		return rentCarMapper.selectRentCarByRentCarNo(rentCarNo);
-		
-		
 	}
 
 }
