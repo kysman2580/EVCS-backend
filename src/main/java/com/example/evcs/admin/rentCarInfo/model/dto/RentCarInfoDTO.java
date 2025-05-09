@@ -33,4 +33,8 @@ public class RentCarInfoDTO {
 	private String hotdealNo;
 	private String regionSido;
 	private String ingHotdeal;
+	
+	private String categoryNo;
+	private String carTypeNo;
+	private String companyNo;
 }

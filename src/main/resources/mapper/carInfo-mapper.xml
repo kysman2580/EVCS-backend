@@ -22,16 +22,16 @@
 		  INTO 
 	  			EV_CAR_INFO(
 				    CAR_NAME
-				  , CAR_TYPE
+				  , CAR_TYPE_NO
 				  , CAR_YEAR
-				  , CAR_COMPANY
+				  , COMPANY_NO
 				  , CAR_BATTERY
 				)
 	  			VALUES(
 				    #{carName}
-				  , #{carType}
+				  , #{carTypeNo}
 				  , #{carYear}
-				  , #{carCompany}
+				  , #{carCompanyNo}
 				  , #{carBattery}
 				)
 	</insert>
@@ -86,15 +86,21 @@
 	<select id="getAllCarInfo"
 				resultType="CarInfoDTO">
 		SELECT
-			    CAR_NO  carNo,
-		        CAR_NAME  carName,
-		        CAR_TYPE  carType,
-		        CAR_YEAR  carYear,
-		        CAR_COMPANY  carCompany,
-		        CAR_BATTERY  carBattery,
-		        ENROLL_DATE  enrollDate
+				  CI.CAR_NO carNo
+				, CI.CAR_NAME carName
+				, CI.CAR_YEAR carYear
+				, CI.CAR_BATTERY carBattery
+				, CC.COMPANY_NO companyNo
+				, CC.COMPANY_NAME companyName
+				, CT.CAR_TYPE_NO carTypeNo
+				, CT.CAR_TYPE_NAME carTypeName
+				, ENROLL_DATE enrollDate
 		  FROM
-		  	   EV_CAR_INFO
+		  		EV_CAR_INFO CI
+		  LEFT JOIN 
+		  		EV_CAR_COMPANY CC ON (CI.COMPANY_NO = CC.COMPANY_NO)
+		  LEFT JOIN
+		  		EV_CAR_TYPE CT ON (CI.CAR_TYPE_NO = CT.CAR_TYPE_NO)
 		 ORDER
 		 	BY
 		 	   CAR_NO DESC 
@@ -145,9 +151,9 @@
 				EV_CAR_INFO
 		   		SET
 					CAR_NAME = #{carName}
-				  , CAR_TYPE = #{carType}
+				  , CAR_TYPE_NO = #{carTypeNo}
 				  , CAR_YEAR = #{carYear}
-				  , CAR_COMPANY = #{carCompany}
+				  , COMPANY_NO = #{carCompanyNo}
 				  , CAR_BATTERY = #{carBattery}
 				
 		 WHERE

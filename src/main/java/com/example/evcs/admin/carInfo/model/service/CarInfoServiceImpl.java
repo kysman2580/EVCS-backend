@@ -58,9 +58,9 @@ public class CarInfoServiceImpl implements CarInfoService{
 			filePath = fileUtil.saveFile(file).replace("uploads/", "uploads/car/");
 			carInfoData = CarInfo.builder()
 									.carName(carInfo.getCarName())
-									.carType(carInfo.getCarType())
+									.carTypeNo(carInfo.getCarTypeNo())
 									.carYear(carInfo.getCarYear())
-									.carCompany(carInfo.getCarCompany())
+									.carCompanyNo(carInfo.getCompanyNo())
 									.carBattery(carInfo.getCarBattery())
 									.build();
 		}
@@ -165,9 +165,9 @@ public class CarInfoServiceImpl implements CarInfoService{
 			carInfoData = CarInfo.builder()
 					.carNo(carInfo.getCarNo())
 					.carName(carInfo.getCarName())
-					.carType(carInfo.getCarType())
+					.carTypeNo(carInfo.getCarTypeNo())
 					.carYear(carInfo.getCarYear())
-					.carCompany(carInfo.getCarCompany())
+					.carCompanyNo(carInfo.getCompanyNo())
 					.carBattery(carInfo.getCarBattery())
 					.build();
 			

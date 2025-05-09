@@ -31,22 +31,22 @@ public class RentCarInfoController {
 	@GetMapping("/category")
 	public ResponseEntity<?> getRentCarCategory(){
 		
-		List<String> category = rentCarInfoService.getRentCarCategory();
-		return ResponseEntity.status(HttpStatus.CREATED).body(category);
+		Map<String, Object> category = rentCarInfoService.getRentCarCategory();
+		return ResponseEntity.status(HttpStatus.OK).body(category);
 	}
 	
 	@GetMapping("/carInfo")
 	public ResponseEntity<?> getAllCarInfo(){
 		log.info("값이 들어오나요???");
 		Map<String, Object> allCarInfo = rentCarInfoService.getAllCarInfo();
-		return ResponseEntity.status(HttpStatus.CREATED).body(allCarInfo);
+		return ResponseEntity.status(HttpStatus.OK).body(allCarInfo);
 	}
 	
 	@GetMapping("/timeRentCarInfo")
 	public ResponseEntity<?> getTimeRentCarInfo(){
 		log.info("값이 들어오나요???");
 		Map<String, Object> allCarInfo = rentCarInfoService.getTimeRentCarInfo();
-		return ResponseEntity.status(HttpStatus.CREATED).body(allCarInfo);
+		return ResponseEntity.status(HttpStatus.OK).body(allCarInfo);
 	}
 	
 	@PostMapping("/insert")
@@ -73,8 +73,9 @@ public class RentCarInfoController {
 		log.info("RentCarInfoController rentCarList : {}",map);
 		Map<String, Object> rentCarInfoMap = rentCarInfoService.rentCarList(map);
 		
+		log.info("뭐냐이거 {}", rentCarInfoMap);
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(rentCarInfoMap);
+		return ResponseEntity.status(HttpStatus.OK).body(rentCarInfoMap);
 	}
 	
 	@PostMapping("/update")
