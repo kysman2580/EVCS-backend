@@ -55,8 +55,12 @@ public class AuthServiceImpl implements AuthService {
 		@Override
 		public CustomUserDetails getUserDetails() {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			CustomUserDetails user = (CustomUserDetails)auth.getPrincipal();
+			Object principal = auth.getPrincipal();
+			System.out.println("Principal type: " + principal.getClass().getName());
+			System.out.println("Principal value: " + principal);
+			CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
 			return user;
 		}
+
 
 }

@@ -1,9 +1,14 @@
 package com.example.evcs.configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -13,7 +18,12 @@ public class AppConfig {
 
     @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplate();
+    	RestTemplate restTemplate = new RestTemplate();
+    	
+    	List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
+    	messageConverters.add(new FormHttpMessageConverter());
+    	restTemplate.setMessageConverters(messageConverters);
+        return restTemplate;
     }
     
     @Bean

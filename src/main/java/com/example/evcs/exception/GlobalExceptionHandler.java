@@ -119,5 +119,14 @@ public class GlobalExceptionHandler {
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
+	
+	
+	@ExceptionHandler(AuthHandler.class)
+	public ResponseEntity<?> AuthHandlerError(AuthHandler e) {
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+	
 
 }

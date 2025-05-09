@@ -30,28 +30,42 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfiguration {
 	
 	private final JwtFilter filter;
+	public static final String[] ALLOW_URLS = {
+		    "/swagger-ui/**",
+		    "/swagger-resources/**",
+		    "/v3/api-docs/**",
+		    "/auth/login",
+		    "/auth/login/kakao/**",
+		    "/auth/kakao/callback",
+		    "/members",
+		    "/members/**",
+		    "/api/**"
+		};
+
 	
 	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		
-		return httpSecurity.formLogin(AbstractHttpConfigurer::disable)
-						   .httpBasic(AbstractHttpConfigurer::disable)
-						   .csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(requests->{
-							   requests.requestMatchers(HttpMethod.POST, "/auth/login", "/members" , "/api/reports").permitAll();
-							   requests.requestMatchers(HttpMethod.GET, "/members/**", "/api/**").permitAll();
-						   })
-						   .cors(Customizer.withDefaults())
-						   .authorizeHttpRequests(requests -> {
-							   requests.requestMatchers(HttpMethod.POST, "/**").permitAll();
-							   requests.requestMatchers(HttpMethod.GET, "/**").permitAll();
-							   requests.requestMatchers(HttpMethod.PUT, "/**").permitAll();
-							   requests.requestMatchers(HttpMethod.DELETE, "/**").permitAll();
-						   })
-						   .sessionManagement(manager ->
+		return httpSecurity
+				.formLogin(AbstractHttpConfigurer::disable)
+				.httpBasic(AbstractHttpConfigurer::disable)
+				.csrf(AbstractHttpConfigurer::disable)
+				.cors(Customizer.withDefaults())
+				.authorizeHttpRequests(requests -> requests
+						.requestMatchers(HttpMethod.POST, "/auth/login", "/members" , "/api/reports").permitAll()
+						.requestMatchers(HttpMethod.GET, "/members/**", "/api/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/**").permitAll()
+						.requestMatchers(HttpMethod.GET, "/**").permitAll()
+						.requestMatchers(HttpMethod.PUT, "/**").permitAll()
+						.requestMatchers(HttpMethod.DELETE, "/**").permitAll()
+						.requestMatchers(ALLOW_URLS).permitAll()
+						.anyRequest().authenticated()
+						   )
+				.sessionManagement(manager ->
 				    manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-						   .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
-						   .build();
+				.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
+				.build();
 	}
 	
 	
