@@ -5,35 +5,40 @@
 <mapper namespace="com.example.evcs.news.model.dao.NewsCommentMapper">
 
   <!-- 댓글 조회 -->
-    <select id="findCommentsByNews" resultType="com.example.evcs.news.model.dto.CommentDTO">
-        SELECT
-            c.NEWS_CMT_ID AS id,
-            c.NEWS_NO AS newsNo,
-            c.MEMBER_NO AS memberNo,
-            m.MEMBER_NICKNAME AS memberNick,
-            c.NEWS_CMT_CONTENT AS content,
-            c.NEWS_CMT_MODIFY_DATE AS commentDate,
-            c.NEWS_CMT_PARENT_ID AS parentId,
-            -- 좋아요 수
-            (SELECT COUNT(*) FROM EV_NEWS_CMT_LIKE l WHERE l.NEWS_CMT_ID = c.NEWS_CMT_ID) AS likes,
-            -- 싫어요 수
-            (SELECT COUNT(*) FROM EV_NEWS_CMT_HATE h WHERE h.NEWS_CMT_ID = c.NEWS_CMT_ID) AS dislikes,
-            -- 로그인한 회원이 좋아요 눌렀는지
-            CASE 
-              WHEN (SELECT COUNT(*) FROM EV_NEWS_CMT_LIKE l2 WHERE l2.NEWS_CMT_ID = c.NEWS_CMT_ID AND l2.MEMBER_NO = #{memberNo}) > 0 THEN 1
-              ELSE 0
-            END AS hasLiked,
-            -- 로그인한 회원이 싫어요 눌렀는지
-            CASE 
-              WHEN (SELECT COUNT(*) FROM EV_NEWS_CMT_HATE h2 WHERE h2.NEWS_CMT_ID = c.NEWS_CMT_ID AND h2.MEMBER_NO = #{memberNo}) > 0 THEN 1
-              ELSE 0
-            END AS hasHated
-        FROM EV_NEWS_CMT c
-        JOIN EV_MEMBER m ON c.MEMBER_NO = m.MEMBER_NO
-        WHERE c.NEWS_NO = #{newsNo}
-          AND c.NEWS_CMT_STATUS = 'Y'
-        ORDER BY NVL(c.NEWS_CMT_PARENT_ID, c.NEWS_CMT_ID), c.NEWS_CMT_DATE ASC
-    </select>
+<select id="findCommentsByNews" resultType="com.example.evcs.news.model.dto.CommentDTO">
+    SELECT
+        c.NEWS_CMT_ID AS id,
+        c.NEWS_NO AS newsNo,
+        c.MEMBER_NO AS memberNo,
+        m.MEMBER_NICKNAME AS memberNick,
+        c.NEWS_CMT_CONTENT AS content,
+        c.NEWS_CMT_MODIFY_DATE AS commentDate,
+        c.NEWS_CMT_PARENT_ID AS parentId,
+        -- 좋아요 수
+        (SELECT COUNT(*) FROM EV_NEWS_CMT_LIKE l WHERE l.NEWS_CMT_ID = c.NEWS_CMT_ID) AS likes,
+        -- 싫어요 수
+        (SELECT COUNT(*) FROM EV_NEWS_CMT_HATE h WHERE h.NEWS_CMT_ID = c.NEWS_CMT_ID) AS dislikes,
+        -- 로그인한 유저가 좋아요 눌렀는지
+        CASE 
+          WHEN (SELECT COUNT(*) FROM EV_NEWS_CMT_LIKE l2 WHERE l2.NEWS_CMT_ID = c.NEWS_CMT_ID AND l2.MEMBER_NO = #{memberNo}) > 0 THEN 1
+          ELSE 0
+        END AS hasLiked,
+        -- 로그인한 유저가 싫어요 눌렀는지
+        CASE 
+          WHEN (SELECT COUNT(*) FROM EV_NEWS_CMT_HATE h2 WHERE h2.NEWS_CMT_ID = c.NEWS_CMT_ID AND h2.MEMBER_NO = #{memberNo}) > 0 THEN 1
+          ELSE 0
+        END AS hasHated,
+        -- 본인 댓글 여부
+        CASE 
+          WHEN c.MEMBER_NO = #{memberNo} THEN 1
+          ELSE 0
+        END AS isMine
+    FROM EV_NEWS_CMT c
+    JOIN EV_MEMBER m ON c.MEMBER_NO = m.MEMBER_NO
+    WHERE c.NEWS_NO = #{newsNo}
+      AND c.NEWS_CMT_STATUS = 'Y'
+    ORDER BY NVL(c.NEWS_CMT_PARENT_ID, c.NEWS_CMT_ID), c.NEWS_CMT_DATE ASC
+</select>
 
   <!-- 댓글 삽입 -->
   <insert id="insertComment" parameterType="com.example.evcs.news.model.dto.CommentDTO">

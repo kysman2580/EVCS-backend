@@ -30,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfiguration {
 	
 	private final JwtFilter filter;
+	
 	public static final String[] ALLOW_URLS = {
 		    "/swagger-ui/**",
 		    "/swagger-resources/**",
@@ -42,60 +43,95 @@ public class SecurityConfiguration {
 		    "/api/**"
 		};
 
-	
-	
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-		
-		return httpSecurity
-				.formLogin(AbstractHttpConfigurer::disable)
-				.httpBasic(AbstractHttpConfigurer::disable)
-				.csrf(AbstractHttpConfigurer::disable)
-				.cors(Customizer.withDefaults())
-				.authorizeHttpRequests(requests -> requests
-						.requestMatchers(HttpMethod.POST, "/auth/login", "/members" , "/api/reports").permitAll()
-						.requestMatchers(HttpMethod.GET, "/members/**", "/api/**").permitAll()
-						.requestMatchers(HttpMethod.POST, "/**").permitAll()
-						.requestMatchers(HttpMethod.GET, "/**").permitAll()
-						.requestMatchers(HttpMethod.PUT, "/**").permitAll()
-						.requestMatchers(HttpMethod.DELETE, "/**").permitAll()
-						.requestMatchers(ALLOW_URLS).permitAll()
-						.anyRequest().authenticated()
-						   )
-				.sessionManagement(manager ->
-				    manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
-				.build();
-	}
-	
-	
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-		configuration.setAllowedHeaders(List.of("*"));
-		configuration.setAllowCredentials(true);
-		
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", configuration);
-		return source;
-		
-	}
-	
-	
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-	
-	
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-		return config.getAuthenticationManager();
-	}
-	
-	
 
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+            .formLogin(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(Customizer.withDefaults())
 
+            // 1) news 관련 API 권한 설정
+            .authorizeHttpRequests(auth -> auth
+                // — 비회원 접근 허용
+                .requestMatchers(HttpMethod.GET,
+                    "/api/naver-news",
+                    "/api/naver-image",
+                    "/api/naver-news-list",
+                    "/api/news/categories",
+                    "/api/admin/news/list",
+                    "/api/admin/news/category/all",
+                    "/api/news/comment/list",
+                    "/api/news/like",
+                    "/api/news/hate"
+                ).permitAll()
+                .requestMatchers(HttpMethod.POST,
+                    "/api/news/detail"
+                ).permitAll()
+
+                // — 회원 전용
+                .requestMatchers(HttpMethod.POST,
+                    "/api/news/like",
+                    "/api/news/hate",
+                    "/api/news/bookmark",
+                    "/api/news/comment",
+                    "/api/news/comment/like",
+                    "/api/news/comment/hate",
+                    "/api/report/comment"
+                ).authenticated()
+                .requestMatchers(HttpMethod.PUT,
+                    "/api/news/comment"
+                ).authenticated()
+                .requestMatchers(HttpMethod.DELETE,
+                    "/api/news/comment/**"
+                ).authenticated()
+                .requestMatchers(HttpMethod.GET,
+                    "/api/news/bookmark/status",
+                    "/api/news/like/status",
+                    "/api/news/hate/status",
+                    "/api/news/mypage/**"
+                ).authenticated()
+
+                // — 관리자 전용
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                // 소셜 관련 
+                .requestMatchers(ALLOW_URLS).permitAll()
+
+                // 2) 그 외 모든 요청(News 외 서비스)은 모두 허용
+                .anyRequest().permitAll()
+                
+                
+
+            )
+
+            // stateless JWT
+            .sessionManagement(m -> m.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
+            .build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration cfg = new CorsConfiguration();
+        cfg.setAllowedOrigins(List.of("http://localhost:5173"));
+        cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+        cfg.setAllowedHeaders(List.of("*"));
+        cfg.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", cfg);
+        return source;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 }

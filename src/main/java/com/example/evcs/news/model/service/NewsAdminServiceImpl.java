@@ -45,4 +45,9 @@ public class NewsAdminServiceImpl implements NewsAdminService {
     public List<NewsDTO> findAllNews() {
         return newsAdminMapper.findAllNews();
     }
+
+    @Override
+    public void updateStatus(Long newsNo, String status) {
+        newsAdminMapper.updateNewsStatus(newsNo, status);
+    }
 }

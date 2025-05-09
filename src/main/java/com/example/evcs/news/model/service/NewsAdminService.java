@@ -11,4 +11,5 @@ public interface NewsAdminService {
     void update(String newsCategoryNo, String newsCategory);
     void delete(String newsCategoryNo);
     List<NewsDTO> findAllNews();
+    void updateStatus(Long newsNo, String status);
 }

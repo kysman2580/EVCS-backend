@@ -13,4 +13,8 @@ public interface NewsDetailService{
     
     NewsDetailResponse insertAndReturn(NewsDTO dto, Long memberNo);
 
+	NewsDetailResponse getByNewsNo(Long newsNo, Long memberNo);
+
+	void deleteNews(Long newsNo);
+
 }

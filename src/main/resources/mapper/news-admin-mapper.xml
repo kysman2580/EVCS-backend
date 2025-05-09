@@ -47,20 +47,34 @@
         WHERE NEWS_CATEGORY_NO = #{newsCategoryNo}
     </select>
 
-	<select id="findAllNews" resultType="com.example.evcs.news.model.dto.NewsDTO">
-	  SELECT 
-	    n.NEWS_NO AS newsNo,
-	    n.NEWS_TITLE AS title,
-	    n.NEWS_ORIGIN_URL AS originUrl,
-	    n.NEWS_DESCRIPTION AS description,
-	    n.NEWS_NAVER_DATE AS pubDate,
-	    n.NEWS_WATCHED AS count,
-	    c.NEWS_CATEGORY AS query
-	  FROM 
-	    EV_NEWS n
-	  JOIN 
-	    EV_NEWS_CATEGORY c ON n.NEWS_CATEGORY_NO = c.NEWS_CATEGORY_NO
-	</select>
+ <select id="findAllNews" parameterType="String" resultType="com.example.evcs.news.model.dto.NewsDTO">
+    SELECT
+      n.NEWS_NO AS newsNo,
+      n.NEWS_TITLE AS title,
+      n.NEWS_ORIGIN_URL AS originUrl,
+      n.NEWS_DESCRIPTION AS description,
+      n.NEWS_NAVER_DATE AS pubDate,
+      c.NEWS_CATEGORY AS query,
+      i.NEWS_IMG_URL AS imageUrl,
+      n.NEWS_WATCHED AS count,
+      n.NEWS_STATUS AS newsStatus
+    FROM EV_NEWS n
+    LEFT JOIN EV_NEWS_IMG i ON n.NEWS_NO = i.NEWS_NO
+    JOIN EV_NEWS_CATEGORY c ON n.NEWS_CATEGORY_NO = c.NEWS_CATEGORY_NO
+    <where>
+      <if test="status != null and status != ''">
+        n.NEWS_STATUS = #{status}
+      </if>
+    </where>
+    ORDER BY n.NEWS_NO DESC
+  </select>
+
+  <!-- 활성화/비활성화 업데이트 -->
+  <update id="updateNewsStatus" parameterType="map">
+    UPDATE EV_NEWS
+    SET NEWS_STATUS = #{status}
+    WHERE NEWS_NO = #{newsNo}
+  </update>
 </mapper>
   
   
