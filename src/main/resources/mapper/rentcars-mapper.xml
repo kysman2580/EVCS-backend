@@ -42,5 +42,15 @@
 	  	AND E1.CATEGORY_NO = #{category}
 	
 	</select>
+	
+	<select id="selectRentCarByRentCarNo"
+			parameterType="_int"
+			resultType="RentCarInfoDTO"
+	>
+	
+	
+	
+	
+	</select>
 
 </mapper>

@@ -14,6 +14,8 @@ public interface CarInfoService {
 	void insertCar(CarInfoDTO carInfo, MultipartFile file);
 	
 	Map<String, Object> carList(int page);
+	
+	Map<String, Object> selectAllCarInfo(Map<String, String> map);
 
 	CarImageDTO getCarImage(String carName);
 

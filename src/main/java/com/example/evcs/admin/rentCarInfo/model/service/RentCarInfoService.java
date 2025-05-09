@@ -9,7 +9,7 @@ import com.example.evcs.admin.rentCarInfo.model.dto.RentCarInfoDTO;
 
 public interface RentCarInfoService {
 
-	public List<String> getRentCarCategory();
+	public Map<String,Object> getRentCarCategory();
 	
 	public Map<String, Object> getAllCarInfo();
 	

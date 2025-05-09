@@ -24,5 +24,11 @@ public class CarInfoDTO {
 	private String carCompany;
 	private int carBattery;
 	private Date enrollDate;
+	private String companyName;
+	private Long companyNo;
+	private String carTypeName;
+	private Long carTypeNo;
+	private String returnEnrollDate;
+	private String fileLoad;
 	
 }

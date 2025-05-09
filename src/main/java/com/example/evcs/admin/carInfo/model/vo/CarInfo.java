@@ -16,4 +16,7 @@ public class CarInfo {
 	private String carCompany;
 	private int carBattery;
 	private Date enrollDate;
+	
+	private Long carTypeNo;
+	private Long carCompanyNo;
 }
