@@ -35,6 +35,8 @@ public interface MemberMapper {
 
 	void updatePassword(Map<String, Object> params);
 
+	void changePassword(MemberDTO member);
+
 	
 	
 }

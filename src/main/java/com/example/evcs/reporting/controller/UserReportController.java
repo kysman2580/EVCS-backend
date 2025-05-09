@@ -27,12 +27,16 @@ public class UserReportController {
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> myReports(
+    		@AuthenticationPrincipal CustomUserDetails userDetails,
     	    @RequestParam(name = "page", defaultValue = "0") int page,
     	    @RequestParam(name = "size", defaultValue = "10") int size,
     	    @RequestParam(name = "startDate", required = false) String startDate,
     	    @RequestParam(name = "endDate", required = false) String endDate,
     	    @RequestParam(name = "title", required = false) String title
     ) {
+    	System.out.println("userDetails = " + userDetails);
+        Long memberNo = userDetails.getMemberNo();
+        System.out.println("memberNo = " + memberNo);
         int offset = page * size;
 
         List<Report> reports = service.getReportsForUser(memberNo, startDate, endDate, title, offset, size);

@@ -16,10 +16,21 @@ import lombok.ToString;
 public class RentCarInfoDTO {
 
 	private String rentCarNo;
-	private int categoryNo;
+	private String categoryName;
 	private int carNo;
 	private int rentCarPrice;
-	private String enrollPlace;
+	private Long garageNo;
 	private Date enrollDate;
 	private String status;
+	private String enrollPlace;
+	private String postAdd;
+	private String statusName;
+	private String fileLoad;
+	private String carCompany;
+	private String carType;
+	private String carName;
+	private String carYear;
+	private String hotdealNo;
+	private String regionSido;
+	private String ingHotdeal;
 }

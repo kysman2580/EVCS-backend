@@ -14,12 +14,12 @@ public class Pagination {
 		if(endPage > maxPage) { endPage = maxPage; };
 		
 		return PageInfo.builder()
-		.boardLimit(boardLimit)
-		.count(count)
-		.currentPage(currentPage)
-		.startPage(startPage)
-		.endPage(endPage)
-		.maxPage(maxPage)
-		.pageLimit(pageLimit).build();
+				.boardLimit(boardLimit)
+				.count(count)
+				.currentPage(currentPage)
+				.startPage(startPage)
+				.endPage(endPage)
+				.maxPage(maxPage)
+				.pageLimit(pageLimit).build();
 	}
 }

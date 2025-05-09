@@ -19,4 +19,8 @@ public interface EventService {
 	EventDTO updateEvent(EventDTO event, MultipartFile file);
 	
 	void deleteByEventNo(Long eventNo);
+	
+	// user interface
+	Map<String , Object> selctEventAllUser(int page);
+	
 }

@@ -12,7 +12,7 @@ import lombok.ToString;
 @Getter
 @Setter
 public class NewsDTO {
-    private Long newsNo; // 추가됨
+    private Long newsNo;
     private String title;
     private String originUrl;
     private String description;

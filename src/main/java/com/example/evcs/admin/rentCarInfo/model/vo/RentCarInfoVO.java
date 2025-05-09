@@ -13,7 +13,7 @@ public class RentCarInfoVO {
 	private int categoryNo;
 	private int carNo;
 	private int rentCarPrice;
-	private String enroll_place;
-	private Date enroll_date;
+	private Long garageNo;
+	private Date enrollDate;
 	private String status;
 }
