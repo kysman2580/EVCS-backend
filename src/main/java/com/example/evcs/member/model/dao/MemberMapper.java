@@ -37,6 +37,9 @@ public interface MemberMapper {
 
 	void changePassword(MemberDTO member);
 
+	MemberDTO getMemberByMemberNo(Long memberNo);
+
+
 	
 	
 }
