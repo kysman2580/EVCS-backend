@@ -29,7 +29,24 @@ import lombok.RequiredArgsConstructor;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 	
+<<<<<<< HEAD
+	private final JwtFilter filter;
+	
+	public static final String[] ALLOW_URLS = {
+		    "/swagger-ui/**",
+		    "/swagger-resources/**",
+		    "/v3/api-docs/**",
+		    "/auth/login",
+		    "/auth/login/kakao/**",
+		    "/auth/kakao/callback",
+		    "/members",
+		    "/members/**",
+		    "/api/**"
+		};
+
+=======
     private final JwtFilter filter;
+>>>>>>> c07a0fbdf93405478593d94daf6fa67b3301e22f
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -85,8 +102,14 @@ public class SecurityConfiguration {
                 // — 관리자 전용
                 .requestMatchers("/api/admin/**", "/api/reports/**").hasRole("ADMIN")
 
+                // 소셜 관련 
+                .requestMatchers(ALLOW_URLS).permitAll()
+
                 // 2) 그 외 모든 요청(News 외 서비스)은 모두 허용
                 .anyRequest().permitAll()
+                
+                
+
             )
 
             // stateless JWT

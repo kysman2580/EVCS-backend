@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.example.evcs.oauth.kakao.model.dao.SocialMemberMapper">
+
+    <resultMap id="socialMemberResultMap" type="com.example.evcs.oauth.kakao.model.dto.SocialMemberDTO">
+        <result property="socialMemberNo" column="SOCIAL_MEMBER_NO"/>
+        <result property="memberNo" column="MEMBER_NO"/>
+        <result property="provider" column="PROVIDER"/>
+        <result property="providerId" column="PROVIDER_ID"/>
+        <result property="createdAt" column="CREATED_AT"/>
+    </resultMap>
+
+    <insert id="insertSocialMember">
+        INSERT INTO EV_SOCIAL_MEMBER
+        (SOCIAL_MEMBER_NO, MEMBER_NO, EMAIL, PROVIDER, PROVIDER_ID, CREATED_AT)
+        VALUES (social_member_seq.NEXTVAL, #{memberNo}, #{email}, #{provider}, #{providerId}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <select id="getSocialMemberByProviderId" resultMap="socialMemberResultMap">
+        SELECT * 
+        FROM EV_SOCIAL_MEMBER
+        WHERE PROVIDER_ID = #{providerId}
+    </select>
+    
+    
+    <!-- 이메일로 소셜 회원 조회 -->
+    <select id="findByEmail">
+        SELECT * FROM EV_SOCIAL_MEMBER
+        WHERE EMAIL = #{email}
+    </select>
+
+    <!-- ProviderId로 소셜 회원 조회 -->
+    <select id="findByProviderId">
+        SELECT * FROM EV_SOCIAL_MEMBER
+        WHERE PROVIDER_ID = #{providerId}
+    </select>
+    
+
+
+
+
+
+
+
+
+</mapper>
