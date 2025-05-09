@@ -20,4 +20,5 @@ public class CommentDTO {
     private int dislikes;   // 싫어요 수
     private boolean hasLiked; // 로그인한 유저가 좋아요 눌렀는지
     private boolean hasHated; // 로그인한 유저가 싫어요 눌렀는지
+    private boolean isMine; // 로그인한 사용자의 댓글인지 여부
 }
