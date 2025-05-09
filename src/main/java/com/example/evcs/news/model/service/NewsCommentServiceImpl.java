@@ -32,4 +32,10 @@ public class NewsCommentServiceImpl implements NewsCommentService {
     public List<CommentDTO> findCommentsByNews(Long newsNo, Long memberNo) {
         return newsCommentMapper.findCommentsByNews(newsNo, memberNo);
     }
+    
+    @Override
+    public boolean isOwner(Long commentId, Long memberNo) {
+        Long ownerNo = newsCommentMapper.findMemberNoByCommentId(commentId);
+        return ownerNo != null && ownerNo.equals(memberNo);
+    }
 }

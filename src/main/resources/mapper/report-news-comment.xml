@@ -14,7 +14,7 @@
 	        COMMENT_DEPTH,
 	        COMMENT_GROUP_NO
 	    ) VALUES (
-	        FLOOR(DBMS_RANDOM.VALUE(1000000000, 9999999999)),
+	        RE_NO_SEQ.NEXTVAL,
 	        #{reporter},
 	        (SELECT MEMBER_NO FROM EV_NEWS_CMT WHERE NEWS_CMT_ID = #{newsCmtId}),
 	        #{reportReason},

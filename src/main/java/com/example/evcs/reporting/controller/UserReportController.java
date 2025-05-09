@@ -27,15 +27,15 @@ public class UserReportController {
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> myReports(
-    		@AuthenticationPrincipal CustomUserDetails userDetails,
+    		@AuthenticationPrincipal CustomUserDetails user,
     	    @RequestParam(name = "page", defaultValue = "0") int page,
     	    @RequestParam(name = "size", defaultValue = "10") int size,
     	    @RequestParam(name = "startDate", required = false) String startDate,
     	    @RequestParam(name = "endDate", required = false) String endDate,
     	    @RequestParam(name = "title", required = false) String title
     ) {
-    	System.out.println("userDetails = " + userDetails);
-        Long memberNo = userDetails.getMemberNo();
+    	System.out.println("userDetails = " + user);
+        Long memberNo = user.getMemberNo();
         System.out.println("memberNo = " + memberNo);
         int offset = page * size;
 
@@ -59,4 +59,13 @@ public class UserReportController {
         }
         return ResponseEntity.ok(rpt);
     }
+    
+//    @GetMapping("/{rpNo}/o")
+//    public ResponseEntity<Report> detail(@PathVariable("rpNo") Long rpNo) {
+//        Report rpt = service.getReportById(rpNo);
+//        if (rpt == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        return ResponseEntity.ok(rpt);
+//    }
 }
