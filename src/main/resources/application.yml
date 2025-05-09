@@ -21,7 +21,6 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-        
 
   mvc:
     static-path-pattern: /uploads/**
@@ -53,6 +52,7 @@ mybatis:
     com.example.evcs.admin.garage.model.vo, com.example.evcs.admin.garage.model.dto
     com.example.evcs.admin.reservation.model.vo ,com.example.evcs.admin.reservation.model.dto
     com.example.evcs.driveRoute.model.vo ,com.example.evcs.driveRoute.model.dto
+    com.example.evcs.admin.hotdeal.model.vo, com.example.evcs.admin.hotdeal.model.dto
 
 logging:
   level:

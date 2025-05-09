@@ -1,0 +1,66 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.example.evcs.news.model.dao.NewsAdminMapper">
+
+    <select id="findAll" resultType="com.example.evcs.news.model.dto.NewsCategoryDTO">
+        SELECT
+            NEWS_CATEGORY_NO AS newsCategoryNo,
+            NEWS_CATEGORY AS newsCategory,
+            NEWS_KEY_NUM AS newsKeyNum
+        FROM EV_NEWS_CATEGORY
+    </select>
+
+    <insert id="insert" parameterType="string">
+        INSERT INTO EV_NEWS_CATEGORY (
+            NEWS_CATEGORY_NO,
+            NEWS_CATEGORY,
+            NEWS_KEY_NUM
+        ) VALUES (
+            TO_CHAR(NEWS_CATEGORY_NO.NEXTVAL),
+            #{newsCategory},
+            0
+        )
+    </insert>
+
+    <update id="update" parameterType="map">
+        UPDATE EV_NEWS_CATEGORY
+        SET NEWS_CATEGORY = #{newsCategory}
+        WHERE NEWS_CATEGORY_NO = #{newsCategoryNo}
+    </update>
+
+    <delete id="delete" parameterType="string">
+        DELETE FROM EV_NEWS_CATEGORY WHERE NEWS_CATEGORY_NO = #{newsCategoryNo}
+    </delete>
+
+    <select id="findCategoryNoByName" parameterType="string" resultType="string">
+        SELECT NEWS_CATEGORY_NO
+        FROM EV_NEWS_CATEGORY
+        WHERE NEWS_CATEGORY = #{newsCategory}
+        FETCH FIRST 1 ROWS ONLY
+    </select>
+
+    <select id="findCategoryNameByNo" parameterType="string" resultType="string">
+        SELECT NEWS_CATEGORY
+        FROM EV_NEWS_CATEGORY
+        WHERE NEWS_CATEGORY_NO = #{newsCategoryNo}
+    </select>
+
+	<select id="findAllNews" resultType="com.example.evcs.news.model.dto.NewsDTO">
+	  SELECT 
+	    n.NEWS_NO AS newsNo,
+	    n.NEWS_TITLE AS title,
+	    n.NEWS_ORIGIN_URL AS originUrl,
+	    n.NEWS_DESCRIPTION AS description,
+	    n.NEWS_NAVER_DATE AS pubDate,
+	    n.NEWS_WATCHED AS count,
+	    c.NEWS_CATEGORY AS query
+	  FROM 
+	    EV_NEWS n
+	  JOIN 
+	    EV_NEWS_CATEGORY c ON n.NEWS_CATEGORY_NO = c.NEWS_CATEGORY_NO
+	</select>
+</mapper>
+  
+  

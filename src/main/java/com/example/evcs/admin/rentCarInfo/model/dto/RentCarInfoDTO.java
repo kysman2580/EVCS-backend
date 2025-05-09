@@ -1,3 +1,4 @@
+
 package com.example.evcs.admin.rentCarInfo.model.dto;
 
 import java.sql.Date;
@@ -20,11 +21,18 @@ public class RentCarInfoDTO {
 	private int carNo;
 	private int rentCarPrice;
 	private Long garageNo;
-	private String address;
 	private Date enrollDate;
 	private String status;
 	private String enrollPlace;
 	private String postAdd;
 	private String statusName;
 	private String fileLoad;
+	private String carCompany;
+	private String carType;
+	private String carName;
+	private String carYear;
+	private String hotdealNo;
+	private String regionSido;
+	private String ingHotdeal;
 }
+

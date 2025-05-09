@@ -1,11 +1,15 @@
 package com.example.evcs.exception;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.example.evcs.exception.dto.ErrorResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -112,7 +116,7 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.badRequest().body(error);
 	}
 
-	// 파일 등록시 에러
+	// 파일 등록시 예외
 	@ExceptionHandler(InsertFileException.class)
 	public ResponseEntity<?> InsertFileException(InsertFileException e){
 		Map<String, String> error = new HashMap<>();
@@ -128,5 +132,28 @@ public class GlobalExceptionHandler {
 		log.info("message : {}", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
+
+	@ExceptionHandler(NoticeNotFoundException.class)
+	public ResponseEntity<?> NonExistingError(NoticeNotFoundException e){
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+	
+	// 핫딜 중복차량 있을때 발생하는 예외
+    @ExceptionHandler(DuplicateHotdealException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateHotdeal(DuplicateHotdealException ex) {
+        List<String> carNos = ex.getCarNos();
+        
+        // join 쓰면 사이에 ", " 넣어서 합쳐줌 
+        String joined = String.join(", ", carNos);
+        String message = String.format("%s: %s", ex.getMessage(), joined);
+
+        ErrorResponse body = new ErrorResponse("HOTDEAL_OVERLAP", message);
+        
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)    // 409
+                .body(body);
+    }
 
 }

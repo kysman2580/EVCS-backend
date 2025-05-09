@@ -99,6 +99,7 @@
 						WHEN E1.STATUS = 'N' THEN '사용불가'
 						ELSE '알수없음'
 			  		END AS statusName
+			  	  , (SELECT FILE_LOAD FROM EV_CAR_IMAGE I1 WHERE I1.CAR_NO = E1.CAR_NO) fileLoad
 		  FROM
 		  	   EV_RENT_CAR_INFO E1
 		  JOIN
@@ -211,34 +212,11 @@
 		 	   	CI.CAR_NO DESC 
 	</select>	
 	
-	
-	<select id="getCarInfoByCategoryNo"
-				resultType="CarInfoDTO">
-		SELECT
-			    E1.CAR_NO  carNo,
-		        E1.CAR_NAME  carName,
-		        E1.CAR_YEAR  carYear,
-		        E1.CAR_BATTERY  carBattery,
-		        E1.ENROLL_DATE  enrollDate,
-		        CC.COMPANY_NAME  carCompany,
-		        CT.CAR_TYPE_NAME  carType
-		  FROM
-		  	    EV_CAR_INFO E1
-		  JOIN
-		  		EV_RENT_CAR_INFO E2 ON (E1.CAR_NO = E2.CAR_NO)
-		  LEFT JOIN EV_CAR_TYPE CT ON (E1.CAR_TYPE_NO = CT.CAR_TYPE_NO)
-		  LEFT JOIN EV_CAR_COMPANY CC ON (E1.COMPANY_NO = CC.COMPANY_NO)
-		 WHERE
-		 		E2.CATEGORY_NO = 1
-		  AND
-		  		E2.STATUS = 'Y'
-		 ORDER
-		 	BY
-		 	   	E1.CAR_NO DESC 
-		</select>
-
-	
 </mapper>
+
+
+
+
 
 
 
