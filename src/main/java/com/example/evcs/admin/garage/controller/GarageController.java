@@ -46,10 +46,12 @@ public class GarageController {
 			@RequestParam (name ="regionSigungu", required = false) String regionSigungu,
 			@RequestParam (name ="regionDong", required = false) String regionDong,
 			@RequestParam (name ="searchKeyword", required = false) String searchKeyword,
-			@RequestParam (name ="status", required = false) String status
+			@RequestParam (name ="status", required = false) String status,
+			@RequestParam (name ="searchCategory", required = false) String searchCategory
 			){
 		
-		log.info("GarageController selctGarageAll : regionSido : {} // regionSigungu : {} // regionDong : {} // searchKeyword : {} // status : {}", regionSido, regionSigungu, regionDong, searchKeyword, status);
+		log.info("GarageController selctGarageAll : regionSido : {} // regionSigungu : {} // regionDong : {} // searchKeyword : {} // status : {}",
+				regionSido, regionSigungu, regionDong, searchKeyword, status,searchCategory);
 		
 		Map <String, String> map = new HashMap<String, String>();
 		map.put("regionSido", regionSido);
@@ -57,6 +59,7 @@ public class GarageController {
 		map.put("regionDong", regionDong);
 		map.put("searchKeyword", searchKeyword);
 		map.put("status", status);
+		map.put("searchCategory", searchCategory);
 		
 		Map<String, Object> returnMap = garageService.selectGarageAll(map);
 		

@@ -6,7 +6,10 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
+import com.example.evcs.admin.carInfo.model.dto.CarCompanyDTO;
 import com.example.evcs.admin.carInfo.model.dto.CarInfoDTO;
+import com.example.evcs.admin.carInfo.model.dto.CarTypeDTO;
+import com.example.evcs.admin.rentCarInfo.model.dto.CategoryDTO;
 import com.example.evcs.admin.rentCarInfo.model.dto.RentCarInfoDTO;
 import com.example.evcs.admin.rentCarInfo.model.vo.RentCarInfoVO;
 
@@ -16,7 +19,7 @@ public interface RentCarInfoMapper {
 	// 1. 렌터카 추가하기
 	void insertRentCar(RentCarInfoVO rentCarInfo);
 	
-	List<String> getRentCarCategory();
+	List<CategoryDTO> getRentCarCategory();
 	List<CarInfoDTO> getAllCarInfo();
 	int findByCarNo(int carNo);
 	int findCategoryNoByCategoryName(String CategoryName);
@@ -40,11 +43,11 @@ public interface RentCarInfoMapper {
 
 	List<RentCarInfoDTO> getTimeRentCarInfo();
 
+	List<CarCompanyDTO> getCompanyInfo();
+	
 	List<CarInfoDTO> getCarInfoByCategoryNo();
 
 
-
+	List<CarTypeDTO> getCarTypeInfo();
 	
-
-
 }

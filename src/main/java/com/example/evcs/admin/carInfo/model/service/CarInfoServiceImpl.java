@@ -11,10 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.evcs.admin.carInfo.model.dao.CarInfoMapper;
+import com.example.evcs.admin.carInfo.model.dto.CarCompanyDTO;
 import com.example.evcs.admin.carInfo.model.dto.CarImageDTO;
 import com.example.evcs.admin.carInfo.model.dto.CarInfoDTO;
+import com.example.evcs.admin.carInfo.model.dto.CarTypeDTO;
 import com.example.evcs.admin.carInfo.model.vo.CarImage;
 import com.example.evcs.admin.carInfo.model.vo.CarInfo;
+import com.example.evcs.common.board.BoardUtil;
 import com.example.evcs.common.file.FileUtil;
 import com.example.evcs.exception.DuplicatedCarInfoException;
 import com.example.evcs.exception.NonExistingException;
@@ -31,6 +34,7 @@ public class CarInfoServiceImpl implements CarInfoService{
 
 	private final CarInfoMapper carInfoMapper;
 	private FileUtil fileUtil = new FileUtil("uploads/car");
+	private final BoardUtil boardUtil;
 	
 	@Override
 	public void insertCar(CarInfoDTO carInfo, MultipartFile file) {
@@ -54,9 +58,9 @@ public class CarInfoServiceImpl implements CarInfoService{
 			filePath = fileUtil.saveFile(file).replace("uploads/", "uploads/car/");
 			carInfoData = CarInfo.builder()
 									.carName(carInfo.getCarName())
-									.carType(carInfo.getCarType())
+									.carTypeNo(carInfo.getCarTypeNo())
 									.carYear(carInfo.getCarYear())
-									.carCompany(carInfo.getCarCompany())
+									.carCompanyNo(carInfo.getCompanyNo())
 									.carBattery(carInfo.getCarBattery())
 									.build();
 		}
@@ -77,9 +81,27 @@ public class CarInfoServiceImpl implements CarInfoService{
 			throw new DuplicatedCarInfoException("이미 존재하는 차량 입니다");
 		}
 		
+	}
+	
+	@Override
+	public Map<String, Object> selectAllCarInfo(Map<String, String> map) {
+
+		Map<String, Object> returnMap = new HashMap();
+		// 특수문자 이스케이프 처리
+		map.put("searchKeyword", boardUtil.escapeLikeParam(map.get("searchKeyword")));
 		
-						
+		List<CarInfoDTO> carInfo = carInfoMapper.selectAllCarInfo(map);
+		List<CarCompanyDTO> carCompanyInfo = carInfoMapper.selectAllCarCompanyInfo();
+		List<CarTypeDTO> carTypeInfo = carInfoMapper.selectAllCarTypeInfo();
 		
+		log.info("carInfo : {}", carInfo);
+		log.info("carCompanyInfo : {}", carCompanyInfo);
+		log.info("carTypeInfo : {}", carTypeInfo);
+		returnMap.put("carInfo", carInfo);
+		returnMap.put("carCompanyInfo", carCompanyInfo);
+		returnMap.put("carTypeInfo", carTypeInfo);
+		
+		return returnMap;
 	}
 
 	@Override
@@ -143,9 +165,9 @@ public class CarInfoServiceImpl implements CarInfoService{
 			carInfoData = CarInfo.builder()
 					.carNo(carInfo.getCarNo())
 					.carName(carInfo.getCarName())
-					.carType(carInfo.getCarType())
+					.carTypeNo(carInfo.getCarTypeNo())
 					.carYear(carInfo.getCarYear())
-					.carCompany(carInfo.getCarCompany())
+					.carCompanyNo(carInfo.getCompanyNo())
 					.carBattery(carInfo.getCarBattery())
 					.build();
 			
@@ -196,11 +218,6 @@ public class CarInfoServiceImpl implements CarInfoService{
 				
 		
 	}
-	
-	
-	
-	
-	
 
 	
 }
