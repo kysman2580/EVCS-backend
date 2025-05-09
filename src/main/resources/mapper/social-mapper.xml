@@ -15,8 +15,8 @@
 
     <insert id="insertSocialMember">
         INSERT INTO EV_SOCIAL_MEMBER
-        (SOCIAL_MEMBER_NO, MEMBER_NO, PROVIDER, PROVIDER_ID, CREATED_AT)
-        VALUES (social_member_seq.NEXTVAL, #{memberNo}, #{provider}, #{providerId}, CURRENT_TIMESTAMP)
+        (SOCIAL_MEMBER_NO, MEMBER_NO, EMAIL, PROVIDER, PROVIDER_ID, CREATED_AT)
+        VALUES (social_member_seq.NEXTVAL, #{memberNo}, #{email}, #{provider}, #{providerId}, CURRENT_TIMESTAMP)
     </insert>
 
     <select id="getSocialMemberByProviderId" resultMap="socialMemberResultMap">
@@ -24,5 +24,26 @@
         FROM EV_SOCIAL_MEMBER
         WHERE PROVIDER_ID = #{providerId}
     </select>
+    
+    
+    <!-- 이메일로 소셜 회원 조회 -->
+    <select id="findByEmail">
+        SELECT * FROM EV_SOCIAL_MEMBER
+        WHERE EMAIL = #{email}
+    </select>
+
+    <!-- ProviderId로 소셜 회원 조회 -->
+    <select id="findByProviderId">
+        SELECT * FROM EV_SOCIAL_MEMBER
+        WHERE PROVIDER_ID = #{providerId}
+    </select>
+    
+
+
+
+
+
+
+
 
 </mapper>

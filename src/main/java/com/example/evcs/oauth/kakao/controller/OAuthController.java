@@ -76,6 +76,8 @@ public class OAuthController {
 	                .queryParam("nickname", URLEncoder.encode(loginMember.getNickname(), StandardCharsets.UTF_8))
 	                .queryParam("email", loginMember.getEmail())
 	                .queryParam("memberNo", loginMember.getMemberNo())
+	                .queryParam("accessToken", loginMember.getAccessToken())
+	                .queryParam("refreshToken", loginMember.getRefreshToken())
 	                .build()
 	                .toUriString();
 

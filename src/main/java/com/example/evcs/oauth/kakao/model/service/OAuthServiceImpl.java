@@ -75,6 +75,7 @@ public class OAuthServiceImpl implements OAuthService {
                 socialMember.setMemberNo(member.getMemberNo());  // memberNo가 제대로 설정되도록
                 socialMember.setProvider("kakao");
                 socialMember.setProviderId(providerId);
+                socialMember.setEmail(email);
 
                 // 소셜 회원 등록
                 socialMemberMapper.insertSocialMember(socialMember);
