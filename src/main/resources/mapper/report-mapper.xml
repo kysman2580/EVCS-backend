@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="report-mapper">
+
+  <select id="selectReportsWithPaging" resultType="com.example.evcs.reporting.model.vo.Report">
+    SELECT * FROM (
+      SELECT inner_query.*, ROWNUM AS rn
+      FROM (
+        SELECT
+          b.RP_NO AS rpNo,
+          b.MEMBER_NO AS memberNo,
+          b.RP_B_NO AS boardNo,
+          b.RP_TITLE AS title,
+          b.RP_MEMBER_NO AS rpMemberNo,
+          b.RP_CONTENT AS content,
+          b.RP_ENROLLDATE AS enrollDate,
+          b.RP_STATUS AS status,
+          b.RP_END AS endDate,
+          n.NEWS_NO AS newsNo,
+          f.RP_NO AS fileNo,
+          f.FILE_NAME AS fileName,
+          f.FILE_LINK AS fileLink,
+          f.FILE_DATE AS fileDate
+        FROM EV_RP_BULLETIN b
+        LEFT JOIN EV_RP_NEWS n ON b.RP_NO = n.RP_NO
+        LEFT JOIN EV_RE_FILE f ON b.RP_NO = f.RP_NO
+        WHERE
+          (#{title} IS NULL OR b.RP_TITLE LIKE '%' || #{title} || '%')
+          AND (#{startDate} IS NULL OR b.RP_ENROLLDATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD'))
+          AND (#{endDate} IS NULL OR b.RP_ENROLLDATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD'))
+        ORDER BY b.RP_ENROLLDATE DESC
+      ) inner_query
+      WHERE ROWNUM &lt;= #{offset} + #{size}
+    )
+    WHERE rn > #{offset}
+  </select>
+  
+  <select id="countReportsForUser" resultType="int">
+    SELECT COUNT(*)
+    FROM EV_RP_BULLETIN b
+    WHERE b.MEMBER_NO = #{memberNo}
+      AND (#{title} IS NULL OR b.RP_TITLE LIKE '%' || #{title} || '%')
+      AND (#{startDate} IS NULL OR b.RP_ENROLLDATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD'))
+      AND (#{endDate} IS NULL OR b.RP_ENROLLDATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD'))
+  </select>
+  
+  <select id="countReports" parameterType="map" resultType="int">
+    SELECT COUNT(*)
+    FROM EV_RP_BULLETIN
+    WHERE
+        (#{startDate} IS NULL OR RP_ENROLLDATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD'))
+        AND (#{endDate} IS NULL OR RP_ENROLLDATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD'))
+        AND (#{title} IS NULL OR RP_TITLE LIKE '%' || #{title} || '%')
+  </select>
+
+  <select id="selectReportById" parameterType="long" resultType="com.example.evcs.reporting.model.vo.Report">
+    SELECT 
+    	RP_NO AS rpNo,
+        MEMBER_NO AS memberNo,
+        RP_B_NO AS boardNo,
+        RP_TITLE AS title,
+        RP_MEMBER_NO AS rpMemberNo,
+        RP_CONTENT AS content,
+        RP_ENROLLDATE AS enrollDate,
+        RP_STATUS AS status,
+        RP_END AS endDate
+    FROM EV_RP_BULLETIN 
+    WHERE RP_NO = #{rpNo}
+  </select>
+  
+  <select id="selectReportsForUser" resultType="com.example.evcs.reporting.model.vo.Report">
+  SELECT * FROM (
+    SELECT inner_query.*, ROWNUM AS rn
+    FROM (
+      SELECT
+        b.RP_NO AS rpNo,
+        b.MEMBER_NO AS memberNo,
+        b.RP_B_NO AS boardNo,
+        b.RP_TITLE AS title,
+        b.RP_MEMBER_NO AS rpMemberNo,
+        b.RP_CONTENT AS content,
+        b.RP_ENROLLDATE AS enrollDate,
+        b.RP_STATUS AS status,
+        b.RP_END AS endDate,
+        n.NEWS_NO AS newsNo,
+        f.RP_NO AS fileNo,
+        f.FILE_NAME AS fileName,
+        f.FILE_LINK AS fileLink,
+        f.FILE_DATE AS fileDate
+      FROM EV_RP_BULLETIN b
+      LEFT JOIN EV_RP_NEWS n ON b.RP_NO = n.RP_NO
+      LEFT JOIN EV_RE_FILE f ON b.RP_NO = f.RP_NO
+      WHERE
+        b.MEMBER_NO = #{memberNo}
+        <if test="title != null and title != ''">
+          AND b.RP_TITLE LIKE '%' || #{title} || '%'
+        </if>
+        <if test="startDate != null and startDate != ''">
+          AND b.RP_ENROLLDATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+        </if>
+        <if test="endDate != null and endDate != ''">
+          AND b.RP_ENROLLDATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
+        </if>
+      ORDER BY b.RP_ENROLLDATE DESC
+    ) inner_query
+    WHERE ROWNUM &lt;= #{offset} + #{size}
+  )
+  WHERE rn &gt; #{offset}
+  </select>
+
+</mapper>

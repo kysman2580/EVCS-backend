@@ -124,6 +124,14 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.badRequest().body(error);
 	}
 	
+	
+	@ExceptionHandler(AuthHandler.class)
+	public ResponseEntity<?> AuthHandlerError(AuthHandler e) {
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+	
 	// 대여시각 설정 오류
 	@ExceptionHandler(WrongTimeException.class)
 	public ResponseEntity<?> WrongTimeException(WrongTimeException e){

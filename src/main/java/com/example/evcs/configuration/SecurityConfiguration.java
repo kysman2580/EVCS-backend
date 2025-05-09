@@ -28,7 +28,25 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfiguration {
+	
+<<<<<<< HEAD
+	private final JwtFilter filter;
+	
+	public static final String[] ALLOW_URLS = {
+		    "/swagger-ui/**",
+		    "/swagger-resources/**",
+		    "/v3/api-docs/**",
+		    "/auth/login",
+		    "/auth/login/kakao/**",
+		    "/auth/kakao/callback",
+		    "/members",
+		    "/members/**",
+		    "/api/**"
+		};
+
+=======
     private final JwtFilter filter;
+>>>>>>> c07a0fbdf93405478593d94daf6fa67b3301e22f
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -64,7 +82,8 @@ public class SecurityConfiguration {
                     "/api/news/comment",
                     "/api/news/comment/like",
                     "/api/news/comment/hate",
-                    "/api/report/comment"
+                    "/api/report/comment",
+                    "/api/usReports"
                 ).authenticated()
                 .requestMatchers(HttpMethod.PUT,
                     "/api/news/comment"
@@ -76,14 +95,21 @@ public class SecurityConfiguration {
                     "/api/news/bookmark/status",
                     "/api/news/like/status",
                     "/api/news/hate/status",
-                    "/api/news/mypage/**"
+                    "/api/news/mypage/**",
+                    "/api/usReports/**"
                 ).authenticated()
 
                 // — 관리자 전용
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/admin/**", "/api/reports/**").hasRole("ADMIN")
+
+                // 소셜 관련 
+                .requestMatchers(ALLOW_URLS).permitAll()
 
                 // 2) 그 외 모든 요청(News 외 서비스)은 모두 허용
                 .anyRequest().permitAll()
+                
+                
+
             )
 
             // stateless JWT
