@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.evcs.admin.hotdeal.model.dao.HotdealMapper">
+	
+		<sql id="HotdealColumn">
+		SELECT 
+			  H.HOT_DEAL_NO hotdealNo
+		    , H.HOT_DEAL_NAME hotdealName
+		    , H.DEAL_PERCENT dealPercent
+		    , H.START_DATE startDate
+		    , H.END_DATE endDate
+			, H.ENROLL_DATE enrollDate
+			, M.MEMBER_NICKNAME memberNickname
+			, CASE 
+				WHEN H.STATUS = 'Y' THEN '진행중'
+				WHEN H.STATUS = 'N' THEN '마감'
+				ELSE '알수없음'
+			  END AS statusName
+			, H.WRITER writer
+			, H.STATUS
+			, (SELECT COUNT(I.RENT_CAR_NO) FROM EV_ING_HOTDEAL I WHERE I.HOT_DEAL_NO = H.HOT_DEAL_NO) AS carCount
+			, TO_CHAR(H.START_DATE, 'YYYY.MM.DD HH24:MI')
+		    	|| ' ~ '
+		    	|| TO_CHAR(H.END_DATE  , 'YYYY.MM.DD HH24:MI')
+    		AS period
+	</sql>
+	
+	<select id="selectDuplicateHotdeal" 
+			parameterType="Hotdeal" 
+			resultType="string"
+	>
+	  SELECT 
+	  		IH.RENT_CAR_NO
+	    FROM 
+	    	EV_ING_HOTDEAL IH
+	    JOIN 
+	    	EV_HOT_DEAL H  ON IH.HOT_DEAL_NO = H.HOT_DEAL_NO
+	   WHERE 
+	   		IH.RENT_CAR_NO IN
+	     	<foreach collection="carNos" item="carNo" open="(" separator="," close=")">
+	       		#{carNo}
+	     	</foreach>
+	     	<if test="hotdealNo != null">
+		     	AND H.HOT_DEAL_NO != #{hotdealNo}  
+	     	</if>
+	     	AND H.START_DATE &lt;= #{endDate}
+	     	AND H.END_DATE   &gt;= #{startDate}
+	</select>
+
+	
+	<insert id="insertHotdeal" 
+			parameterType="Hotdeal"
+	>
+	  INSERT 
+	  	INTO 
+	  		EV_HOT_DEAL (
+			    HOT_DEAL_NO,
+			    WRITER,
+			    HOT_DEAL_NAME,
+			    DEAL_PERCENT,
+			    START_DATE,
+			    END_DATE,
+			    ENROLL_DATE,
+			    STATUS
+	  ) VALUES (
+			    SEQ_EV_HOT_DEAL.NEXTVAL,
+			    #{writer},
+			    #{hotdealName},
+			    #{dealPercent},
+			    #{startDate},
+			    #{endDate},
+			    SYSDATE,
+			    'Y'
+	  )
+	</insert>
+	
+	<insert id="insertIngHotdeal" 
+			parameterType="Hotdeal"
+	>
+	  INSERT ALL
+	  
+	  <foreach collection="carNos" item="carNo">
+	    INTO 
+	    	EV_ING_HOTDEAL 
+	    		(
+					  HOT_DEAL_NO
+					, RENT_CAR_NO
+				)
+	    VALUES (
+					  SEQ_EV_HOT_DEAL.CURRVAL
+					, #{carNo})
+	  </foreach>
+	  SELECT * FROM DUAL
+
+	</insert>
+	
+	<select id="selectHotdealAll"
+			parameterType="map"
+			resultType="HotdealDTO"
+	>
+		<include refid="HotdealColumn" />
+		
+		FROM 
+			EV_HOT_DEAL H
+		LEFT JOIN 
+			EV_MEMBER M 
+		ON 
+			(H.WRITER = M.MEMBER_NO)	
+		WHERE 1=1
+		      <if test="startDate != null and startDate != '' and endDate   != null and endDate   != ''">
+		         AND H.START_DATE &lt;= #{endDate}
+		         AND H.END_DATE   &gt;= #{startDate}
+		      </if>
+		      <if test="startDate != null and startDate != '' and (endDate == null or endDate == '')">
+			     AND H.END_DATE &gt;= #{startDate}
+			  </if>
+			  <if test="endDate != null and endDate != '' and (startDate == null or startDate == '')">
+				  AND H.START_DATE &lt;= #{endDate}
+			  </if>
+			  <if test="'ing'.equals(ing)">
+			  	AND H.STATUS = 'Y'
+			  </if>
+			  <if test="'noIng'.equals(ing)">
+			  	AND H.STATUS = 'N'
+			  </if>
+			  <if test="searchKeyword != null and searchKeyword != ''">
+				AND UPPER(H.HOT_DEAL_NAME) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+			  </if>
+		ORDER BY 
+			H.ENROLL_DATE ASC
+	</select>
+	
+	<select id="selectTotalCount"
+			parameterType="map"
+			resultType="_int"
+	>
+		SELECT
+			COUNT(*)		
+		FROM 
+			EV_HOT_DEAL H
+		LEFT JOIN 
+			EV_MEMBER M 
+		ON 
+			(H.WRITER = M.MEMBER_NO)	
+		WHERE 1=1
+		      <if test="startDate != null and startDate != '' ">
+		        AND H.END_DATE   &gt;= #{startDate}
+		      </if>
+		      <if test="endDate != null and endDate != '' ">
+		        AND H.START_DATE &lt;= #{endDate}
+		      </if>
+			  <if test="'ing'.equals(ing)">
+			  	AND H.STATUS = 'Y'
+			  </if>
+			  <if test="'noIng'.equals(ing)">
+			  	AND H.STATUS = 'N'
+			  </if>
+			  <if test="searchKeyword != null and searchKeyword != ''">
+				AND H.HOT_DEAL_NAME LIKE '%' || #{searchKeyword} || '%'
+			  </if>
+		ORDER BY 
+			H.ENROLL_DATE ASC
+	</select>
+	
+	<delete id="deleteHotdealCars" parameterType="long">
+	  DELETE 
+	  	FROM 
+	  		EV_ING_HOTDEAL
+	  WHERE 
+	  		HOT_DEAL_NO = #{hotdealNo}
+	</delete>
+	
+	
+	<select id="selectAllRentCar" parameterType="map" resultType="RentCarInfoDTO">
+	  SELECT
+	      E1.RENT_CAR_NO      AS rentCarNo,
+	      E2.CATEGORY_NAME    AS categoryName,
+	      E1.CAR_NO           AS carNo,
+	      E1.RENT_CAR_PRICE   AS rentCarPrice,
+	      G.ALL_ADDRESS       AS enrollPlace,
+	      G.POST_ADD          AS postAdd,
+	      G.GARAGE_NO         AS garageNo,
+	      E1.ENROLL_DATE      AS enrollDate,
+	      E1.STATUS           AS status,
+	      CASE
+	        WHEN E1.STATUS = 'Y' THEN '사용중'
+	        WHEN E1.STATUS = 'N' THEN '사용불가'
+	        ELSE '알수없음'
+	      END                 AS statusName,
+	      (SELECT FILE_LOAD
+	         FROM EV_CAR_IMAGE I1
+	        WHERE I1.CAR_NO = E1.CAR_NO
+	          AND ROWNUM = 1
+	      )                   AS fileLoad,
+	      CI.CAR_COMPANY      AS carCompany,
+	      CI.CAR_TYPE         AS carType,
+	      CI.CAR_NAME         AS carName,
+	      CI.CAR_YEAR         AS carYear
+	  FROM EV_RENT_CAR_INFO E1
+	  LEFT  JOIN EV_CATEGORY  E2 ON E1.CATEGORY_NO = E2.CATEGORY_NO
+	  LEFT  JOIN EV_GARAGE    G  ON G.GARAGE_NO     = E1.GARAGE_NO
+	  LEFT  JOIN EV_CAR_INFO  CI ON CI.CAR_NO       = E1.CAR_NO
+	
+	  WHERE 1=1
+	    <choose>
+	      <when test="'ing'.equals(useStatus)">
+	        AND E1.STATUS = 'Y'
+	      </when>
+	      <when test="'noIng'.equals(useStatus)">
+	        AND E1.STATUS = 'N'
+	      </when>
+	    </choose>
+	
+	    <choose>
+	      <when test="'timeRentCar'.equals(carCategory)">
+	        AND E2.CATEGORY_NO = 1
+	      </when>
+	      <when test="'longRentCar'.equals(carCategory)">
+	        AND E2.CATEGORY_NO = 2
+	      </when>
+	      <when test="'subsRentCar'.equals(carCategory)">
+	        AND E2.CATEGORY_NO = 3
+	      </when>
+	    </choose>
+	
+	    <choose>
+	      <when test="'allAddress'.equals(searchCategory)">
+	        AND G.ALL_ADDRESS LIKE '%' || #{searchKeyword} || '%'
+	      </when>
+	      <when test="'carType'.equals(searchCategory)">
+	        AND UPPER(CI.CAR_TYPE) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	      </when>
+	      <when test="'carCompany'.equals(searchCategory)">
+	        AND UPPER(CI.CAR_COMPANY) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	      </when>
+	      <when test="'carName'.equals(searchCategory)">
+	        AND UPPER(CI.CAR_NAME) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	      </when>
+	    </choose>
+	
+	  ORDER BY E1.ENROLL_DATE DESC
+	</select>
+	
+	<select id="selectAllHotdealRentCar" parameterType="map" resultType="RentCarInfoDTO">
+	  SELECT
+	      E1.RENT_CAR_NO      AS rentCarNo,
+	      E2.CATEGORY_NAME    AS categoryName,
+	      E1.CAR_NO           AS carNo,
+	      E1.RENT_CAR_PRICE   AS rentCarPrice,
+	      G.ALL_ADDRESS       AS enrollPlace,
+	      G.POST_ADD          AS postAdd,
+	      G.GARAGE_NO         AS garageNo,
+	      E1.ENROLL_DATE      AS enrollDate,
+	      E1.STATUS           AS status,
+	      CASE
+	        WHEN E1.STATUS = 'Y' THEN '사용중'
+	        WHEN E1.STATUS = 'N' THEN '사용불가'
+	        ELSE '알수없음'
+	      END                 AS statusName,
+	      (SELECT FILE_LOAD
+	         FROM EV_CAR_IMAGE I1
+	        WHERE I1.CAR_NO = E1.CAR_NO
+	          AND ROWNUM = 1
+	      )                   AS fileLoad,
+	      CI.CAR_COMPANY      AS carCompany,
+	      CI.CAR_TYPE         AS carType,
+	      CI.CAR_NAME         AS carName,
+	      CI.CAR_YEAR         AS carYear,
+	      IH.HOT_DEAL_NO      AS hotdealNo
+	  FROM EV_RENT_CAR_INFO E1
+	  INNER JOIN EV_ING_HOTDEAL IH 
+	    ON E1.RENT_CAR_NO = IH.RENT_CAR_NO
+	   <if test="hotdealNo != null and hotdealNo != ''">
+	   		AND IH.HOT_DEAL_NO = #{hotdealNo}       
+	   </if>
+	  LEFT  JOIN EV_CATEGORY  E2 ON E1.CATEGORY_NO = E2.CATEGORY_NO
+	  LEFT  JOIN EV_GARAGE    G  ON G.GARAGE_NO     = E1.GARAGE_NO
+	  LEFT  JOIN EV_CAR_INFO  CI ON CI.CAR_NO       = E1.CAR_NO
+	
+	  WHERE 1=1
+	    <choose>
+	      <when test="'ing'.equals(useStatus)">
+	        AND E1.STATUS = 'Y'
+	      </when>
+	      <when test="'noIng'.equals(useStatus)">
+	        AND E1.STATUS = 'N'
+	      </when>
+	    </choose>
+	
+	    <choose>
+	      <when test="'timeRentCar'.equals(carCategory)">
+	        AND E2.CATEGORY_NO = 1
+	      </when>
+	      <when test="'longRentCar'.equals(carCategory)">
+	        AND E2.CATEGORY_NO = 2
+	      </when>
+	      <when test="'subsRentCar'.equals(carCategory)">
+	        AND E2.CATEGORY_NO = 3
+	      </when>
+	    </choose>
+	
+	    <choose>
+	      <when test="'allAddress'.equals(searchCategory)">
+	        AND G.ALL_ADDRESS LIKE '%' || #{searchKeyword} || '%'
+	      </when>
+	      <when test="'carType'.equals(searchCategory)">
+	        AND UPPER(CI.CAR_TYPE) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	      </when>
+	      <when test="'carCompany'.equals(searchCategory)">
+	        AND UPPER(CI.CAR_COMPANY) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	      </when>
+	      <when test="'carName'.equals(searchCategory)">
+	        AND UPPER(CI.CAR_NAME) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	      </when>
+	    </choose>
+	
+	  ORDER BY E1.ENROLL_DATE DESC
+	</select>
+		
+	<update id="updateHotdeal"
+			parameterType="Hotdeal"
+	>
+		UPDATE 
+				EV_HOT_DEAL
+			SET
+				  HOT_DEAL_NAME = #{ hotdealName }
+				, DEAL_PERCENT = #{ dealPercent }
+				, START_DATE = #{ startDate }
+				, END_DATE = #{ endDate }
+				, WRITER = #{writer}
+		WHERE 
+			HOT_DEAL_NO = #{ hotdealNo }
+	</update>
+	
+	<insert id="updateInsertIngHotdeal" 
+			parameterType="Hotdeal"
+	>
+	  INSERT ALL
+	  
+	  <foreach collection="carNos" item="carNo">
+	    INTO 
+	    	EV_ING_HOTDEAL 
+	    		(
+					  HOT_DEAL_NO
+					, RENT_CAR_NO
+				)
+	    VALUES (
+					 #{hotdealNo}
+					, #{carNo})
+	  </foreach>
+	  SELECT * FROM DUAL
+
+	</insert>
+	
+	<update id="deleteByHotdealNo"
+			parameterType="long"
+	>
+		UPDATE 
+				EV_HOT_DEAL
+			SET
+				STATUS = 'N'
+		WHERE 
+			HOT_DEAL_NO = #{ hotdealNo }
+	</update>
+	
+	
+
+</mapper>

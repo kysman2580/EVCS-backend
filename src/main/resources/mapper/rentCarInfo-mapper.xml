@@ -18,7 +18,13 @@
 	<select id="getAllCarInfo"
 				resultType="CarInfoDTO">
 		SELECT
-				*
+				  CAR_NO carNo
+				, CAR_NAME carName
+				, CAR_TYPE carType
+				, CAR_YEAR carYear
+				, CAR_COMPANY carCompany
+				, CAR_BATTERY carBattery
+				, ENROLL_DATE enrollDate
 		  FROM
 		  		EV_CAR_INFO
 	</select>	
@@ -30,13 +36,17 @@
 				  , CG.CATEGORY_NAME categoryName
 				  , CI.CAR_NO carNo
 				  , CI.RENT_CAR_PRICE rentCarPrice
-				  , CI.ENROLL_PLACE enrollPlace
+				  , G.ALL_ADDRESS enrollPlace
+				  , G.POST_ADD postAdd
+				  , G.GARAGE_NO garageNo
 				  , CI.ENROLL_DATE enrollDate
 				  , CI.STATUS status
 		  FROM
 		  		EV_RENT_CAR_INFO CI
 		  JOIN
 		  		EV_CATEGORY CG ON (CG.CATEGORY_NO = CI.CATEGORY_NO)
+		  JOIN
+		  		EV_GARAGE G ON (G.GARAGE_NO = CI.GARAGE_NO)
 		 WHERE
 		 		CI.CATEGORY_NO = 1
 	</select>	
@@ -72,14 +82,14 @@
 				  , CATEGORY_NO
 				  , CAR_NO
 				  , RENT_CAR_PRICE
-				  , ENROLL_PLACE
+				  , GARAGE_NO
 				)
 	  			VALUES(
 				    #{rentCarNo}
 				  , #{categoryNo}
 				  , #{carNo}
 				  , #{rentCarPrice}
-				  , #{enroll_place}
+				  , #{garageNo}
 				)
 	</insert>
 
@@ -92,19 +102,48 @@
 	</select>
 	
 	<select id="getRentCarList"
+				parameterType="map"
 				resultType="RentCarInfoDTO">
 		SELECT
 			   		E1.RENT_CAR_NO rentCarNo
 				  , E2.CATEGORY_NAME categoryName
 				  , E1.CAR_NO carNo
 				  , E1.RENT_CAR_PRICE rentCarPrice
-				  , E1.ENROLL_PLACE enrollPlace
+				  , G.ALL_ADDRESS enrollPlace
+  				  , G.POST_ADD postAdd
+  				  , G.GARAGE_NO garageNo
 				  , E1.ENROLL_DATE enrollDate
 				  , E1.STATUS status
+				  , CASE 
+						WHEN E1.STATUS = 'Y' THEN '사용중'
+						WHEN E1.STATUS = 'N' THEN '사용불가'
+						ELSE '알수없음'
+			  		END AS statusName
+			  	  , (SELECT FILE_LOAD FROM EV_CAR_IMAGE I1 WHERE I1.CAR_NO = E1.CAR_NO) fileLoad
 		  FROM
 		  	   EV_RENT_CAR_INFO E1
 		  JOIN
 		  	   EV_CATEGORY E2 ON (E1.CATEGORY_NO = E2.CATEGORY_NO)
+	 	  JOIN
+  		       EV_GARAGE G ON (G.GARAGE_NO = E1.GARAGE_NO)
+  		 WHERE 1=1
+			  <if test="'ing'.equals(useStatus)">
+			  	AND E1.STATUS = 'Y'
+			  </if>
+			  <if test="'noIng'.equals(useStatus)">
+			  	AND E1.STATUS = 'N'
+			  </if>
+			  <choose>
+			  	<when test="'allAddress'.equals(category)">
+			  		AND G.ALL_ADDRESS LIKE '%' || #{searchKeyword} || '%'
+			  	</when>
+			  	<when test="'postAdd'.equals(category)">
+			  		AND G.POST_ADD LIKE '%' || #{searchKeyword} || '%'
+			  	</when>
+			  	<when test="'carNo'.equals(category)">
+			  		AND E1.RENT_CAR_NO LIKE '%' || #{searchKeyword} || '%'
+			  	</when>
+			  </choose>
 		 ORDER
 		 	BY
 		 		E1.ENROLL_DATE DESC
@@ -146,7 +185,7 @@
 		   SET 
 		   		  CATEGORY_NO = #{categoryNo}
 		   		, RENT_CAR_PRICE = #{rentCarPrice}
-		   		, ENROLL_PLACE = #{enrollPlace}
+		   		, GARAGE_NO = #{garageNo}
 		   		, STATUS = #{status}
 		 WHERE
 		  		RENT_CAR_NO = #{rentCarNo}
@@ -154,15 +193,15 @@
 	
 	<delete id="deleteRentCar"
 				parameterType = "String">
-		DELETE
-		  FROM
+		UPDATE 
 				EV_RENT_CAR_INFO
-		 WHERE
-		 		RENT_CAR_NO = #{rentCarNo}
+			SET
+				STATUS = 'N'
+		WHERE 
+			RENT_CAR_NO = #{ rentCarNo }
 	</delete>
 	
 </mapper>
-
 
 
 

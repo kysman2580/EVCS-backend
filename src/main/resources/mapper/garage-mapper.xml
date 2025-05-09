@@ -24,7 +24,7 @@
 	</sql>
 
 	<insert id="insertGarage" 
-			parameterType="GarageDTO"
+			parameterType="Garage"
 	>
 	  INSERT 
 	  	INTO 

@@ -16,7 +16,7 @@ public interface RentCarInfoService {
 	
 	public void insertRentCar(RentCarInfoDTO rentCarInfo);
 
-	public Map<String, Object> rentCarList(int currentPage);
+	public Map<String, Object> rentCarList(Map<String, String> map);
 
 	public void updateRentCar(RentCarInfoDTO rentCarInfo);
 

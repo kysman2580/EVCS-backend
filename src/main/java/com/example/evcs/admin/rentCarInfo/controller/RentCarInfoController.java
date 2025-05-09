@@ -1,19 +1,19 @@
 package com.example.evcs.admin.rentCarInfo.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.evcs.admin.carInfo.model.dto.CarInfoDTO;
 import com.example.evcs.admin.rentCarInfo.model.dto.RentCarInfoDTO;
 import com.example.evcs.admin.rentCarInfo.model.service.RentCarInfoService;
 
@@ -58,10 +58,20 @@ public class RentCarInfoController {
 	}
 	
 	@GetMapping("/{currentPage}")
-	public ResponseEntity<?> rentCarList(@PathVariable(name="currentPage") int currentPage) {
+	public ResponseEntity<?> rentCarList(@PathVariable(name="currentPage") int currentPage,
+		    @RequestParam(name = "useStatus", required = false) String useStatus,
+		    @RequestParam(name = "category", required = false) String category,
+		    @RequestParam(name = "searchKeyword", required = false) String searchKeyword
+			) {
 		
-		log.info("currentPage : {}",currentPage);
-		Map<String, Object> rentCarInfoMap = rentCarInfoService.rentCarList(currentPage);
+		Map <String, String> map = new HashMap();
+		map.put("currentPage", String.valueOf(currentPage));
+		map.put("useStatus", useStatus);
+		map.put("category", category);
+		map.put("searchKeyword", searchKeyword);
+		
+		log.info("RentCarInfoController rentCarList : {}",map);
+		Map<String, Object> rentCarInfoMap = rentCarInfoService.rentCarList(map);
 		
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(rentCarInfoMap);
