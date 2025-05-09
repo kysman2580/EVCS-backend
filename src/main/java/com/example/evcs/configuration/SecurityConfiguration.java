@@ -39,7 +39,7 @@ public class SecurityConfiguration {
 						   .httpBasic(AbstractHttpConfigurer::disable)
 						   .csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(requests->{
 							   requests.requestMatchers(HttpMethod.POST, "/auth/login", "/members" , "/api/reports", "/api/usReports").permitAll();
-							   requests.requestMatchers(HttpMethod.GET, "/members/**", "/api/**").permitAll();
+							   requests.requestMatchers(HttpMethod.GET, "/members/**", "/api/reports/**", "/api/usReports/**").permitAll();
 						   })
 						   .cors(Customizer.withDefaults())
 						   .authorizeHttpRequests(requests -> {
