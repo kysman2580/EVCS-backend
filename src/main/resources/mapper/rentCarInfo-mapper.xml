@@ -200,6 +200,7 @@
 		 		E2.ENROLL_DATE DESC
 	</select>
 	
+	
 	<select id="findByRentCarNo"
 				parameterType="String"
 				resultType="int">
@@ -233,7 +234,7 @@
 		WHERE 
 			RENT_CAR_NO = #{ rentCarNo }
 	</delete>
-	
+
 	<select id="getTimeRentCarInfo"
 				resultType="RentCarInfoDTO">
 		SELECT
@@ -263,5 +264,52 @@
 		 	BY
 		 	   	CI.CAR_NO DESC 
 	</select>	
-	
+		
+	<select id="getCarInfoByCategoryNo"
+				>
+		SELECT
+			      CI.CAR_NO carNo
+			    , CI.COLOR_NO colorNo
+			    , CT.CAR_TYPE_NAME carTypeName
+			    , CC.COMPANY_NAME companyName  
+			    , CI.CAR_NAME  carName
+			    , CI.CAR_YEAR carYear
+			    , CI.CAR_BATTERY carBattery
+			    , CI.ENROLL_DATE enrollDate
+		 FROM
+			    EV_CAR_INFO CI
+		 JOIN
+		 		EV_RENT_CAR_INFO RC ON (RC.CAR_NO = CI.CAR_NO)
+	     JOIN
+	     		EV_CAR_TYPE CT ON (CT.CAR_TYPE_NO = CI.CAR_TYPE_NO)
+	     JOIN
+	     		EV_CAR_COMPANY CC ON (CC.COMPANY_NO = CI.COMPANY_NO)
+		WHERE
+				RC.CATEGORY_NO = '1'
+		ORDER
+		   BY
+		   		CI.CAR_NO DESC 
+	</select>
+
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+
+	
+
