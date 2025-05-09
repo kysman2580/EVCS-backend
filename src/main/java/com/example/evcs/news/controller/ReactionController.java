@@ -22,7 +22,7 @@ public class ReactionController {
         return "liked or unliked";
     }
 
-    @PostMapping("/hate")
+    @PostMapping("/hate")	
     public String hate(@RequestBody Map<String, Long> body,
                        @AuthenticationPrincipal CustomUserDetails user) {
         reactionService.hateNews(body.get("newsNo"), user.getMemberNo());
