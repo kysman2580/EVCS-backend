@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.evcs.admin.reservation.model.dao.RevMapper">
+
+	
+
+	<select id="findByCarNo"
+				parameterType="String"
+				resultType="int">
+		SELECT 
+				COUNT(*)		   
+	  	  FROM
+	  	 		EV_RENT_CAR_INFO
+	  	 WHERE
+	  	 		RENT_CAR_NO = #{rentCarNo}
+	</select>
+	
+	<select id="checkRev"
+				parameterType="RevVo"
+				resultType="int">
+		SELECT 
+				COUNT(*)		   
+	  	  FROM
+	  	 		EV_RESERVATION_LIST
+	  	 WHERE
+	  	 		RENT_CAR_NO = #{rentCarNo}
+	  	 		AND ( 
+			      #{returnTime} &gt; RENTAL_TIME
+			      AND
+			      #{rentalTime} &lt; RETURN_TIME
+	  	 		)
+	</select>
+	
+	<insert id="insertRev"
+				parameterType="RevVo">
+		INSERT 
+		  INTO 
+	  			EV_RESERVATION_LIST(
+				    RENT_CAR_NO
+				  , MEMBER_NO
+				  , RENTAL_TIME
+				  , RETURN_TIME
+				)
+	  			VALUES(
+				    #{rentCarNo}
+				  , #{memberNo}
+				  , #{rentalTime}
+				  , #{returnTime}
+				)
+	</insert>
+	
+	<insert id="returnRentCar"
+				parameterType="RevVo">
+		INSERT 
+		  INTO 
+	  			EV_RESERVATION_LIST(
+				    REAL_RETURN_TIME
+				)
+	  			VALUES(
+				    LOCALDATETIME
+				)
+		 WHERE 
+		 		RESERVATION_NO = #{reservationNo}
+	</insert>
+	
+	<update id="updateReturnStatus">
+		UPDATE
+				EV_RESERVATION_LIST
+		   SET
+		   		RETURN_STATUS = 'Y'
+		 WHERE 
+		 		RESERVATION_NO = #{reservationNo}
+	</update>
+	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+

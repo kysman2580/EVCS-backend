@@ -1,3 +1,4 @@
+
 package com.example.evcs.admin.rentCarInfo.model.dto;
 
 import java.sql.Date;
@@ -34,3 +35,4 @@ public class RentCarInfoDTO {
 	private String regionSido;
 	private String ingHotdeal;
 }
+

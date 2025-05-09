@@ -40,6 +40,8 @@ public interface RentCarInfoMapper {
 
 	List<RentCarInfoDTO> getTimeRentCarInfo();
 
+	List<CarInfoDTO> getCarInfoByCategoryNo();
+
 
 
 	
