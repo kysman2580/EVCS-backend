@@ -66,7 +66,8 @@ public class SecurityConfiguration {
                     "/api/news/comment/like",
                     "/api/news/comment/hate",
                     "/api/report/comment",
-                    "/api/usReports"
+                    "/api/usReports",
+                    "/api/usReportsCom"
                 ).authenticated()
                 .requestMatchers(HttpMethod.PUT,
                     "/api/news/comment"
@@ -79,7 +80,8 @@ public class SecurityConfiguration {
                     "/api/news/like/status",
                     "/api/news/hate/status",
                     "/api/news/mypage/**",
-                    "/api/usReports/**"
+                    "/api/usReports/**",
+                    "/api/usReportsCom/**"
                 ).authenticated()
 
                 // — 관리자 전용

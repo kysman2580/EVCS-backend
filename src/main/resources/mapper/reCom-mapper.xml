@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.evcs.reporting.mapper.ReCommentMapper">
+
+  <select id="selectReCommentsForUser"
+          resultType="com.example.evcs.reporting.model.vo.ReComment">
+    SELECT *
+      FROM (
+        SELECT rownum rn, a.*
+          FROM (
+            SELECT
+              RE_NO, MEMBER_NO, RE_CONTENT, RE_STATUS, RE_END,
+              COMMENT_GROUP_NO, COMMENT_DEPTH
+            FROM EV_RE_COMMENTS01
+            WHERE MEMBER_NO = #{memberNo}
+              AND (
+                #{startDate} IS NULL OR #{startDate} = ''
+                OR RE_END &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+              )
+              AND (
+                #{endDate} IS NULL OR #{endDate} = ''
+                OR RE_END &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
+              )
+              AND (
+                #{keyword} IS NULL OR #{keyword} = ''
+                OR RE_CONTENT LIKE '%' || #{keyword} || '%'
+              )
+            ORDER BY RE_END DESC
+          )
+      )
+    WHERE rn &gt; #{offset}
+      AND rn &lt;= #{offset} + #{size}
+  </select>
+
+  <select id="countReCommentsForUser" resultType="int">
+    SELECT COUNT(*)
+      FROM EV_RE_COMMENTS01
+    WHERE MEMBER_NO = #{memberNo}
+      AND (
+        #{startDate} IS NULL OR #{startDate} = ''
+        OR RE_END &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+      )
+      AND (
+        #{endDate} IS NULL OR #{endDate} = ''
+        OR RE_END &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
+      )
+      AND (
+        #{keyword} IS NULL OR #{keyword} = ''
+        OR RE_CONTENT LIKE '%' || #{keyword} || '%'
+      )
+  </select>
+
+  <select id="selectReCommentById"
+          resultType="com.example.evcs.reporting.model.vo.ReComment">
+    SELECT
+      RE_NO, MEMBER_NO, RE_CONTENT, RE_STATUS, RE_END,
+      COMMENT_GROUP_NO, COMMENT_DEPTH
+    FROM EV_RE_COMMENTS01
+    WHERE RE_NO = #{reNo}
+  </select>
+
+</mapper>
