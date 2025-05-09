@@ -29,27 +29,7 @@
 		  		EV_CAR_INFO
 	</select>	
 	
-	<select id="getTimeRentCarInfo"
-				resultType="RentCarInfoDTO">
-		SELECT
-				    CI.RENT_CAR_NO rentCarNo
-				  , CG.CATEGORY_NAME categoryName
-				  , CI.CAR_NO carNo
-				  , CI.RENT_CAR_PRICE rentCarPrice
-				  , G.ALL_ADDRESS enrollPlace
-				  , G.POST_ADD postAdd
-				  , G.GARAGE_NO garageNo
-				  , CI.ENROLL_DATE enrollDate
-				  , CI.STATUS status
-		  FROM
-		  		EV_RENT_CAR_INFO CI
-		  JOIN
-		  		EV_CATEGORY CG ON (CG.CATEGORY_NO = CI.CATEGORY_NO)
-		  JOIN
-		  		EV_GARAGE G ON (G.GARAGE_NO = CI.GARAGE_NO)
-		 WHERE
-		 		CI.CATEGORY_NO = 1
-	</select>	
+	
 		
 	<select id="findByCarNo"
 				parameterType="int"
@@ -201,7 +181,42 @@
 			RENT_CAR_NO = #{ rentCarNo }
 	</delete>
 	
+	
+	<select id="getTimeRentCarInfo"
+				resultType="RentCarInfoDTO">
+		SELECT
+				    CI.RENT_CAR_NO rentCarNo
+				  , CG.CATEGORY_NAME categoryName
+				  , CI.CAR_NO carNo
+				  , CI.RENT_CAR_PRICE rentCarPrice
+				  , G.ALL_ADDRESS enrollPlace
+				  , G.POST_ADD postAdd
+				  , G.GARAGE_NO garageNo
+				  , G.ADDRESS address
+				  , CI.ENROLL_DATE enrollDate
+				  , CI.STATUS status
+				  , (SELECT FILE_LOAD FROM EV_CAR_IMAGE I1 
+				  WHERE CI.CAR_NO = I1.CAR_NO) fileLoad
+		  FROM
+		  		EV_RENT_CAR_INFO CI
+		  JOIN
+		  		EV_CATEGORY CG ON (CG.CATEGORY_NO = CI.CATEGORY_NO)
+		  JOIN
+		  		EV_GARAGE G ON (G.GARAGE_NO = CI.GARAGE_NO)
+		 WHERE
+		 		CI.CATEGORY_NO = 1
+		  AND
+		  		CI.STATUS = 'Y'
+         ORDER
+		 	BY
+		 	   	CI.CAR_NO DESC 
+	</select>	
+	
 </mapper>
+
+
+
+
 
 
 

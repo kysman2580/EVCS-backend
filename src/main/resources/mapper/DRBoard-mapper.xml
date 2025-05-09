@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.evcs.driveRoute.model.dao.DRBoardMapper">
+	
+
+	<insert id="insertBoard"
+				parameterType = "DRBoardVo">
+		INSERT
+		  INTO
+		  		EV_DRIVE_ROUTE_BOARD(
+					  BOARD_WRITER 
+					, BOARD_CONTENT 
+				)
+		  		VALUES(
+					  #{boardWriter}
+					, #{boardContent}
+				)
+	</insert>
+	
+	<select id="getBoardNo"
+				resultType ="Long">
+		SELECT  
+			 	BOARD_NO boardNo
+				FROM (
+				  SELECT
+				  		 BOARD_NO
+				  	FROM 
+				  		 EV_DRIVE_ROUTE_BOARD
+				   ORDER 
+				  	  BY 
+				  		 CREATE_DATE DESC
+					)
+		WHERE ROWNUM = 1
+	</select>
+	
+	<select id="getAllBoard"
+				resultType="DRBoardDTO">
+		SELECT
+				  B1.BOARD_NO boardNo
+				, B1.BOARD_WRITER boardWriter
+				, B1.BOARD_CONTENT boardContent
+				, B1.CREATE_DATE createDate
+				, B1.STATUS status
+				, I1.DRIVE_ROUTE_IMAGE driveRouteImage
+				, E1.MEMBER_NICKNAME memberNickName
+		  FROM
+		  		EV_DRIVE_ROUTE_BOARD B1
+		  JOIN
+		  		EV_DRIVE_ROUTE_IMAGE I1 ON (I1.BOARD_NO = B1.BOARD_NO)
+		  JOIN
+		  		EV_MEMBER E1 ON (E1.MEMBER_NO = B1.BOARD_WRITER)
+		 WHERE
+		 		B1.STATUS = 'Y'
+		 ORDER
+		    BY
+		    	B1.BOARD_NO DESC
+	</select>
+	
+	<select id="getAllBoardImages" resultType="DRBoardDTO">
+	    SELECT
+	        BI.BOARD_NO AS boardNo,
+	        BI.BOARD_IMAGE AS boardImage
+	    FROM
+	        EV_BOARD_IMAGE BI
+	    JOIN
+	        EV_DRIVE_ROUTE_BOARD BR ON BR.BOARD_NO = BI.BOARD_NO
+	    WHERE
+	        BI.BOARD_NO BETWEEN #{min} AND #{max}
+	        AND BR.STATUS = 'Y'
+	    ORDER BY
+	        BR.BOARD_NO DESC
+	</select>
+	
+	<insert id="insertBoardFile"
+				parameterType="DRBoardVo">
+		INSERT
+		  INTO	
+		  		EV_BOARD_IMAGE(
+					  BOARD_NO
+					, BOARD_IMAGE
+				)
+		  		VALUES(
+					  #{boardNo}
+					, #{boardImage}
+				)
+	</insert>
+	
+	<insert id="insertDriveRouteFile"
+				parameterType="DRBoardVo">
+		INSERT
+		  INTO	
+		  		EV_DRIVE_ROUTE_IMAGE(
+					  BOARD_NO
+					, DRIVE_ROUTE_IMAGE
+				)
+		  		VALUES(
+					  #{boardNo}
+					, #{driveRouteImage}
+				)
+	</insert>
+	
+	<select id="countBoardByBoardNo"
+				parameterType="Long"
+				resultType="int">
+		SELECT
+				COUNT(*)
+		  FROM
+		  		EV_DRIVE_ROUTE_BOARD
+		 WHERE
+		 		BOARD_NO = #{boardNo}
+	
+	</select>
+	
+	<update id="deleteBoard"
+				parameterType="Long">
+		UPDATE
+				EV_DRIVE_ROUTE_BOARD
+		   SET
+		   		STATUS = 'N'
+		 WHERE
+		 		BOARD_NO = #{boardNo}
+	</update>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
