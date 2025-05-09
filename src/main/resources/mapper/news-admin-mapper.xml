@@ -53,7 +53,7 @@
       n.NEWS_TITLE AS title,
       n.NEWS_ORIGIN_URL AS originUrl,
       n.NEWS_DESCRIPTION AS description,
-      n.NEWS_NAVER_DATE AS pubDate,
+      n.NEWS_ENROLLDATE AS pubDate,
       c.NEWS_CATEGORY AS query,
       i.NEWS_IMG_URL AS imageUrl,
       n.NEWS_WATCHED AS count,
