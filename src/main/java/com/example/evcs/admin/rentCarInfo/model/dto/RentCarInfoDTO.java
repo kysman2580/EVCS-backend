@@ -20,9 +20,11 @@ public class RentCarInfoDTO {
 	private int carNo;
 	private int rentCarPrice;
 	private Long garageNo;
+	private String address;
 	private Date enrollDate;
 	private String status;
 	private String enrollPlace;
 	private String postAdd;
 	private String statusName;
+	private String fileLoad;
 }

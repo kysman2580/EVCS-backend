@@ -47,6 +47,8 @@ public class JwtFilter extends OncePerRequestFilter{
 		
 		String token = authorization.substring(7);
 		
+		log.info("userService class: {}", userService.getClass());
+		
 		try {
 		
 		Claims claims = util.parseJwt(token);
