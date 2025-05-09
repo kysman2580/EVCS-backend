@@ -172,9 +172,12 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 		Map<String, Object> result = new HashMap();
 		
 		List<RentCarInfoDTO> timeRentCarResult = rentCarInfoMapper.getTimeRentCarInfo();
+		List<CarInfoDTO> carResult = rentCarInfoMapper.getCarInfoByCategoryNo();
 		
 		log.info("시간별 렌트카 목록 : {}",timeRentCarResult);
+		log.info("자동차 목록 : {}",carResult);
 		result.put("timeRentCarResult", timeRentCarResult);
+		result.put("carResult", carResult);
 		
 		return result;
 	}
