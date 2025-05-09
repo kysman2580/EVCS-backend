@@ -64,6 +64,21 @@
   		WHERE EMAIL = #{email}
   </update>
   
+ <select id="getMemberByMemberNo">
+        SELECT 
+            MEMBER_NO as memberNo,
+            EMAIL as email,
+            MEMBER_PW as memberPw,
+            MEMBER_NICKNAME as memberNickname,
+            ROLE as role,
+            EMAIL_VERIFIED as emailVerified,
+            MEMBER_STATUS as memberStatus,
+            CREATED_AT as createdAt
+        FROM 
+            EV_MEMBER
+        WHERE 
+            MEMBER_NO = #{memberNo}
+    </select>
   
   </mapper>
   
