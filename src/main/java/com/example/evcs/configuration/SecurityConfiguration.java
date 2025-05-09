@@ -29,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 	
-<<<<<<< HEAD
 	private final JwtFilter filter;
 	
 	public static final String[] ALLOW_URLS = {
@@ -44,9 +43,6 @@ public class SecurityConfiguration {
 		    "/api/**"
 		};
 
-=======
-    private final JwtFilter filter;
->>>>>>> c07a0fbdf93405478593d94daf6fa67b3301e22f
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
