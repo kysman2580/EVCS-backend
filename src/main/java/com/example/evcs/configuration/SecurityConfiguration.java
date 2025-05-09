@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfiguration {
+	
     private final JwtFilter filter;
 
     @Bean
@@ -64,7 +65,8 @@ public class SecurityConfiguration {
                     "/api/news/comment",
                     "/api/news/comment/like",
                     "/api/news/comment/hate",
-                    "/api/report/comment"
+                    "/api/report/comment",
+                    "/api/usReports"
                 ).authenticated()
                 .requestMatchers(HttpMethod.PUT,
                     "/api/news/comment"
@@ -76,11 +78,12 @@ public class SecurityConfiguration {
                     "/api/news/bookmark/status",
                     "/api/news/like/status",
                     "/api/news/hate/status",
-                    "/api/news/mypage/**"
+                    "/api/news/mypage/**",
+                    "/api/usReports/**"
                 ).authenticated()
 
                 // — 관리자 전용
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/admin/**", "/api/reports/**").hasRole("ADMIN")
 
                 // 2) 그 외 모든 요청(News 외 서비스)은 모두 허용
                 .anyRequest().permitAll()
