@@ -42,13 +42,6 @@ public class RentCarInfoController {
 		return ResponseEntity.status(HttpStatus.OK).body(allCarInfo);
 	}
 	
-	@GetMapping("/timeRentCarInfo")
-	public ResponseEntity<?> getTimeRentCarInfo(){
-		log.info("값이 들어오나요???");
-		Map<String, Object> allCarInfo = rentCarInfoService.getTimeRentCarInfo();
-		return ResponseEntity.status(HttpStatus.OK).body(allCarInfo);
-	}
-	
 	@PostMapping("/insert")
 	public ResponseEntity<?> insertRentCar(@RequestBody RentCarInfoDTO rentCarInfo) {
 		
@@ -63,7 +56,7 @@ public class RentCarInfoController {
 		    @RequestParam(name = "category", required = false) String category,
 		    @RequestParam(name = "searchKeyword", required = false) String searchKeyword
 			) {
-		
+		log.info("currentPage : {} ", currentPage);
 		Map <String, String> map = new HashMap();
 		map.put("currentPage", String.valueOf(currentPage));
 		map.put("useStatus", useStatus);
@@ -95,7 +88,13 @@ public class RentCarInfoController {
 		return ResponseEntity.status(HttpStatus.OK).body("차량 삭제 완료");
 	}
 	
-	
+	@GetMapping("/timeRentCarInfo")
+	public ResponseEntity<?> getTimeRentCarInfo(){
+		log.info("값이 들어오나요???");
+		Map<String, Object> allCarInfo = rentCarInfoService.getTimeRentCarInfo();
+		log.info("allCarInfo : {} " ,allCarInfo);
+		return ResponseEntity.status(HttpStatus.CREATED).body(allCarInfo);
+	}
 	
 	
 	

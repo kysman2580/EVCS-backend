@@ -21,5 +21,9 @@ public interface NewsMapper {
 
 	NewsDTO findByNewsNo(@Param("newsNo")Long newsNo);
 
+	void softDeleteByNewsNo(Long newsNo);
+
+	NewsDTO findByTitleAndUrlAll(@Param("title") String title,
+             					 @Param("originUrl") String originUrl);
 
 }

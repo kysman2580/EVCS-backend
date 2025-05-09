@@ -20,4 +20,5 @@ public class NewsDTO {
     private String pubDate;
     private String query;
     private String count;
+    private String newsStatus;
 }

@@ -4,6 +4,7 @@ import com.example.evcs.news.model.dto.NewsCategoryDTO;
 import com.example.evcs.news.model.dto.NewsDTO;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -17,4 +18,7 @@ public interface NewsAdminMapper {
     String findCategoryNoByName(String newsCategory);
     String findCategoryNameByNo(String newsCategoryNo);
     List<NewsDTO> findAllNews();
+    void updateNewsStatus(
+        @Param("newsNo") Long newsNo,
+        @Param("status") String status);
 }

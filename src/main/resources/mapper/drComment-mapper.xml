@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.evcs.driveRoute.model.dao.DRCommentMapper">
+	
+
+	<insert id="insertComment"
+				parameterType = "DRCommentVo">
+		INSERT
+		  INTO
+		  		EV_DRIVE_ROUTE_COMMENT(
+					  BOARD_NO
+					, COMMENT_WRITER 
+					, COMMENT_CONTENT 
+				)
+		  		VALUES(
+					  #{boardNo}
+					, #{commentWriter}
+					, #{commentContent}
+				)
+	</insert>
+
+	
+	<select id="getAllComment"
+				parameterType="Long"
+				resultType="DRCommentDTO">
+		SELECT
+				  ED.COMMENT_NO commentNo
+				, ED.BOARD_NO boardNo
+				, ED.COMMENT_WRITER commentWriter
+				, EM.MEMBER_NICKNAME memberNickname
+				, ED.COMMENT_CONTENT commentContent
+				, ED.CREATE_DATE createDate
+				, ED.STATUS status
+		  FROM
+		  		EV_DRIVE_ROUTE_COMMENT ED
+		  JOIN
+		 		EV_MEMBER EM ON (EM.MEMBER_NO = ED.COMMENT_WRITER)
+		 WHERE
+		 		ED.BOARD_NO = #{boardNo}
+		   AND
+		   		ED.STATUS = 'Y'
+		 ORDER
+		 	BY
+		 	    ED.CREATE_DATE DESC
+	</select>
+	
+	<select id="countCommentByCommentNo"
+				parameterType="Long"
+				resultType="int">
+		SELECT
+				COUNT(*)
+		  FROM
+		  		EV_DRIVE_ROUTE_COMMENT
+		 WHERE
+		 		COMMENT_NO = #{commentNo}
+	
+	</select>
+	
+	<update id="deleteComment"
+				parameterType="Long">
+		UPDATE
+				EV_DRIVE_ROUTE_COMMENT
+		   SET
+		   		STATUS = 'N'
+		 WHERE
+		 		COMMENT_NO = #{commentNo}
+	</update>
+
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+

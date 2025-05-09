@@ -4,6 +4,8 @@ import com.example.evcs.news.model.dto.NewsCategoryDTO;
 import com.example.evcs.news.model.dto.NewsDTO;
 import com.example.evcs.news.model.service.NewsAdminService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin/news")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
 public class NewsAdminController {
 
     private final NewsAdminService newsAdminService;
@@ -47,5 +48,14 @@ public class NewsAdminController {
     @DeleteMapping("/category/{newsCategoryNo}")
     public void deleteCategory(@PathVariable("newsCategoryNo") String newsCategoryNo) {
     	newsAdminService.delete(newsCategoryNo);
+    }
+    
+    /** 뉴스 활성화/비활성화 토글 */
+    @PutMapping("/status")
+    public ResponseEntity<Void> updateStatus(
+            @RequestParam("newsNo") Long newsNo,
+            @RequestParam("status") String status) {
+        newsAdminService.updateStatus(newsNo, status);
+        return ResponseEntity.ok().build();
     }
 }

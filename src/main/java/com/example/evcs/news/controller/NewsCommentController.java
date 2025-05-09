@@ -2,7 +2,11 @@ package com.example.evcs.news.controller;
 
 import com.example.evcs.news.model.dto.CommentDTO;
 import com.example.evcs.news.model.service.NewsCommentService;
+import com.example.evcs.auth.model.vo.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,56 +14,47 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/news/comment")
-@CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 public class NewsCommentController {
 
     private final NewsCommentService newsCommentService;
-    
-    // 댓글 목록 조회 추가 (GET 요청 처리)
+
     @GetMapping("/list")
-    public List<CommentDTO> getCommentList(@RequestParam("newsNo") Long newsNo, @RequestParam("memberNo") Long memberNo) {
+    public List<CommentDTO> getCommentList(@RequestParam("newsNo") Long newsNo,
+                                           @AuthenticationPrincipal CustomUserDetails user) {
+        Long memberNo = (user != null) ? user.getMemberNo() : -1L;  // 비회원은 -1로 처리
         return newsCommentService.findCommentsByNews(newsNo, memberNo);
     }
 
-
-    // 댓글 작성 (단일 저장 후 전체 리스트 반환)
     @PostMapping
-    public List<CommentDTO> comment(@RequestBody Map<String, Object> body) {
-        System.out.println("요청 데이터: " + body);
-
-        if (body.get("newsNo") == null || body.get("memberNo") == null || body.get("content") == null) {
-            throw new IllegalArgumentException("newsNo, memberNo, content는 필수입니다.");
-        }
-
+    public List<CommentDTO> comment(@RequestBody Map<String, Object> body,
+                                    @AuthenticationPrincipal CustomUserDetails user) {
         Long newsNo = Long.valueOf(body.get("newsNo").toString());
-        Long memberNo = Long.valueOf(body.get("memberNo").toString());
         String content = body.get("content").toString();
         Long parentId = (body.get("parentId") != null) ? Long.valueOf(body.get("parentId").toString()) : null;
 
-        newsCommentService.writeComment(newsNo, memberNo, content, parentId);
-
-        return newsCommentService.findCommentsByNews(newsNo, memberNo);
+        newsCommentService.writeComment(newsNo, user.getMemberNo(), content, parentId);
+        return newsCommentService.findCommentsByNews(newsNo, user.getMemberNo());
     }
 
-    // 댓글 수정
     @PutMapping
-    public String updateComment(@RequestBody Map<String, Object> body) {
-        if (body.get("commentId") == null || body.get("content") == null) {
-            throw new IllegalArgumentException("commentId, content는 필수입니다.");
-        }
-
-        newsCommentService.updateComment(
-            Long.valueOf(body.get("commentId").toString()),
-            body.get("content").toString()
-        );
+    @PreAuthorize("hasRole('ADMIN') or @newsCommentService.isOwner(#body['commentId'], principal.memberNo)")
+    public String updateComment(
+            @RequestBody Map<String, Object> body,
+            @AuthenticationPrincipal CustomUserDetails user
+    ) {
+        Long commentId = Long.valueOf(body.get("commentId").toString());
+        String content   = body.get("content").toString();
+        newsCommentService.updateComment(commentId, content);
         return "updated";
     }
 
-    // 댓글 소프트 삭제
     @DeleteMapping("/{commentId}")
-    public String deleteComment(@PathVariable("commentId") Long commentId) {
-    	System.out.println("commentID 옴? : " + commentId);
+    @PreAuthorize("hasRole('ADMIN') or @newsCommentService.isOwner(#commentId, principal.memberNo)")
+    public String deleteComment(
+    		@PathVariable("commentId")Long commentId,
+            @AuthenticationPrincipal CustomUserDetails user
+    ) {
         newsCommentService.softDeleteComment(commentId);
         return "deleted";
     }
