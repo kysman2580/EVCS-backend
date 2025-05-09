@@ -19,4 +19,5 @@ public class NewsDetailResponse {
     private int likeCount;
     private int hateCount;
     private boolean isBookmarked;
+    private String newsStatus;
 }

@@ -8,4 +8,5 @@ public interface NewsCommentService {
     void updateComment(Long commentId, String content);
     void softDeleteComment(Long commentId);
     List<CommentDTO> findCommentsByNews(Long newsNo, Long memberNo);
+    boolean isOwner(Long commentId, Long memberNo);
 }
