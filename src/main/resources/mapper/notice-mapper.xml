@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.evcs.notice.model.dao.NoticeMapper">
+
+  <!-- 모든 공지사항 가져오기 -->
+	<select id="getAllNotices" resultType="com.example.evcs.notice.model.dto.NoticeDto">
+	  SELECT 
+	    ID AS id, 
+	    NOTICE_TITLE AS noticeTitle,
+	    NOTICE_CONTENT AS noticeContent,
+	    TO_CHAR(ENROLL_DATE, 'YYYY-MM-DD') AS enrollDate,
+	    STATUS AS status,
+	    NOTICE_WRITER AS noticeWriter
+	  FROM EV_BOARD
+	  ORDER BY ID DESC
+	</select>
+
+
+  <!-- 특정 ID의 공지사항 가져오기 -->
+  <select id="getNoticeById">
+    SELECT 
+      ID, 
+      NOTICE_TITLE noticeTitle, 
+      NOTICE_CONTENT noticeContent, 
+      ENROLL_DATE enrollDate, 
+      STATUS, 
+      NOTICE_WRITER noticeWriter -- 필드명 수정
+    FROM EV_BOARD
+    WHERE ID = #{id}
+  </select>
+
+  <!-- 공지사항 작성 -->
+  <insert id="createNotice">
+	INSERT INTO EV_BOARD (
+	  ID, 
+	  NOTICE_TITLE, 
+	  NOTICE_CONTENT, 
+	  NOTICE_WRITER,
+	  ENROLL_DATE, 
+	  STATUS
+	) VALUES (
+	  EV_BOARD_SEQ.NEXTVAL, 
+	  #{noticeTitle}, 
+	  #{noticeContent}, 
+	  #{noticeWriter}, 
+	  SYSDATE, 
+	  'Y'
+	)
+  </insert>
+
+  <!-- 공지사항 수정 -->
+ <update id="updateNotice">
+  UPDATE EV_BOARD
+  SET 
+    NOTICE_TITLE = #{noticeTitle},
+    NOTICE_CONTENT = #{noticeContent},
+    NOTICE_WRITER = #{noticeWriter}
+  WHERE ID = #{id}
+ </update>
+
+  <!-- 공지사항 삭제 -->
+  <delete id="deleteNotice">
+    DELETE FROM EV_BOARD
+    WHERE ID = #{id}
+  </delete>
+
+</mapper>
+

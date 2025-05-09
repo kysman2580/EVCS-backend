@@ -123,6 +123,13 @@ public class GlobalExceptionHandler {
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
+
+	@ExceptionHandler(NoticeNotFoundException.class)
+	public ResponseEntity<?> NonExistingError(NoticeNotFoundException e){
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
 	
 	// 핫딜 중복차량 있을때 발생하는 예외
     @ExceptionHandler(DuplicateHotdealException.class)
