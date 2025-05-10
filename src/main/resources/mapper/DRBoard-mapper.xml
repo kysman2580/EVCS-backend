@@ -46,6 +46,9 @@
 				, B1.STATUS status
 				, I1.DRIVE_ROUTE_IMAGE driveRouteImage
 				, E1.MEMBER_NICKNAME memberNickName
+				, (SELECT COUNT(*) 
+				   FROM EV_BOARD_LIKES BL 
+				   WHERE BL.BOARD_NO = B1.BOARD_NO) AS likeCount
 		  FROM
 		  		EV_DRIVE_ROUTE_BOARD B1
 		  JOIN

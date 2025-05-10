@@ -11,4 +11,6 @@ public interface DRCommentService {
 	public Map<String, Object> selectComment(Long boardNo,int currentCommentPage);
 
 	void deleteComment(Long commentNo);
+
+	void updateComment(DRCommentDTO drComment);
 }
