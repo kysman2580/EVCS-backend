@@ -146,6 +146,7 @@
 				, REGION_DONG = #{regionDong}
 				, ADDRESS = #{address}
 				, POST_ADD = #{postAdd}
+				, STATUS = 'Y'
 		WHERE 
 			GARAGE_NO = #{ garageNo }
 	</update>

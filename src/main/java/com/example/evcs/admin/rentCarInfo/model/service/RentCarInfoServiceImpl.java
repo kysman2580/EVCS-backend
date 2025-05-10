@@ -15,7 +15,9 @@ import com.example.evcs.admin.carInfo.model.dto.CarTypeDTO;
 import com.example.evcs.admin.rentCarInfo.model.dao.RentCarInfoMapper;
 import com.example.evcs.admin.rentCarInfo.model.dto.CategoryDTO;
 import com.example.evcs.admin.rentCarInfo.model.dto.RentCarInfoDTO;
+import com.example.evcs.admin.rentCarInfo.model.dto.RentCarOptionDTO;
 import com.example.evcs.admin.rentCarInfo.model.vo.RentCarInfoVO;
+import com.example.evcs.admin.rentCarInfo.model.vo.RentCarOption;
 import com.example.evcs.util.model.dto.PageInfo;
 import com.example.evcs.util.template.Pagination;
 
@@ -96,6 +98,15 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 											.build();
 			
 			rentCarInfoMapper.insertRentCar(rentCarInfoVo);
+			
+			if (rentCarInfo.getOptionNos() != null && !rentCarInfo.getOptionNos().isEmpty()) {
+				RentCarOption rentCarOptionVo = RentCarOption.builder()
+						.rentCarNo(rentCarInfo.getRentCarNo())
+						.optionNos(rentCarInfo.getOptionNos())
+						.build();
+				
+			    rentCarInfoMapper.insertCarOptions(rentCarOptionVo);
+			}
 		}
 	}
 
@@ -165,6 +176,16 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 			log.info("rentCarInfoVo : {}",rentCarInfoVo);
 			rentCarInfoMapper.updateRentCar(rentCarInfoVo);
 			
+			rentCarInfoMapper.deleteCarOptions(rentCarInfo.getRentCarNo());
+			
+		    if (rentCarInfo.getOptionNos() != null && !rentCarInfo.getOptionNos().isEmpty()) {
+		        RentCarOption rentCarOptionVo = RentCarOption.builder()
+		            .rentCarNo(rentCarInfo.getRentCarNo())
+		            .optionNos(rentCarInfo.getOptionNos())
+		            .build();
+
+		        rentCarInfoMapper.insertCarOptions(rentCarOptionVo);
+		    }
 		}
 	}
 
@@ -199,16 +220,16 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 	}
 
 
-
-
-
-
-
-
-
-
+	@Override
+	public List<RentCarOptionDTO> getOptions() {
+		List<RentCarOptionDTO> optionList = rentCarInfoMapper.getOptions();
+		return optionList;
+	}
 	
-	
-	
-	
+	@Override
+	public List<RentCarOptionDTO> getRentCarOptions(String rentCarNo) {
+		log.info("??? 머임?? {}" , rentCarNo);
+		List<RentCarOptionDTO> optionList = rentCarInfoMapper.getRentCarOptions(rentCarNo);
+		return optionList;
+	}
 }

@@ -8,5 +8,5 @@ public interface RentCarService {
 
 	List<RentCarInfoDTO> selectAllRentCar(int category);
 	
-	RentCarInfoDTO selectRentCarByRentCarNo(Long rentCarNo);
+	RentCarInfoDTO selectRentCarByRentCarNo(String rentCarNo);
 }
