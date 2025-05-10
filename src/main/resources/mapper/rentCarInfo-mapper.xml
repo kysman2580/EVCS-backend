@@ -97,6 +97,13 @@
 				  , 'Y'
 				)
 	</insert>
+	
+	<insert id="insertCarOptions" parameterType="map">
+	  INSERT INTO EV_CAR_OPTION (RENT_CAR_NO, OPTION_NO)
+	  <foreach collection="optionNos" item="optionNo" separator="UNION ALL">
+	    SELECT #{rentCarNo}, #{optionNo} FROM DUAL
+	  </foreach>
+	</insert>
 
 	<select id="countAllRentCar"
 				resultType="int">
@@ -291,25 +298,54 @@
 		   		CI.CAR_NO DESC 
 	</select>
 
+	<select id="getOptions"
+			resultType="RentCarOptionDTO"
+	>
+		SELECT 
+			  OPTION_NO optionNo
+			, OPTION_NAME optionName
+		FROM 
+			EV_OPTION
+	</select>
+	
+	<select id="getOptionListByRentCarNo" 
+			parameterType="string" 
+			resultType="RentCarOptionDTO"
+	>
+	  SELECT 
+	  	  O.OPTION_NO
+	  	, O.OPTION_NAME
+	  FROM 
+	  	EV_CAR_OPTION CO
+	  JOIN 
+	  	EV_OPTION O ON CO.OPTION_NO = O.OPTION_NO
+	  WHERE 
+	  	CO.RENT_CAR_NO = #{rentCarNo}
+	</select>
+	
+	<select id="getRentCarOptions" 
+			parameterType="string"
+			resultType="RentCarOptionDTO" 
+	>
+	  SELECT
+	    	  O.OPTION_NO AS optionNo
+	    	, O.OPTION_NAME AS optionName
+	  FROM
+	    EV_CAR_OPTION CO
+	  JOIN
+	    EV_OPTION O ON CO.OPTION_NO = O.OPTION_NO
+	  WHERE
+	    CO.RENT_CAR_NO = #{rentCarNo}
+	</select>
+	
+	<delete id="deleteCarOptions" 
+			parameterType="string"
+	>
+    	DELETE 
+    		FROM 
+				EV_CAR_OPTION 
+		WHERE 
+			RENT_CAR_NO = #{rentCarNo}
+	</delete>
+	
 </mapper>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-	
-	
-
-	
-

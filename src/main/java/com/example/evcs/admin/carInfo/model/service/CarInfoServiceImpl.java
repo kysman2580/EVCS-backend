@@ -55,7 +55,7 @@ public class CarInfoServiceImpl implements CarInfoService{
 		
 		if(file != null && !file.isEmpty()) {
 			
-			filePath = fileUtil.saveFile(file).replace("uploads/", "uploads/car/");
+			filePath = fileUtil.saveFile(file);
 			carInfoData = CarInfo.builder()
 									.carName(carInfo.getCarName())
 									.carTypeNo(carInfo.getCarTypeNo())

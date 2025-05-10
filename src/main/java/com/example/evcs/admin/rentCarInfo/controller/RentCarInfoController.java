@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.evcs.admin.rentCarInfo.model.dto.RentCarInfoDTO;
+import com.example.evcs.admin.rentCarInfo.model.dto.RentCarOptionDTO;
 import com.example.evcs.admin.rentCarInfo.model.service.RentCarInfoService;
 
 import lombok.RequiredArgsConstructor;
@@ -93,8 +94,24 @@ public class RentCarInfoController {
 		log.info("값이 들어오나요???");
 		Map<String, Object> allCarInfo = rentCarInfoService.getTimeRentCarInfo();
 		log.info("allCarInfo : {} " ,allCarInfo);
-		return ResponseEntity.status(HttpStatus.CREATED).body(allCarInfo);
+		return ResponseEntity.status(HttpStatus.OK).body(allCarInfo);
 	}
+	
+	@GetMapping("/options")
+	public ResponseEntity<List<RentCarOptionDTO>> getOptions(){
+		List<RentCarOptionDTO> optionList = rentCarInfoService.getOptions();
+		log.info("여기오냐?? {}" , optionList);
+		return ResponseEntity.status(HttpStatus.OK).body(optionList);
+	}
+	
+	@GetMapping("/rentCaroptions")
+	public ResponseEntity<List<RentCarOptionDTO>> getRentCarOptions(@RequestParam("rentCarNo")String rentCarNo){
+		log.info("rentCarNo : 이거맞어?? {}" ,rentCarNo);
+		List<RentCarOptionDTO> optionList = rentCarInfoService.getRentCarOptions(rentCarNo);
+		log.info("여기오냐?? {}" , optionList);
+		return ResponseEntity.status(HttpStatus.OK).body(optionList);
+	}
+	
 	
 	
 	

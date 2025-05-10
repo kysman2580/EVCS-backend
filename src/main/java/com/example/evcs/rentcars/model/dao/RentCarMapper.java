@@ -11,6 +11,6 @@ public interface RentCarMapper {
 	
 	List<RentCarInfoDTO> selectAllRentCar(int category);
 	
-	RentCarInfoDTO selectRentCarByRentCarNo(Long rentCarNo);
+	RentCarInfoDTO selectRentCarByRentCarNo(String rentCarNo);
 
 }
