@@ -111,6 +111,53 @@ public class DRBoardServiceImpl implements DRBoardService {
 		
 		return map;
 	}
+	
+
+	@Override
+	public void updateBoard(DRBoardDTO drBoard, MultipartFile[] boardFiles, MultipartFile drFile) {
+	    CustomUserDetails user = authServiceImpl.getUserDetails();
+	    Long memberNo = user.getMemberNo();
+
+	    if (memberNo == null) {
+	        throw new NonExistingException("존재하지 않는 회원입니다.");
+	    }
+	    if (drFile == null || drFile.isEmpty()) {
+	        throw new NoFileException("드라이브 경로를 선택해주세요.");
+	    }
+
+	    DRBoardVo drBoardData = DRBoardVo.builder()
+	            .boardNo(drBoard.getBoardNo())
+	            .boardWriter(memberNo)
+	            .boardContent(drBoard.getBoardContent())
+	            .build();
+
+	    int result = drBoardMapper.updateBoard(drBoardData);
+
+	    if (result == 1) {
+	        // boardFiles가 null이 아니고 비어있지 않은 경우에만 실행
+	        if (boardFiles != null && boardFiles.length > 0) {
+	            for (MultipartFile file : boardFiles) {
+	                if (file != null && !file.isEmpty()) {
+	                    String boardFilePath = boardFile.saveFile(file);
+	                    DRBoardVo boardFileData = DRBoardVo.builder()
+	                            .boardNo(drBoard.getBoardNo())
+	                            .boardImage(boardFilePath)
+	                            .build();
+	                    drBoardMapper.updateBoardFile(boardFileData);
+	                }
+	            }
+	        }
+
+	        // 드라이브 경로 파일 저장 (항상 실행)
+	        String driveRouteFilePath = driveRouteFile.saveFile(drFile);
+	        DRBoardVo driveRouteFileData = DRBoardVo.builder()
+	                .boardNo(drBoard.getBoardNo())
+	                .driveRouteImage(driveRouteFilePath)
+	                .build();
+	        drBoardMapper.updateDriveRouteFile(driveRouteFileData);
+	    }
+	}
+	
 
 	@Override
 	public void deleteBoard(Long boardNo) {
@@ -130,5 +177,80 @@ public class DRBoardServiceImpl implements DRBoardService {
 		}
 	}
 
+	@Override
+	public void boardLikes(Long boardNo) {
+		
+		CustomUserDetails user = authServiceImpl.getUserDetails();
+		Long memberNo = user.getMemberNo();
+		
+		DRBoardVo boardLikesData = DRBoardVo.builder()
+											 .boardWriter(memberNo)
+											 .boardNo(boardNo)
+											 .build();
+		drBoardMapper.boardLikes(boardLikesData);
+		
+		
+	}
+
+	@Override
+	public void boardLikesCancel(Long boardNo) {
+		CustomUserDetails user = authServiceImpl.getUserDetails();
+		Long memberNo = user.getMemberNo();
+		
+		DRBoardVo boardLikesCancelData = DRBoardVo.builder()
+											 .boardWriter(memberNo)
+											 .boardNo(boardNo)
+											 .build();
+		drBoardMapper.boardLikesCancel(boardLikesCancelData);
+		
+	}
+
+	@Override
+	public List<DRBoardDTO> selectBoardLikes() {
+		CustomUserDetails user = authServiceImpl.getUserDetails();
+		Long boardWriter = user.getMemberNo();
+		
+		List<DRBoardDTO> boardLikesInfo = drBoardMapper.selectBoardLikes(boardWriter);
+		log.info("boardLikesInfo:{}",boardLikesInfo);
+		return boardLikesInfo;
+	}
+
+	
+
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

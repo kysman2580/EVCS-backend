@@ -114,6 +114,16 @@
 	
 	</select>
 	
+	<update id="updateBoard"
+				parameterType="DRBoardVo">
+		UPDATE
+				EV_DRIVE_ROUTE_BOARD
+		   SET
+		   		BOARD_CONTENT = #{boardContent}
+		 WHERE
+		 		BOARD_NO = #{boardNo}
+	</update>
+	
 	<update id="deleteBoard"
 				parameterType="Long">
 		UPDATE
@@ -124,6 +134,70 @@
 		 		BOARD_NO = #{boardNo}
 	</update>
 	
+	<insert id="updateBoardFile">
+		INSERT
+		  INTO	
+		  		EV_BOARD_IMAGE(
+					  BOARD_NO
+					, BOARD_IMAGE
+				)
+		  		VALUES(
+					  #{boardNo}
+					, #{boardImage}
+				)	
+	</insert>
+	
+	<update id="updateDriveRouteFile">
+		UPDATE
+				EV_DRIVE_ROUTE_IMAGE
+		   SET
+		   		DRIVE_ROUTE_IMAGE = #{driveRouteImage}
+		 WHERE
+		 		BOARD_NO = #{boardNo} 	
+	</update>
+	
+	<insert id="boardLikes"
+				parameterType="DRBoardVo">
+		INSERT
+		  INTO
+		  		EV_BOARD_LIKES (BOARD_NO, MEMBER_NO)
+		  		VALUES(
+					  #{boardNo}
+					, #{boardWriter}
+				)
+	</insert>
+	
+	<delete id="boardLikesCancel"
+				parameterType="DRBoardVo">
+		DELETE
+		  FROM
+		  		EV_BOARD_LIKES
+		  WHERE
+		  		BOARD_NO = #{boardNo}
+		    AND
+		    	MEMBER_NO = #{boardWriter}
+	</delete>
+	
+	<select id="selectBoardLikes"
+				parameterType="Long"
+				resultType="DRBoardDTO">
+		SELECT
+				  EB.BOARD_NO boardNo
+				, EM.MEMBER_NO boardWriter	
+		  FROM
+				EV_BOARD_LIKES EB
+		  JOIN
+		  		EV_DRIVE_ROUTE_BOARD DR ON (DR.BOARD_NO = EB.BOARD_NO)
+		  JOIN
+		  		EV_MEMBER EM ON (EM.MEMBER_NO = DR.BOARD_WRITER)	
+		 WHERE
+		 		DR.STATUS = 'Y'
+		   AND
+		   		EB.MEMBER_NO = #{boardWriter}		
+		 ORDER
+		 	BY
+		 	    EB.BOARD_NO DESC
+	</select>
 </mapper>
 
 

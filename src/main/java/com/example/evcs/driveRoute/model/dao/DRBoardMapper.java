@@ -18,15 +18,28 @@ public interface DRBoardMapper {
 	Long getBoardNo();
 	void insertBoardFile(DRBoardVo boardFileData);
 	void insertDriveRouteFile(DRBoardVo driveRouteFileData);
-
+	
 	List<DRBoardDTO> getAllBoard(RowBounds rowBounds);
 	List<DRBoardDTO> getAllBoardImages( @Param("min") Long minBoardNo,
 										@Param("max") Long maxBoardNo);
 
 	int countBoardByBoardNo(Long boardNo);
 
-	
+	// 게시글 수정
+	int updateBoard(DRBoardVo drBoardData);
+	void updateBoardFile(DRBoardVo boardFileData);
+	void updateDriveRouteFile(DRBoardVo driveRouteFileData);
 	// 게시글 삭제 상태바꾸
 	void deleteBoard(Long boardNo);
+
 	
+	// 게시글 좋아요 insert
+	void boardLikes(DRBoardVo boardLikesData);
+	// 게시글 좋아요 삭제
+	void boardLikesCancel(DRBoardVo boardLikesCancelData);
+	// 좋아요 조회
+	List<DRBoardDTO> selectBoardLikes(Long boardWriter);
+
+
+
 }
