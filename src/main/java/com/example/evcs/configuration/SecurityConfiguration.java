@@ -43,7 +43,6 @@ public class SecurityConfiguration {
 		    "/api/**"
 		};
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -79,7 +78,8 @@ public class SecurityConfiguration {
                     "/api/news/comment/like",
                     "/api/news/comment/hate",
                     "/api/report/comment",
-                    "/api/usReports"
+                    "/api/usReports",
+                    "/api/usReportsCom"
                 ).authenticated()
                 .requestMatchers(HttpMethod.PUT,
                     "/api/news/comment"
@@ -92,11 +92,12 @@ public class SecurityConfiguration {
                     "/api/news/like/status",
                     "/api/news/hate/status",
                     "/api/news/mypage/**",
-                    "/api/usReports/**"
+                    "/api/usReports/**",
+                    "/api/usReportsCom/**"
                 ).authenticated()
 
                 // — 관리자 전용
-                .requestMatchers("/api/admin/**", "/api/reports/**").hasRole("ADMIN")
+                .requestMatchers("/api/admin/**", "/api/reports/**", "/api/amReportsCom/**").hasRole("ADMIN")
 
                 // 소셜 관련 
                 .requestMatchers(ALLOW_URLS).permitAll()
