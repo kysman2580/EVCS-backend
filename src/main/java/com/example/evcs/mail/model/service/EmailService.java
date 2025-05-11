@@ -9,10 +9,6 @@ public interface EmailService {
 
 	void verifyCode(EmailVerifyDTO emailVerifyDTO);
 
-	void sendVerificationCode(EmailVerifyDTO emailVerifyDTO);
-
-	void sendPassWordVerificationCode(PassWordEmailVerifyDTO passWordEmailVerifyDTO);
-
 	void passwordVerifyCode(PassWordEmailVerifyDTO passWordEmailVerifyDTO);
 	
 }
