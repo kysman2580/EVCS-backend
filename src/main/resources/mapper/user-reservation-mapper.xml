@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.evcs.reservation.model.dao.ReservationMapper">
+    <!-- 예약 INSERT -->
+    <insert id="createReservation" parameterType="com.example.evcs.reservation.model.vo.Reservation">
+        INSERT INTO EV_RESERVATION_LIST 
+        (RENT_CAR_NO, MEMBER_NO, PAYMENTS_STATUS, EXPIRE_AT, ORDER_ID, RENTAL_TIME, RETURN_TIME, AMOUNT)
+        VALUES ( #{rentCarNo}, #{memberNo}, #{paymentsStatus}, 
+                #{expireAt}, #{orderId} , #{rentalTime}, #{returnTime}, #{amount})
+    </insert>
+
+    <!-- 예약 조회 by orderId -->
+    <select id="selectByOrderId" parameterType="string" resultType="com.example.evcs.reservation.model.dto.ReservationDTO">
+        SELECT 
+        	  RESERVATION_NO reservationNo
+        	, RENT_CAR_NO rentCarNo
+        	, MEMBER_NO memberNo
+        	, PAYMENTS_STATUS paymentsStatus
+        	, EXPIRE_AT expireAt
+        	, ORDER_ID orderId
+        	, PAYMENT_ID paymentId
+        	, AMOUNT amount
+        FROM EV_RESERVATION_LIST
+        WHERE ORDER_ID = #{orderId}
+    </select>
+
+    <!-- 예약 자동 만료용 -->
+    <select id="selectExpiredReservations" resultType="com.example.evcs.reservation.model.dto.ReservationDTO">
+        SELECT
+        	  RESERVATION_NO reservationNo
+        	, RENT_CAR_NO rentCarNo
+        	, MEMBER_NO memberNo
+        	, PAYMENTS_STATUS paymentsStatus
+        	, EXPIRE_AT expireAt
+        	, ORDER_ID orderId
+        	, PAYMENT_ID paymentId
+        	, AMOUNT amount
+        FROM EV_RESERVATION_LIST
+        WHERE PAYMENTS_STATUS = 'PENDING'
+        AND EXPIRE_AT &lt;= SYSDATE
+    </select>
+
+    <!-- 예약 상태 EXPIRED로 변경 -->
+    <update id="expireReservationStatus" parameterType="long">
+        UPDATE EV_RESERVATION_LIST
+        SET PAYMENTS_STATUS = 'EXPIRED'
+        WHERE RESERVATION_NO = #{reservationNo}
+    </update>
+
+    <!-- 결제 성공 시 예약 COMPLETED + 결제 ID 저장 -->
+    <update id="updateReservationToCompleted" parameterType="long">
+        UPDATE EV_RESERVATION_LIST
+        SET PAYMENTS_STATUS = 'COMPLETED',
+            PAYMENT_ID = SEQ_TOSS_PAYMENT.CURRVAL
+        WHERE RESERVATION_NO = #{reservationNo}
+    </update>
+    
+    <select id="findRentCarPrice"
+    	parameterType="string"
+    	resultType="int"
+    >
+    SELECT RENT_CAR_PRICE rentCarPrice
+		FROM EV_RENT_CAR_INFO CI
+	WHERE 
+		RENT_CAR_NO  = (SELECT RENT_CAR_NO FROM EV_RESERVATION_LIST RL  WHERE RL.ORDER_ID = #{rentCarNo})
+    </select>
+    
+    <select id="selectRentCarInfo"
+    		parameterType="string"
+    		resultType="RentCarInfoDTO"
+    >
+    	SELECT 
+    		RENT_CAR_PRICE rentCarPrice
+    	FROM 
+    		EV_RENT_CAR_INFO
+    	WHERE 
+    		RENT_CAR_NO = #{rentCarNo}
+    
+    </select>
+    
+    <select id="selectHotdealDealPercent"
+    		parameterType="string"
+    		resultType="HotdealDTO"
+    >
+    	SELECT 
+    		DEAL_PERCENT dealPercent
+    	FROM
+    		EV_HOT_DEAL
+    	WHERE 1=1
+    		AND (HOT_DEAL_NO) = 
+    			(SELECT 
+    				  HOT_DEAL_NO
+				FROM  
+					EV_ING_HOTDEAL
+				WHERE 1=1
+					AND	RENT_CAR_NO = #{rentCarNo}
+			     	AND SYSDATE BETWEEN START_DATE AND END_DATE
+			     	AND ROWNUM = 1
+				)
+    </select>
+    
+    <update id="updateReservationToFailed" parameterType="long">
+	  UPDATE 
+	  	EV_RESERVATION_LIST
+	    	SET 
+	    		PAYMENTS_STATUS = 'FAILED'
+	  WHERE 
+	  	RESERVATION_NO = #{reservationNo}
+	</update>
+	
+	<select id="selectReservationTotalCount">
+		SELECT
+			COUNT(*)
+		FROM
+			EV_RESERVATION_LIST
+	
+	</select>
+	
+	<select id="selectAllReservation"
+			parameterType="map"
+			resultType="com.example.evcs.reservation.model.dto.ReservationDTO"
+	>
+		SELECT
+			  RESERVATION_NO reservationNo
+			, RENT_CAR_NO rentCarNo
+		    , RENTAL_TIME AS rentalTime
+		    , RETURN_TIME AS returnTime
+			, TO_CHAR(NVL(AMOUNT, 0), 'FM999,999,999') AS returnAmount
+			, CASE
+			      WHEN PAYMENTS_STATUS = 'PENDING'   THEN '대기'
+			      WHEN PAYMENTS_STATUS = 'COMPLETED' THEN '결제완료'
+			      WHEN PAYMENTS_STATUS = 'EXPIRED'   THEN '만료'
+			      WHEN PAYMENTS_STATUS = 'FAILED'    THEN '실패'
+			      ELSE '알수없음'
+			    END AS paymentsStatus
+			 , PAYMENT_ID paymentId   
+		FROM
+			EV_RESERVATION_LIST
+		WHERE 1=1
+			AND MEMBER_NO = #{memberNo}
+		ORDER BY
+			RENTAL_TIME
+	</select>
+    
+</mapper>
+	

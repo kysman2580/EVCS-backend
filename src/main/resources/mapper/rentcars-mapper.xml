@@ -33,6 +33,14 @@
 		   		THEN 1
 		   		ELSE 0
   				END AS ingHotdeal
+  			, (SELECT H.DEAL_PERCENT
+			   FROM EV_ING_HOTDEAL IH
+			   JOIN EV_HOT_DEAL H ON IH.HOT_DEAL_NO = H.HOT_DEAL_NO
+			   WHERE IH.RENT_CAR_NO = E1.RENT_CAR_NO
+			     AND H.STATUS = 'Y'
+			     AND SYSDATE BETWEEN H.START_DATE AND H.END_DATE
+			     AND ROWNUM = 1
+			  ) AS dealPercent
 	  FROM 
 	  	EV_RENT_CAR_INFO E1
 	  LEFT  JOIN 
@@ -48,7 +56,13 @@
 	  
 	  WHERE 1=1
 	  	AND E1.CATEGORY_NO = #{category}
-	
+	  	AND NOT EXISTS (
+		      SELECT 1 
+		      FROM EV_RESERVATION_LIST RL 
+		      WHERE RL.RENT_CAR_NO = E1.RENT_CAR_NO
+		        AND SYSDATE BETWEEN RL.RENTAL_TIME AND RL.RETURN_TIME
+		  )
+			
 	</select>
 	
 	<select id="selectRentCarByRentCarNo"

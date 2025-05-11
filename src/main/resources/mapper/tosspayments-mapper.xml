@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.evcs.reservation.model.dao.TossPaymentMapper">
+
+    <!-- Toss 결제 INSERT + key 반환 -->
+    <insert id="insertTossPayment" parameterType="com.example.evcs.reservation.model.dto.TossPaymentsDTO" >
+        INSERT INTO EV_TOSS_PAYMENT 
+        (PAYMENT_ID, MEMBER_NO, ORDER_ID, PAYMENT_KEY, AMOUNT, METHOD, REQUESTED_AT, APPROVED_AT, CREATED_AT)
+        VALUES (SEQ_TOSS_PAYMENT.NEXTVAL, #{memberNo}, #{orderId}, #{paymentKey},
+                #{amount}, #{method}, #{requestedAt}, #{approvedAt}, SYSDATE)
+    </insert>
+
+    <!-- Toss 결제 조회 by orderId -->
+    <select id="selectByOrderId" parameterType="string" resultType="com.example.evcs.reservation.model.dto.TossPaymentsDTO">
+        SELECT 
+        	  PAYMENT_ID paymentId
+        	, MEMBER_NO memberNo
+        	, ORDER_ID orderId
+        	, PAYMENT_KEY paymentKey
+        	,  TO_CHAR(NVL(AMOUNT, 0), 'FM999,999,999') AS returnAmount
+        	, METHOD method
+        	, REQUESTED_AT requestedAt
+        	, APPROVED_AT approvedAt
+        	, CREATED_AT createdAt
+        FROM EV_TOSS_PAYMENT
+        WHERE ORDER_ID = #{orderId}
+    </select>
+   
+    <!-- Toss 결제 조회 by orderId -->
+    <select id="selectByPaymentKey" parameterType="string" resultType="com.example.evcs.reservation.model.dto.TossPaymentsDTO">
+        SELECT 
+        	  PAYMENT_ID paymentId
+        	, MEMBER_NO memberNo
+        	, ORDER_ID orderId
+        	, PAYMENT_KEY paymentKey
+        	,  TO_CHAR(NVL(AMOUNT, 0), 'FM999,999,999') AS returnAmount
+        	, METHOD method
+        	, REQUESTED_AT requestedAt
+        	, APPROVED_AT approvedAt
+        	, CREATED_AT createdAt
+        FROM EV_TOSS_PAYMENT
+        WHERE PAYMENT_ID = #{paymentId}
+    </select>
+
+</mapper>
