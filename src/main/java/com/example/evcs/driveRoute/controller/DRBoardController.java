@@ -1,5 +1,6 @@
 package com.example.evcs.driveRoute.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,5 +60,38 @@ public class DRBoardController {
 		 return ResponseEntity.ok("게시글이 삭제되었습니다."); 
 	}
 
+	@GetMapping("/likes/{boardNo}")
+	public ResponseEntity<?> boardLikes(@PathVariable(name="boardNo") Long boardNo) {
+	
+		log.info("boardNo : {}",boardNo);
+		drBoardService.boardLikes(boardNo);
+		 return ResponseEntity.ok("좋아요 눌림"); 
+	}
+	
+	@DeleteMapping("/likesCancel/{boardNo}")
+	public ResponseEntity<?> boardLikesCancel(@PathVariable(name="boardNo") Long boardNo) {
+		
+		log.info("boardNo : {}",boardNo);
+		drBoardService.boardLikesCancel(boardNo);
+		 return ResponseEntity.ok("좋아요 취소"); 
+	}
+	
+	@GetMapping("/selectLikes")
+	public ResponseEntity<?> selectBoardLikes() {
+		log.info("잘 들어오나요?");
+		List<DRBoardDTO> boardLikesInfo = drBoardService.selectBoardLikes();
+		return ResponseEntity.status(HttpStatus.CREATED).body(boardLikesInfo);
+	}
+	
+	@PostMapping("/update")
+	public ResponseEntity<?> updateBoard(@ModelAttribute DRBoardDTO drBoard,
+										 @RequestPart(value = "boardFiles", required = false) MultipartFile[] boardFiles,
+									     @RequestParam("drFile") MultipartFile drFile) {
+		log.info("drBoard : {},{} ,boardFiles : {}, drFile : {}",drBoard.getBoardContent(),drBoard.getBoardWriter(),boardFiles,drFile);
+		drBoardService.updateBoard(drBoard,boardFiles,drFile);
+		
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body("게시글이 등록되었습니다");
+	}
 
 }

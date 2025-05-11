@@ -77,4 +77,25 @@ public class DRCommentServiceImpl implements DRCommentService {
 		
 	}
 
+	@Override
+	public void updateComment(DRCommentDTO drComment) {
+		CustomUserDetails user = authServiceImpl.getUserDetails();
+		Long memberNo = user.getMemberNo();
+		
+		
+		DRCommentVo drCommetData = DRCommentVo.builder()
+											  .commentNo(drComment.getCommentNo())
+											  .commentWriter(memberNo)
+											  .commentContent(drComment.getCommentContent())
+											  .build();
+		int countCommentResult = drCommentMapper.countCommentByCommentNo(drComment.getCommentNo());
+		
+		if(countCommentResult==0) {
+			throw new NonExistingException("존재하지 않는 댓글입니다.");
+		} else {
+			drCommentMapper.updateComment(drCommetData);
+		}
+		
+	}
+
 }

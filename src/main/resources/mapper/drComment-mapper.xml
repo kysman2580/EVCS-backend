@@ -59,6 +59,19 @@
 	
 	</select>
 	
+	<update id="updateComment"
+				parameterType="DRCommentVo">
+		UPDATE
+				EV_DRIVE_ROUTE_COMMENT
+		   SET
+		   		COMMENT_CONTENT = #{commentContent}
+		 WHERE
+		 		COMMENT_NO = #{commentNo}
+		   AND
+		   		COMMENT_WRITER = #{commentWriter}
+		   
+	</update>
+	
 	<update id="deleteComment"
 				parameterType="Long">
 		UPDATE
