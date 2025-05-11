@@ -8,11 +8,16 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 
 import com.example.evcs.admin.carInfo.model.dao.CarInfoMapper;
+import com.example.evcs.admin.carInfo.model.dto.CarCompanyDTO;
 import com.example.evcs.admin.carInfo.model.dto.CarImageDTO;
 import com.example.evcs.admin.carInfo.model.dto.CarInfoDTO;
+import com.example.evcs.admin.carInfo.model.dto.CarTypeDTO;
 import com.example.evcs.admin.rentCarInfo.model.dao.RentCarInfoMapper;
+import com.example.evcs.admin.rentCarInfo.model.dto.CategoryDTO;
 import com.example.evcs.admin.rentCarInfo.model.dto.RentCarInfoDTO;
+import com.example.evcs.admin.rentCarInfo.model.dto.RentCarOptionDTO;
 import com.example.evcs.admin.rentCarInfo.model.vo.RentCarInfoVO;
+import com.example.evcs.admin.rentCarInfo.model.vo.RentCarOption;
 import com.example.evcs.util.model.dto.PageInfo;
 import com.example.evcs.util.template.Pagination;
 
@@ -28,10 +33,21 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 	private final CarInfoMapper carInfoMapper;
 	
 	@Override
-	public List<String> getRentCarCategory() {
-		List<String> result =  rentCarInfoMapper.getRentCarCategory();
-		log.info("aa : {}", result);
-		return result;
+	public Map<String, Object> getRentCarCategory() {
+		Map<String, Object> returnMap = new HashMap();
+		
+		List<CategoryDTO> categoryInfo =  rentCarInfoMapper.getRentCarCategory();
+		List<CarCompanyDTO> companyInfo =  rentCarInfoMapper.getCompanyInfo();
+		List<CarTypeDTO> carTypeInfo =  rentCarInfoMapper.getCarTypeInfo();
+		
+		log.info("categoryInfo : {}", categoryInfo);
+		log.info("companyInfo : {}", companyInfo);
+		log.info("carTypeInfo : {}", carTypeInfo);
+		returnMap.put("categoryInfo", categoryInfo);
+		returnMap.put("companyInfo", companyInfo);
+		returnMap.put("carTypeInfo", carTypeInfo);
+		
+		return returnMap;
 		
 	}
 	
@@ -70,8 +86,8 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 		
 		if(countCar != 0) {
 			
-			log.info("categoryName : {}",rentCarInfo.getCategoryName());
-			int categoryNo = rentCarInfoMapper.findCategoryNoByCategoryName(rentCarInfo.getCategoryName());
+			log.info("categoryName : {}",rentCarInfo.getCategoryNo());
+			int categoryNo = rentCarInfoMapper.findCategoryNoByCategoryName(rentCarInfo.getCategoryNo());
 			log.info("categoryNo : {}",categoryNo);
 			RentCarInfoVO rentCarInfoVo = RentCarInfoVO.builder()
 											.rentCarNo(rentCarInfo.getRentCarNo())
@@ -82,6 +98,15 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 											.build();
 			
 			rentCarInfoMapper.insertRentCar(rentCarInfoVo);
+			
+			if (rentCarInfo.getOptionNos() != null && !rentCarInfo.getOptionNos().isEmpty()) {
+				RentCarOption rentCarOptionVo = RentCarOption.builder()
+						.rentCarNo(rentCarInfo.getRentCarNo())
+						.optionNos(rentCarInfo.getOptionNos())
+						.build();
+				
+			    rentCarInfoMapper.insertCarOptions(rentCarOptionVo);
+			}
 		}
 	}
 
@@ -109,6 +134,8 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 		List<CarInfoDTO> carInfo = rentCarInfoMapper.getCarList(rowBounds);
 		
 		log.info("carInfo : {}",carInfo);
+		log.info("rentCarInfo : {}",rentCarInfo);
+		log.info("pageInfo : {}",pageInfo);
 				
 		returnmap.put("pageInfo", pageInfo);
 		returnmap.put("rentCarInfo", rentCarInfo);
@@ -136,7 +163,7 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 		int countRentCar = rentCarInfoMapper.findByRentCarNo(rentCarNo);
 		
 		if(countRentCar == 1) {
-			int categoryNo = rentCarInfoMapper.findCategoryNoByCategoryName(rentCarInfo.getCategoryName());
+			int categoryNo = rentCarInfoMapper.findCategoryNoByCategoryName(rentCarInfo.getCategoryNo());
 			
 			RentCarInfoVO rentCarInfoVo = RentCarInfoVO.builder()
 					.rentCarNo(rentCarInfo.getRentCarNo())
@@ -149,6 +176,16 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 			log.info("rentCarInfoVo : {}",rentCarInfoVo);
 			rentCarInfoMapper.updateRentCar(rentCarInfoVo);
 			
+			rentCarInfoMapper.deleteCarOptions(rentCarInfo.getRentCarNo());
+			
+		    if (rentCarInfo.getOptionNos() != null && !rentCarInfo.getOptionNos().isEmpty()) {
+		        RentCarOption rentCarOptionVo = RentCarOption.builder()
+		            .rentCarNo(rentCarInfo.getRentCarNo())
+		            .optionNos(rentCarInfo.getOptionNos())
+		            .build();
+
+		        rentCarInfoMapper.insertCarOptions(rentCarOptionVo);
+		    }
 		}
 	}
 
@@ -183,16 +220,16 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 	}
 
 
-
-
-
-
-
-
-
-
+	@Override
+	public List<RentCarOptionDTO> getOptions() {
+		List<RentCarOptionDTO> optionList = rentCarInfoMapper.getOptions();
+		return optionList;
+	}
 	
-	
-	
-	
+	@Override
+	public List<RentCarOptionDTO> getRentCarOptions(String rentCarNo) {
+		log.info("??? 머임?? {}" , rentCarNo);
+		List<RentCarOptionDTO> optionList = rentCarInfoMapper.getRentCarOptions(rentCarNo);
+		return optionList;
+	}
 }

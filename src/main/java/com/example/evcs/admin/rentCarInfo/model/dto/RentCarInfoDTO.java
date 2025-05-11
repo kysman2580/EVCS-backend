@@ -2,6 +2,7 @@
 package com.example.evcs.admin.rentCarInfo.model.dto;
 
 import java.sql.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,5 +35,13 @@ public class RentCarInfoDTO {
 	private String hotdealNo;
 	private String regionSido;
 	private String ingHotdeal;
+	
+	private String categoryNo;
+	private String carTypeNo;
+	private String companyNo;
+	private String carTypeName;
+	private String companyName;
+	private int dealPercent;
+	private List<Integer> optionNos;
 }
 

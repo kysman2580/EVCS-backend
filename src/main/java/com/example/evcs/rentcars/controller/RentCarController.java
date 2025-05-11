@@ -24,13 +24,22 @@ public class RentCarController {
 	
 	private final RentCarService rentCarService; 
 
-	@GetMapping("/{category}")
+	@GetMapping("/category/{category}")
 	public ResponseEntity<List<RentCarInfoDTO>> selectAllRentCar(@PathVariable("category") int category){
 		
 		List<RentCarInfoDTO> list = rentCarService.selectAllRentCar(category);
 		
 		log.info("returnList : {}" , list);
 		return ResponseEntity.ok(list);
+	}
+
+	@GetMapping("/{rentCarNo}")
+	public ResponseEntity<RentCarInfoDTO> selectRentCarByRentCarNo(@PathVariable("rentCarNo") String rentCarNo){
+	
+		RentCarInfoDTO rentCar = rentCarService.selectRentCarByRentCarNo(rentCarNo);
+		
+		log.info("returnList : {}" , rentCar);
+		return ResponseEntity.ok(rentCar);
 	}
 	
 }

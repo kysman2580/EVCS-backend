@@ -1,7 +1,9 @@
 package com.example.evcs.admin.hotdeal.model.vo;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -14,8 +16,10 @@ public class Hotdeal {
 	private Long hotdealNo;
     private String hotdealName;
     private int dealPercent;
-    private Date startDate;
-    private Date endDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime startDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime endDate;
     private Long writer;
     private List<String> carNos;
 }

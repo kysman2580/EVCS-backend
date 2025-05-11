@@ -1,15 +1,17 @@
 package com.example.evcs.admin.carInfo.model.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
+import com.example.evcs.admin.carInfo.model.dto.CarCompanyDTO;
 import com.example.evcs.admin.carInfo.model.dto.CarImageDTO;
 import com.example.evcs.admin.carInfo.model.dto.CarInfoDTO;
+import com.example.evcs.admin.carInfo.model.dto.CarTypeDTO;
 import com.example.evcs.admin.carInfo.model.vo.CarImage;
 import com.example.evcs.admin.carInfo.model.vo.CarInfo;
-import com.example.evcs.admin.rentCarInfo.model.dto.RentCarInfoDTO;
 
 @Mapper
 public interface CarInfoMapper {
@@ -42,8 +44,11 @@ public interface CarInfoMapper {
 	
 	int deleteCarImage(int carNo);
 
+	List<CarInfoDTO> selectAllCarInfo(Map<String, String> map);
 	
+	List<CarCompanyDTO> selectAllCarCompanyInfo();
 
+	List<CarTypeDTO> selectAllCarTypeInfo();
 
 
 	

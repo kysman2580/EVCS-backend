@@ -22,16 +22,16 @@
 		  INTO 
 	  			EV_CAR_INFO(
 				    CAR_NAME
-				  , CAR_TYPE
+				  , CAR_TYPE_NO
 				  , CAR_YEAR
-				  , CAR_COMPANY
+				  , COMPANY_NO
 				  , CAR_BATTERY
 				)
 	  			VALUES(
 				    #{carName}
-				  , #{carType}
+				  , #{carTypeNo}
 				  , #{carYear}
-				  , #{carCompany}
+				  , #{carCompanyNo}
 				  , #{carBattery}
 				)
 	</insert>
@@ -86,15 +86,21 @@
 	<select id="getAllCarInfo"
 				resultType="CarInfoDTO">
 		SELECT
-			    CAR_NO  carNo,
-		        CAR_NAME  carName,
-		        CAR_TYPE  carType,
-		        CAR_YEAR  carYear,
-		        CAR_COMPANY  carCompany,
-		        CAR_BATTERY  carBattery,
-		        ENROLL_DATE  enrollDate
+				  CI.CAR_NO carNo
+				, CI.CAR_NAME carName
+				, CI.CAR_YEAR carYear
+				, CI.CAR_BATTERY carBattery
+				, CC.COMPANY_NO companyNo
+				, CC.COMPANY_NAME companyName
+				, CT.CAR_TYPE_NO carTypeNo
+				, CT.CAR_TYPE_NAME carTypeName
+				, ENROLL_DATE enrollDate
 		  FROM
-		  	   EV_CAR_INFO
+		  		EV_CAR_INFO CI
+		  LEFT JOIN 
+		  		EV_CAR_COMPANY CC ON (CI.COMPANY_NO = CC.COMPANY_NO)
+		  LEFT JOIN
+		  		EV_CAR_TYPE CT ON (CI.CAR_TYPE_NO = CT.CAR_TYPE_NO)
 		 ORDER
 		 	BY
 		 	   CAR_NO DESC 
@@ -145,9 +151,9 @@
 				EV_CAR_INFO
 		   		SET
 					CAR_NAME = #{carName}
-				  , CAR_TYPE = #{carType}
+				  , CAR_TYPE_NO = #{carTypeNo}
 				  , CAR_YEAR = #{carYear}
-				  , CAR_COMPANY = #{carCompany}
+				  , COMPANY_NO = #{carCompanyNo}
 				  , CAR_BATTERY = #{carBattery}
 				
 		 WHERE
@@ -182,6 +188,73 @@
 		 WHERE
 		 		CAR_NO = #{carNo}
 	</delete>	
+	
+	
+	<select id="selectAllCarInfo"
+			parameterType="map"
+			resultType="CarInfoDTO">
+		SELECT
+			      CI.CAR_NO  carNo
+		        , CI.CAR_NAME  carName
+		        , CI.CAR_YEAR  carYear
+		        , CI.CAR_BATTERY  carBattery
+		        , TO_CHAR(CI.ENROLL_DATE, 'YYYY-MM-DD')  returnEnrollDate
+		        , CC.COMPANY_NAME  companyName
+		        , CC.COMPANY_NO companyNo
+		        , CT.CAR_TYPE_NAME  carTypeName
+		        , CT.CAR_TYPE_NO  carTypeNo
+		        , I.FILE_LOAD fileLoad
+		  FROM
+		  	   EV_CAR_INFO CI
+		  LEFT 
+		  	JOIN 
+		  		EV_CAR_TYPE CT
+		  	ON
+		  		(CI.CAR_TYPE_NO = CT.CAR_TYPE_NO)
+		  LEFT 
+		  	JOIN 
+		  		EV_CAR_COMPANY CC
+		  	ON
+		  		(CI.COMPANY_NO = CC.COMPANY_NO)
+	  	  LEFT 
+		  	JOIN 
+		  		EV_CAR_IMAGE I
+		  	ON
+		  		(I.CAR_NO = CI.CAR_NO)
+		 WHERE 1=1
+		 <if test="carTypeNo != null and carTypeNo != ''">
+		 	AND CT.CAR_TYPE_NO = #{carTypeNo}
+		 </if>
+		 <if test="carCompanyNo != null and carCompanyNo != ''">
+		 	AND CC.COMPANY_NO = #{carCompanyNo}
+		 </if>
+		 <if test="searchKeyword != null and searchKeyword != ''">
+		 	AND UPPER(CI.CAR_NAME) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+		 </if>
+		 ORDER
+		 	BY
+		 	   ENROLL_DATE DESC 
+	</select>
+	
+	<select id="selectAllCarCompanyInfo"
+			resultType="CarCompanyDTO"
+	>
+		SELECT
+			  COMPANY_NO companyNo
+			, COMPANY_NAME companyName
+		FROM
+			EV_CAR_COMPANY
+	</select>
+	
+	<select id="selectAllCarTypeInfo"
+			resultType="CarTypeDTO"
+	>
+		SELECT
+			  CAR_TYPE_NO carTypeNo
+			, CAR_TYPE_NAME carTypeName
+		FROM
+			EV_CAR_TYPE
+	</select>
 	
 </mapper>
 

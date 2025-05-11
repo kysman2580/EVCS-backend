@@ -1,4 +1,4 @@
-package com.example.evcs.admin.hotdeal.model.dto;
+package com.example.evcs.admin.carInfo.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,10 +8,10 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
-public class IngHotdealDTO {
-    private Long hotDealNo;
-    private String rentCarNo;
+public class CarCompanyDTO {
+	private Long companyNo;
+	private String companyName;
 }
