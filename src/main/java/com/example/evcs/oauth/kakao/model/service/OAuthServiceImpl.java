@@ -1,9 +1,15 @@
 package com.example.evcs.oauth.kakao.model.service;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Service;
+
+import com.example.evcs.auth.model.vo.CustomUserDetails;
 import com.example.evcs.member.model.dao.MemberMapper;
 import com.example.evcs.member.model.dto.MemberDTO;
 import com.example.evcs.member.model.vo.Member;
@@ -13,6 +19,8 @@ import com.example.evcs.oauth.kakao.model.dto.LoginMemberDTO;
 import com.example.evcs.oauth.kakao.model.dto.SocialMemberDTO;
 import com.example.evcs.oauth.util.KakaoUtil;
 import com.example.evcs.util.JwtUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +33,8 @@ public class OAuthServiceImpl implements OAuthService {
     private final SocialMemberMapper socialMemberMapper; // EV_SOCIAL_MEMBER 접근용 DAO
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+    private final UserDetailsService userDetailsService;
+    private final HttpServletRequest httpServletRequest;
     
     private static final Logger logger = LoggerFactory.getLogger(OAuthServiceImpl.class);
 
@@ -101,6 +111,16 @@ public class OAuthServiceImpl implements OAuthService {
             String accessToken = jwtUtil.getAccessToken(email);  // 이메일을 사용하여 토큰 발급
             String refreshToken = jwtUtil.getRefreshToken(accessToken);
             httpServletResponse.setHeader("Authorization", accessToken);
+            
+            
+         // ✅ 인증 객체 등록을 위한 로직 추가
+            CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(email);
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+            SecurityContextHolder.getContext().setAuthentication(authentication);	
             
             
             // socialMember의 memberNo가 null인지 확인

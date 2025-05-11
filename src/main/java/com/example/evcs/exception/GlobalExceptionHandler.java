@@ -80,6 +80,20 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.badRequest().body(error);
 	}
 
+	@ExceptionHandler(EmailAlreadyExistsException.class)
+	public ResponseEntity<?> EmailAlreadyExistsExceptionError(EmailAlreadyExistsException e) {
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+
+	@ExceptionHandler(EmailNotExistsException.class)
+	public ResponseEntity<?> EmailNotExistsExceptionError(EmailNotExistsException e) {
+		Map<String, String> error = new HashMap<>();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+
 	@ExceptionHandler(MissingNewPasswordException.class)
 	public ResponseEntity<?> MissingNewPasswordExceptionError(MissingNewPasswordException e) {
 		Map<String, String> error = new HashMap<>();
@@ -110,7 +124,7 @@ public class GlobalExceptionHandler {
 
 	// 게시글 등록 시 파일 없으면 예외처리
 	@ExceptionHandler(NoFileException.class)
-	public ResponseEntity<?> NoFileException(NoFileException e){
+	public ResponseEntity<?> NoFileException(NoFileException e) {
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
@@ -118,23 +132,22 @@ public class GlobalExceptionHandler {
 
 	// 파일 등록시 예외
 	@ExceptionHandler(InsertFileException.class)
-	public ResponseEntity<?> InsertFileException(InsertFileException e){
+	public ResponseEntity<?> InsertFileException(InsertFileException e) {
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
-	
-	
+
 	@ExceptionHandler(AuthHandler.class)
 	public ResponseEntity<?> AuthHandlerError(AuthHandler e) {
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
-	
+
 	// 대여시각 설정 오류
 	@ExceptionHandler(WrongTimeException.class)
-	public ResponseEntity<?> WrongTimeException(WrongTimeException e){
+	public ResponseEntity<?> WrongTimeException(WrongTimeException e) {
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		log.info("message : {}", e.getMessage());
@@ -142,26 +155,25 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(NoticeNotFoundException.class)
-	public ResponseEntity<?> NonExistingError(NoticeNotFoundException e){
+	public ResponseEntity<?> NonExistingError(NoticeNotFoundException e) {
 		Map<String, String> error = new HashMap<>();
 		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
-	
-	// 핫딜 중복차량 있을때 발생하는 예외
-    @ExceptionHandler(DuplicateHotdealException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateHotdeal(DuplicateHotdealException ex) {
-        List<String> carNos = ex.getCarNos();
-        
-        // join 쓰면 사이에 ", " 넣어서 합쳐줌 
-        String joined = String.join(", ", carNos);
-        String message = String.format("%s: %s", ex.getMessage(), joined);
 
-        ErrorResponse body = new ErrorResponse("HOTDEAL_OVERLAP", message);
-        
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)    // 409
-                .body(body);
-    }
+	// 핫딜 중복차량 있을때 발생하는 예외
+	@ExceptionHandler(DuplicateHotdealException.class)
+	public ResponseEntity<ErrorResponse> handleDuplicateHotdeal(DuplicateHotdealException ex) {
+		List<String> carNos = ex.getCarNos();
+
+		// join 쓰면 사이에 ", " 넣어서 합쳐줌
+		String joined = String.join(", ", carNos);
+		String message = String.format("%s: %s", ex.getMessage(), joined);
+
+		ErrorResponse body = new ErrorResponse("HOTDEAL_OVERLAP", message);
+
+		return ResponseEntity.status(HttpStatus.CONFLICT) // 409
+				.body(body);
+	}
 
 }

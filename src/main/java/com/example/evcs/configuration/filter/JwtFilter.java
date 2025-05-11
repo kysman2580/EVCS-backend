@@ -53,7 +53,7 @@ public class JwtFilter extends OncePerRequestFilter{
 		
 		Claims claims = util.parseJwt(token);
 		String username = claims.getSubject();
-		
+				
 		CustomUserDetails user = (CustomUserDetails)userService.loadUserByUsername(username);
 		
 		UsernamePasswordAuthenticationToken authentication

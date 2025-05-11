@@ -1,5 +1,6 @@
 package com.example.evcs.mail.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.evcs.mail.dto.EmailVerifyDTO;
 import com.example.evcs.mail.dto.PassWordEmailVerifyDTO;
 import com.example.evcs.mail.dto.PasswordUpdateDTO;
+import com.example.evcs.mail.model.service.EmailSenderService;
 import com.example.evcs.mail.model.service.EmailService;
 import com.example.evcs.member.model.service.MemberService;
 
@@ -24,13 +26,20 @@ public class MailController {
 
 	private final EmailService emailService;
 	private final MemberService memberService;
+	private final EmailSenderService emailSenderService;
 
 	@PostMapping("/send")
 	public ResponseEntity<String> sendVerificationCode(@RequestBody EmailVerifyDTO email) {
-		emailService.sendVerificationCode(email);
-		log.info("이메일 : {}", email);
+		emailSenderService.sendVerificationCode(email);
 		return ResponseEntity.ok("인증번호 전송 완료");
 	}
+	
+	// 인증 코드 재전송 요청
+    @PostMapping("/resend-verification-code")
+    public ResponseEntity<String> resendVerificationCode(@RequestBody EmailVerifyDTO email) {
+            emailSenderService.resendVerificationCode(email);
+            return ResponseEntity.ok("인증 코드가 재전송되었습니다.");
+    }
 
 	@PostMapping("/verify")
 	public ResponseEntity<String> verifyCode(@RequestBody EmailVerifyDTO emailVerifyDTO) {
@@ -40,7 +49,7 @@ public class MailController {
 
 	@PostMapping("/password-reset")
 	public ResponseEntity<String> sendVerificationCode(@Valid @RequestBody PassWordEmailVerifyDTO passWordEmailVerifyDTO) {
-		emailService.sendPassWordVerificationCode(passWordEmailVerifyDTO);
+		emailSenderService.sendPassWordVerificationCode(passWordEmailVerifyDTO);
 		log.info("이메일 : {}", passWordEmailVerifyDTO);
 		return ResponseEntity.ok("인증번호 전송 완료");
 	}
