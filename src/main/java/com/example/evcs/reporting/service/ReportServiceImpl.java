@@ -85,4 +85,22 @@ public class ReportServiceImpl implements ReportService {
         map.put("title", title);
         return reportDao.countReportsForUser(map);
     }
+    
+    @Override
+    public void createReport(Report report) {
+        int inserted = reportDao.insertReportBulletin(report);
+        if (inserted != 1) {
+            throw new RuntimeException("신고 등록에 실패했습니다.");
+        }
+    }
+    
+    @Override
+    public void updateReportStatusForUser(Long rpNo, Long memberNo, String status) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("rpNo", rpNo);
+        map.put("memberNo", memberNo);
+        map.put("status", status);
+        reportDao.updateReportStatusForUser(map);
+    }
+
 }
