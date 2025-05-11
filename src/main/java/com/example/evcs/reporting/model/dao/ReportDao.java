@@ -44,4 +44,15 @@ public class ReportDao {
     public int countReportsForUser(Map<String, Object> paramMap) {
         return sqlSession.selectOne("report-mapper.countReportsForUser", paramMap);
     }
+    
+    public int insertReportBulletin(Report report) {
+        return sqlSession.insert(
+            "com.example.evcs.reporting.mapper.ReportBulletinMapper.insertReportBulletin",
+            report
+        );
+    }
+    
+    public void updateReportStatusForUser(Map<String, Object> paramMap) {
+        sqlSession.update("report-mapper.updateReportStatusForUser", paramMap);
+    }
 }

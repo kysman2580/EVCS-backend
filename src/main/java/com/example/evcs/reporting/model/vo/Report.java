@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Data
 public class Report {
     // bulletin
     private Long rpNo;            // RP_NO
@@ -23,17 +25,12 @@ public class Report {
     private LocalDateTime enrollDate; // RP_ENROLLDATE
     private String status;        // RP_STATUS
     private LocalDate endDate;    // RP_END (nullable)
-
-    // news
     private Long newsNo;          // EV_RP_NEWS.NEWS_NO (뉴스 ID)
-
-    // drive
-    // private Long driveBoardNo;    // EV_RP_DRIVE.BOARD_NO (드라이브 게시판 ID)
-
-    // file
     private Long fileNo;          // EV_RE_FILE.FILE_NO
     private String file;          // EV_RE_FILE.FILE
     private String fileLink;      // EV_RE_FILE.FILE_LINK
     private LocalDateTime fileDate; // EV_RE_FILE.FILE_DATE
+    private Long reporterId;     // MEMBER_NO (신고자)
+    private Long reportedId;     // RP_MEMBER_NO (피신고자)
 }
 

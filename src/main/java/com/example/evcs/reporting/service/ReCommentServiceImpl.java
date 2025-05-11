@@ -1,6 +1,8 @@
 package com.example.evcs.reporting.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -44,5 +46,14 @@ public class ReCommentServiceImpl implements ReCommentService {
     @Override
     public ReComment getReCommentById(Long reNo) {
         return mapper.selectReCommentById(reNo);
+    }
+
+    @Override
+    public void updateReportComStatusForUser(Long reNo, Long memberNo, String status) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("reNo", reNo);
+        map.put("memberNo", memberNo);
+        map.put("status", status);
+        mapper.updateReportComStatusForUser(map);
     }
 }

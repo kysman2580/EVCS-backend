@@ -1,6 +1,7 @@
 package com.example.evcs.reporting.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.evcs.reporting.model.vo.Report;
@@ -20,4 +21,9 @@ public interface ReportService {
 	List<Report> getReportsForUser(Long memberNo, String startDate, String endDate, String title, int offset, int size);
 
 	int getTotalReportCountForUser(Long memberNo, String startDate, String endDate, String title);
+	
+	void createReport(Report report);
+	
+	void updateReportStatusForUser(Long rpNo, Long memberNo, String status);
+	
 }

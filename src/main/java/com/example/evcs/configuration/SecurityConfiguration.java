@@ -78,11 +78,16 @@ public class SecurityConfiguration {
                     "/api/news/comment/like",
                     "/api/news/comment/hate",
                     "/api/report/comment",
-                    "/api/usReports",
-                    "/api/usReportsCom"
+                    "/api/usReports/**",
+                    "/api/usReportsCom/**",
+                    "/api/integrated-reports"
                 ).authenticated()
                 .requestMatchers(HttpMethod.PUT,
                     "/api/news/comment"
+                ).authenticated()
+                .requestMatchers(HttpMethod.PATCH,
+                    "/api/usReportsCom/**",
+                    "/api/usReports/**"
                 ).authenticated()
                 .requestMatchers(HttpMethod.DELETE,
                     "/api/news/comment/**"
@@ -119,7 +124,7 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
         cfg.setAllowedOrigins(List.of("http://localhost:5173"));
-        cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+        cfg.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         cfg.setAllowedHeaders(List.of("*"));
         cfg.setAllowCredentials(true);
 
