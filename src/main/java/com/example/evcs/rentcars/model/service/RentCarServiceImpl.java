@@ -25,4 +25,9 @@ public class RentCarServiceImpl implements RentCarService{
 		return list;
 	}
 
+	@Override
+	public RentCarInfoDTO selectRentCarByRentCarNo(String rentCarNo) {
+		return rentCarMapper.selectRentCarByRentCarNo(rentCarNo);
+	}
+
 }

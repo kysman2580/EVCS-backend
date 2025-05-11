@@ -13,7 +13,7 @@ public interface ReCommentMapper {
         @Param("memberNo") Long memberNo,
         @Param("startDate") String startDate,
         @Param("endDate")   String endDate,
-        @Param("keyword")   String keyword,
+        @Param("title")   String title,
         @Param("offset")    int offset,
         @Param("size")      int size
     );
@@ -22,8 +22,22 @@ public interface ReCommentMapper {
         @Param("memberNo") Long memberNo,
         @Param("startDate") String startDate,
         @Param("endDate")   String endDate,
-        @Param("keyword")   String keyword
+        @Param("title")   String title
     );
+    
+    List<ReComment> selectReCommentsForAdim(
+            @Param("startDate") String startDate,
+            @Param("endDate")   String endDate,
+            @Param("title")   String title,
+            @Param("offset")    int offset,
+            @Param("size")      int size
+        );
+
+     int countReCommentsForAdim(
+            @Param("startDate") String startDate,
+            @Param("endDate")   String endDate,
+            @Param("title")   String title
+     );
 
     ReComment selectReCommentById(@Param("reNo") Long reNo);
 }

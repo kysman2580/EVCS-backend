@@ -128,7 +128,7 @@
 				AND UPPER(H.HOT_DEAL_NAME) LIKE '%' || UPPER(#{searchKeyword}) || '%'
 			  </if>
 		ORDER BY 
-			H.ENROLL_DATE ASC
+			H.ENROLL_DATE DESC
 	</select>
 	
 	<select id="selectTotalCount"
@@ -159,8 +159,6 @@
 			  <if test="searchKeyword != null and searchKeyword != ''">
 				AND H.HOT_DEAL_NAME LIKE '%' || #{searchKeyword} || '%'
 			  </if>
-		ORDER BY 
-			H.ENROLL_DATE ASC
 	</select>
 	
 	<delete id="deleteHotdealCars" parameterType="long">
@@ -193,14 +191,18 @@
 	        WHERE I1.CAR_NO = E1.CAR_NO
 	          AND ROWNUM = 1
 	      )                   AS fileLoad,
-	      CI.CAR_COMPANY      AS carCompany,
-	      CI.CAR_TYPE         AS carType,
+	      CC.COMPANY_NO      AS companyNo,
+	      CC.COMPANY_NAME      AS companyName,
+	      CT.CAR_TYPE_NO      AS carTypeNo,
+	      CT.CAR_TYPE_NAME    AS carTypeName,
 	      CI.CAR_NAME         AS carName,
 	      CI.CAR_YEAR         AS carYear
 	  FROM EV_RENT_CAR_INFO E1
-	  LEFT  JOIN EV_CATEGORY  E2 ON E1.CATEGORY_NO = E2.CATEGORY_NO
-	  LEFT  JOIN EV_GARAGE    G  ON G.GARAGE_NO     = E1.GARAGE_NO
-	  LEFT  JOIN EV_CAR_INFO  CI ON CI.CAR_NO       = E1.CAR_NO
+	  LEFT JOIN EV_CATEGORY  E2 ON E1.CATEGORY_NO = E2.CATEGORY_NO
+	  LEFT JOIN EV_GARAGE    G  ON G.GARAGE_NO     = E1.GARAGE_NO
+	  LEFT JOIN EV_CAR_INFO  CI ON CI.CAR_NO       = E1.CAR_NO
+  	  LEFT JOIN EV_CAR_COMPANY CC ON CI.COMPANY_NO = CC.COMPANY_NO
+	  LEFT JOIN EV_CAR_TYPE CT ON CI.CAR_TYPE_NO = CT.CAR_TYPE_NO
 	
 	  WHERE 1=1
 	    <choose>
@@ -228,11 +230,11 @@
 	      <when test="'allAddress'.equals(searchCategory)">
 	        AND G.ALL_ADDRESS LIKE '%' || #{searchKeyword} || '%'
 	      </when>
-	      <when test="'carType'.equals(searchCategory)">
-	        AND UPPER(CI.CAR_TYPE) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	      <when test="'carTypeNo'.equals(searchCategory)">
+	        AND UPPER(CT.CAR_TYPE_NAME) LIKE '%' || UPPER(#{searchKeyword}) || '%'
 	      </when>
 	      <when test="'carCompany'.equals(searchCategory)">
-	        AND UPPER(CI.CAR_COMPANY) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	        AND UPPER(CC.COMPANY_NAME) LIKE '%' || UPPER(#{searchKeyword}) || '%'
 	      </when>
 	      <when test="'carName'.equals(searchCategory)">
 	        AND UPPER(CI.CAR_NAME) LIKE '%' || UPPER(#{searchKeyword}) || '%'
@@ -263,8 +265,10 @@
 	        WHERE I1.CAR_NO = E1.CAR_NO
 	          AND ROWNUM = 1
 	      )                   AS fileLoad,
-	      CI.CAR_COMPANY      AS carCompany,
-	      CI.CAR_TYPE         AS carType,
+	      CC.COMPANY_NO      AS companyNo,
+	      CC.COMPANY_NAME      AS companyName,
+	      CT.CAR_TYPE_NO      AS carTypeNo,
+	      CT.CAR_TYPE_NAME    AS carTypeName,
 	      CI.CAR_NAME         AS carName,
 	      CI.CAR_YEAR         AS carYear,
 	      IH.HOT_DEAL_NO      AS hotdealNo
@@ -277,6 +281,8 @@
 	  LEFT  JOIN EV_CATEGORY  E2 ON E1.CATEGORY_NO = E2.CATEGORY_NO
 	  LEFT  JOIN EV_GARAGE    G  ON G.GARAGE_NO     = E1.GARAGE_NO
 	  LEFT  JOIN EV_CAR_INFO  CI ON CI.CAR_NO       = E1.CAR_NO
+  	  LEFT JOIN EV_CAR_COMPANY CC ON CI.COMPANY_NO = CC.COMPANY_NO
+	  LEFT JOIN EV_CAR_TYPE CT ON CI.CAR_TYPE_NO = CT.CAR_TYPE_NO
 	
 	  WHERE 1=1
 	    <choose>
@@ -305,10 +311,10 @@
 	        AND G.ALL_ADDRESS LIKE '%' || #{searchKeyword} || '%'
 	      </when>
 	      <when test="'carType'.equals(searchCategory)">
-	        AND UPPER(CI.CAR_TYPE) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	        AND UPPER(CT.CAR_TYPE_NAME) LIKE '%' || UPPER(#{searchKeyword}) || '%'
 	      </when>
 	      <when test="'carCompany'.equals(searchCategory)">
-	        AND UPPER(CI.CAR_COMPANY) LIKE '%' || UPPER(#{searchKeyword}) || '%'
+	        AND UPPER(CC.COMPANY_NAME) LIKE '%' || UPPER(#{searchKeyword}) || '%'
 	      </when>
 	      <when test="'carName'.equals(searchCategory)">
 	        AND UPPER(CI.CAR_NAME) LIKE '%' || UPPER(#{searchKeyword}) || '%'

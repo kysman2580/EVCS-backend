@@ -104,7 +104,14 @@
 			  	AND G.STATUS = 'N'
 			  </if>
 			  <if test="searchKeyword != null and searchKeyword != ''">
-				AND G.ADDRESS LIKE '%' || #{searchKeyword} || '%'
+					<choose>
+						<when test="'searchPostAdd'.equals(searchCategory)">
+							AND G.POST_ADD LIKE '%' || #{searchKeyword} || '%'
+						</when>
+						<when test="'searchAdd'.equals(searchCategory)">
+							AND G.ALL_ADDRESS LIKE '%' || #{searchKeyword} || '%'
+						</when>
+					</choose>
 			  </if>
 		ORDER BY 
 			G.ENROLL_DATE ASC
@@ -139,6 +146,7 @@
 				, REGION_DONG = #{regionDong}
 				, ADDRESS = #{address}
 				, POST_ADD = #{postAdd}
+				, STATUS = 'Y'
 		WHERE 
 			GARAGE_NO = #{ garageNo }
 	</update>

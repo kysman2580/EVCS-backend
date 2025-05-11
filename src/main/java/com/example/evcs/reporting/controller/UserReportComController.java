@@ -16,6 +16,9 @@ import com.example.evcs.auth.model.vo.CustomUserDetails;
 import com.example.evcs.reporting.model.vo.ReComment;
 import com.example.evcs.reporting.service.ReCommentService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/usReportsCom")
 public class UserReportComController {
@@ -32,12 +35,12 @@ public class UserReportComController {
         @RequestParam(name="size", defaultValue="10") int size,
         @RequestParam(name="startDate", required=false) String startDate,
         @RequestParam(name="endDate",   required=false) String endDate,
-        @RequestParam(name="keyword",   required=false) String keyword
+        @RequestParam(name="title",   required=false) String title
     ) {
         Long memberNo = user.getMemberNo();
         int offset = page * size;
-        List<ReComment> list = service.getReCommentsForUser(memberNo, startDate, endDate, keyword, offset, size);
-        int total = service.getTotalReCommentCountForUser(memberNo, startDate, endDate, keyword);
+        List<ReComment> list = service.getReCommentsForUser(memberNo, startDate, endDate, title, offset, size);
+        int total = service.getTotalReCommentCountForUser(memberNo, startDate, endDate, title);
 
         Map<String,Object> result = new HashMap<>();
         result.put("content",       list);
@@ -48,9 +51,16 @@ public class UserReportComController {
     }
 
     @GetMapping("/{reNo}")
-    public ResponseEntity<ReComment> detail(@PathVariable Long reNo) {
+    public ResponseEntity<ReComment> detail(@PathVariable("reNo") Long reNo) {
+        log.info("detail() called with reNo={}", reNo);
+
         ReComment c = service.getReCommentById(reNo);
-        if (c == null) return ResponseEntity.notFound().build();
+        log.info("service.getReCommentById returned: {}", c);
+
+        if (c == null) {
+        	log.warn("No ReComment found for reNo={}", reNo);
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(c);
     }
 }

@@ -5,32 +5,53 @@
 
 <mapper namespace="com.example.evcs.admin.rentCarInfo.model.dao.RentCarInfoMapper">
 	
-
-	
 	<select id="getRentCarCategory"
-				resultType="String">
+				resultType="CategoryDTO">
 		SELECT
-				CATEGORY_NAME
+				  CATEGORY_NAME categoryName
+				, CATEGORY_NO categoryNo
 		  FROM
 		  		EV_CATEGORY
+	</select>
+	
+	<select id="getCompanyInfo"
+				resultType="CarCompanyDTO">
+		SELECT
+				  COMPANY_NAME companyName
+				, COMPANY_NO companyNo
+		  FROM
+		  		EV_CAR_COMPANY
+	</select>
+	
+	<select id="getCarTypeInfo"
+				resultType="CarTypeDTO">
+		SELECT
+				  CAR_TYPE_NAME carTypeName
+				, CAR_TYPE_NO carTypeNo
+		  FROM
+		  		EV_CAR_TYPE
 	</select>
 
 	<select id="getAllCarInfo"
 				resultType="CarInfoDTO">
 		SELECT
-				  CAR_NO carNo
-				, CAR_NAME carName
-				, CAR_TYPE carType
-				, CAR_YEAR carYear
-				, CAR_COMPANY carCompany
-				, CAR_BATTERY carBattery
+				  CI.CAR_NO carNo
+				, CI.CAR_NAME carName
+				, CI.CAR_YEAR carYear
+				, CI.CAR_BATTERY carBattery
+				, CC.COMPANY_NO companyNo
+				, CC.COMPANY_NAME companyName
+				, CT.CAR_TYPE_NO carTypeNo
+				, CT.CAR_TYPE_NAME carTypeName
 				, ENROLL_DATE enrollDate
 		  FROM
-		  		EV_CAR_INFO
+		  		EV_CAR_INFO CI
+		  LEFT JOIN 
+		  		EV_CAR_COMPANY CC ON (CI.COMPANY_NO = CC.COMPANY_NO)
+		  LEFT JOIN
+		  		EV_CAR_TYPE CT ON (CI.CAR_TYPE_NO = CT.CAR_TYPE_NO)
 	</select>	
 	
-	
-		
 	<select id="findByCarNo"
 				parameterType="int"
 				resultType="int">
@@ -50,7 +71,7 @@
 		  FROM
 		  		EV_CATEGORY
 		 WHERE
-		 		CATEGORY_NAME = #{categoryName}
+		 		CATEGORY_NO = #{categoryNo}
 	</select>
 	
 	<insert id="insertRentCar"
@@ -63,6 +84,8 @@
 				  , CAR_NO
 				  , RENT_CAR_PRICE
 				  , GARAGE_NO
+				  , ENROLL_DATE
+				  , STATUS
 				)
 	  			VALUES(
 				    #{rentCarNo}
@@ -70,7 +93,16 @@
 				  , #{carNo}
 				  , #{rentCarPrice}
 				  , #{garageNo}
+				  , SYSDATE
+				  , 'Y'
 				)
+	</insert>
+	
+	<insert id="insertCarOptions" parameterType="map">
+	  INSERT INTO EV_CAR_OPTION (RENT_CAR_NO, OPTION_NO)
+	  <foreach collection="optionNos" item="optionNo" separator="UNION ALL">
+	    SELECT #{rentCarNo}, #{optionNo} FROM DUAL
+	  </foreach>
 	</insert>
 
 	<select id="countAllRentCar"
@@ -78,9 +110,32 @@
 		SELECT
 			   COUNT(*)
 		  FROM
-		  	   EV_RENT_CAR_INFO
+		  	   EV_RENT_CAR_INFO E1
+		  JOIN
+		  	   EV_CATEGORY E2 ON (E1.CATEGORY_NO = E2.CATEGORY_NO)
+	 	  JOIN
+  		       EV_GARAGE G ON (G.GARAGE_NO = E1.GARAGE_NO)
+  		  WHERE 1=1
+   			  <if test="'ing'.equals(useStatus)">
+			  	AND E1.STATUS = 'Y'
+			  </if>
+			  <if test="'noIng'.equals(useStatus)">
+			  	AND E1.STATUS = 'N'
+			  </if>
+			  <choose>
+			  	<when test="'allAddress'.equals(category)">
+			  		AND G.ALL_ADDRESS LIKE '%' || #{searchKeyword} || '%'
+			  	</when>
+			  	<when test="'postAdd'.equals(category)">
+			  		AND G.POST_ADD LIKE '%' || #{searchKeyword} || '%'
+			  	</when>
+			  	<when test="'carNo'.equals(category)">
+			  		AND E1.RENT_CAR_NO LIKE '%' || #{searchKeyword} || '%'
+			  	</when>
+			  </choose>
 	</select>
 	
+
 	<select id="getRentCarList"
 				parameterType="map"
 				resultType="RentCarInfoDTO">
@@ -100,6 +155,7 @@
 						ELSE '알수없음'
 			  		END AS statusName
 			  	  , (SELECT FILE_LOAD FROM EV_CAR_IMAGE I1 WHERE I1.CAR_NO = E1.CAR_NO) fileLoad
+			  	  , E1.CATEGORY_NO categoryNo
 		  FROM
 		  	   EV_RENT_CAR_INFO E1
 		  JOIN
@@ -134,18 +190,23 @@
 		SELECT
 					E1.CAR_NO carNo
 			   	  , E1.CAR_NAME carName
-				  , E1.CAR_TYPE carType
 				  , E1.CAR_YEAR carYear
-				  , E1.CAR_COMPANY carCompany
+				  , CC.COMPANY_NAME carCompany
+				  , CT.CAR_TYPE_NAME carType
 				  , E1.CAR_BATTERY carBattery
 		  FROM
 		  	   EV_CAR_INFO E1
 		  JOIN
 		  	   EV_RENT_CAR_INFO E2 ON (E1.CAR_NO = E2.CAR_NO)
+		  LEFT JOIN
+		  	   EV_CAR_TYPE CT ON (E1.CAR_TYPE_NO = CT.CAR_TYPE_NO)
+		  LEFT JOIN
+		  	   EV_CAR_COMPANY CC ON (E1.COMPANY_NO = CC.COMPANY_NO)
 		 ORDER
 		 	BY
 		 		E2.ENROLL_DATE DESC
 	</select>
+	
 	
 	<select id="findByRentCarNo"
 				parameterType="String"
@@ -180,50 +241,93 @@
 		WHERE 
 			RENT_CAR_NO = #{ rentCarNo }
 	</delete>
+
+	<select id="getTimeRentCarInfo" resultType="RentCarInfoDTO">
+	  SELECT
+		      RC.RENT_CAR_NO         AS rentCarNo,
+		      RC.RENT_CAR_PRICE      AS rentCarPrice,
+		      RC.CAR_NO              AS carNo,
+		      RC.ENROLL_DATE         AS enrollDate,
+		      RC.STATUS              AS status,
+		      G.GARAGE_NO            AS garageNo,
+		      G.ALL_ADDRESS          AS enrollPlace,
+		      G.ADDRESS          	 AS address,
+		      G.POST_ADD             AS postAdd,
+		      CG.CATEGORY_NAME       AS categoryName,
+		      -- 차량 정보
+		      CI.COLOR_NO            AS colorNo,
+		      CI.CAR_NAME            AS carName,
+		      CI.CAR_YEAR            AS carYear,
+		      CI.CAR_BATTERY         AS carBattery,
+		      CT.CAR_TYPE_NAME       AS carTypeName,
+		      CC.COMPANY_NAME        AS companyName,
+		      -- 이미지 서브쿼리
+		      (SELECT FILE_LOAD 
+		       FROM EV_CAR_IMAGE I1 
+		       WHERE I1.CAR_NO = RC.CAR_NO AND ROWNUM = 1) AS fileLoad
+	  FROM
+		      EV_RENT_CAR_INFO RC
+	  JOIN 	  EV_CAR_INFO CI ON CI.CAR_NO = RC.CAR_NO
+	  JOIN    EV_CAR_TYPE CT ON CT.CAR_TYPE_NO = CI.CAR_TYPE_NO
+	  JOIN    EV_CAR_COMPANY CC ON CC.COMPANY_NO = CI.COMPANY_NO
+	  JOIN    EV_CATEGORY CG ON CG.CATEGORY_NO = RC.CATEGORY_NO
+	  JOIN    EV_GARAGE G ON G.GARAGE_NO = RC.GARAGE_NO
+	  WHERE
+		      RC.CATEGORY_NO = 1
+		      AND RC.STATUS = 'Y'
+	  ORDER 
+	     BY
+	     	  RC.CAR_NO DESC
+	</select>
+
+	<select id="getOptions"
+			resultType="RentCarOptionDTO"
+	>
+		SELECT 
+			  OPTION_NO optionNo
+			, OPTION_NAME optionName
+		FROM 
+			EV_OPTION
+	</select>
 	
+	<select id="getOptionListByRentCarNo" 
+			parameterType="string" 
+			resultType="RentCarOptionDTO"
+	>
+	  SELECT 
+	  	  O.OPTION_NO
+	  	, O.OPTION_NAME
+	  FROM 
+	  	EV_CAR_OPTION CO
+	  JOIN 
+	  	EV_OPTION O ON CO.OPTION_NO = O.OPTION_NO
+	  WHERE 
+	  	CO.RENT_CAR_NO = #{rentCarNo}
+	</select>
 	
-	<select id="getTimeRentCarInfo"
-				resultType="RentCarInfoDTO">
-		SELECT
-				    CI.RENT_CAR_NO rentCarNo
-				  , CG.CATEGORY_NAME categoryName
-				  , CI.CAR_NO carNo
-				  , CI.RENT_CAR_PRICE rentCarPrice
-				  , G.ALL_ADDRESS enrollPlace
-				  , G.POST_ADD postAdd
-				  , G.GARAGE_NO garageNo
-				  , G.ADDRESS address
-				  , CI.ENROLL_DATE enrollDate
-				  , CI.STATUS status
-				  , (SELECT FILE_LOAD FROM EV_CAR_IMAGE I1 
-				  WHERE CI.CAR_NO = I1.CAR_NO) fileLoad
-		  FROM
-		  		EV_RENT_CAR_INFO CI
-		  JOIN
-		  		EV_CATEGORY CG ON (CG.CATEGORY_NO = CI.CATEGORY_NO)
-		  JOIN
-		  		EV_GARAGE G ON (G.GARAGE_NO = CI.GARAGE_NO)
-		 WHERE
-		 		CI.CATEGORY_NO = 1
-		  AND
-		  		CI.STATUS = 'Y'
-         ORDER
-		 	BY
-		 	   	CI.CAR_NO DESC 
-	</select>	
+	<select id="getRentCarOptions" 
+			parameterType="string"
+			resultType="RentCarOptionDTO" 
+	>
+	  SELECT
+	    	  O.OPTION_NO AS optionNo
+	    	, O.OPTION_NAME AS optionName
+	  FROM
+	    EV_CAR_OPTION CO
+	  JOIN
+	    EV_OPTION O ON CO.OPTION_NO = O.OPTION_NO
+	  WHERE
+	    CO.RENT_CAR_NO = #{rentCarNo}
+	</select>
+	
+	<delete id="deleteCarOptions" 
+			parameterType="string"
+	>
+    	DELETE 
+    		FROM 
+				EV_CAR_OPTION 
+		WHERE 
+			RENT_CAR_NO = #{rentCarNo}
+	</delete>
 	
 </mapper>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

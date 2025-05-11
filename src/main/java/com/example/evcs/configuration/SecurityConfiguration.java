@@ -97,7 +97,7 @@ public class SecurityConfiguration {
                 ).authenticated()
 
                 // — 관리자 전용
-                .requestMatchers("/api/admin/**", "/api/reports/**").hasRole("ADMIN")
+                .requestMatchers("/api/admin/**", "/api/reports/**", "/api/amReportsCom/**").hasRole("ADMIN")
 
                 // 소셜 관련 
                 .requestMatchers(ALLOW_URLS).permitAll()

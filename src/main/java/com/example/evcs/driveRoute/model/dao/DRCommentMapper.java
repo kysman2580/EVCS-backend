@@ -18,6 +18,8 @@ public interface DRCommentMapper {
 
 	int countCommentByCommentNo(Long commentNo);
 
-	void deleteComment(Long commentNo);
+	int deleteComment(Long commentNo);
+
+	int updateComment(DRCommentVo drCommetData);
 
 }
