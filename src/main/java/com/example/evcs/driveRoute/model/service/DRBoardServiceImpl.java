@@ -3,7 +3,6 @@ package com.example.evcs.driveRoute.model.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
@@ -55,13 +54,10 @@ public class DRBoardServiceImpl implements DRBoardService {
 			throw new NoFileException("드라이브 경로를 선택해주세요.");
 		}
 		
-		
 		DRBoardVo drBoardData = DRBoardVo.builder()
 				 						 .boardWriter(memberNo)
 				 						 .boardContent(drBoard.getBoardContent())
 				 						 .build();
-		
-		
 		int result = drBoardMapper.insertBoard(drBoardData);
 		
 		if(result == 1) {
@@ -86,9 +82,6 @@ public class DRBoardServiceImpl implements DRBoardService {
 			drBoardMapper.insertDriveRouteFile(driveRouteFileData);
 			
 		}
-		
-		
-		
 	}
 
 	@Override
@@ -112,7 +105,6 @@ public class DRBoardServiceImpl implements DRBoardService {
 		return map;
 	}
 	
-
 	@Override
 	public void updateBoard(DRBoardDTO drBoard, MultipartFile[] boardFiles, MultipartFile drFile) {
 	    CustomUserDetails user = authServiceImpl.getUserDetails();
@@ -188,8 +180,6 @@ public class DRBoardServiceImpl implements DRBoardService {
 											 .boardNo(boardNo)
 											 .build();
 		drBoardMapper.boardLikes(boardLikesData);
-		
-		
 	}
 
 	@Override
