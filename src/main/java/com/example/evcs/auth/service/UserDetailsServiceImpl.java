@@ -48,6 +48,7 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 	                .username(user.getEmail())
 	                .password(user.getMemberPw())  // 일반 회원의 경우 비밀번호 반환
 	                .memberName(user.getMemberNickname())
+	                .memberStatus(user.getMemberStatus())
 	                .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole())))
 	                .build();
 	    }
@@ -65,6 +66,7 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 	                .username(socialMember.getEmail())
 	                .password(null)  // 소셜 회원은 비밀번호가 없으므로 null
 	                .memberName(socialMember.getNickName())  // 소셜 로그인 시 소셜 닉네임 사용
+	                .memberStatus(socialMember.getMemberStatus())
 	                .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + socialMember.getRole())))
 	                .build();
 	    }

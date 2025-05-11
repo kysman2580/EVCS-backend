@@ -18,6 +18,7 @@ public class SocialMemberDTO {
     private Long socialMemberNo;  
     private Long memberNo;        
     private String email;
+    private String memberStatus;
     private String provider;      
     private String providerId;    
     private Timestamp createdAt;
