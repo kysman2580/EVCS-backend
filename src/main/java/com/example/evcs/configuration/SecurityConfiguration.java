@@ -102,6 +102,7 @@ public class SecurityConfiguration {
                 ).authenticated()
 
                 // — 관리자 전용
+                .requestMatchers("/api/admin/**", "/api/reports/**", "/api/admin/management/**").hasRole("ADMIN")
                 .requestMatchers("/api/admin/**", "/api/reports/**", "/api/amReportsCom/**").hasRole("ADMIN")
 
                 // 소셜 관련 
