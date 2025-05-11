@@ -5,12 +5,38 @@
   
   <mapper namespace="com.example.evcs.mail.model.dao.EmailMapper">
   
+	 <select id="existsByEmail">
+		SELECT COUNT(*)	
+		FROM EV_EMAIL_VERIFICATION
+		WHERE EMAIL = #{email}
+	</select>
+	
+	<select id="getEmailVerification">
+		SELECT email, code, expires_at, verified
+		FROM EV_EMAIL_VERIFICATION
+		WHERE EMAIL = #{email}
+	</select>
   
+	<update id="updateCode">
+		UPDATE EV_EMAIL_VERIFICATION
+		SET CODE = #{code},
+			EXPIRES_AT = #{expiresAt},
+			VERIFIED = 'N'
+		WHERE EMAIL = #{email}
+	</update>
+	
 	 <update id="updateEmailVerified">
 		UPDATE EV_EMAIL_VERIFICATION
 		SET VERIFIED = 'Y'
 		WHERE EMAIL = #{email}
 	 </update>
+	 
+	
+	
+	<insert id="saveCode">
+		INSERT INTO EV_EMAIL_VERIFICATION(EMAIL, CODE, EXPIRES_AT, VERIFIED)
+		VALUES(#{email}, #{code}, #{expiresAt}, 'N')
+	</insert>
 	 
 	 
 	 <update id="updateEmailVerifiedByPassword">
@@ -18,13 +44,7 @@
 		SET VERIFIED = 'Y'
 		WHERE EMAIL = #{email}
 	 </update>
-	 
-  
-	<select id="getEmailVerification">
-		SELECT email, code, expires_at, verified
-		FROM EV_EMAIL_VERIFICATION
-		WHERE EMAIL = #{email}
-	</select>
+	
 	
 	
 	<select id="getEmailVerificationByPassword">
@@ -34,15 +54,6 @@
 	</select>
 	
 	
-	
-	<select id="existsByEmail">
-		SELECT COUNT(*)	
-		FROM EV_EMAIL_VERIFICATION
-		WHERE EMAIL = #{email}
-	</select>
-	
-	
-	
 	<select id="passwordExistsByEmail">
 		SELECT COUNT(*)	
 		FROM EV_PASSWORD_RESET_VERIFICATION
@@ -50,13 +61,6 @@
 	</select>
 	
 	
-	<update id="updateCode">
-		UPDATE EV_EMAIL_VERIFICATION
-		SET CODE = #{code},
-			EXPIRES_AT = #{expiresAt},
-			VERIFIED = 'N'
-		WHERE EMAIL = #{email}
-	</update>
 	
 	<update id="passwordUpdateCode">
 		UPDATE EV_PASSWORD_RESET_VERIFICATION
@@ -67,33 +71,12 @@
 	</update>
 	
 	
-	<insert id="saveCode">
-		INSERT INTO EV_EMAIL_VERIFICATION(EMAIL, CODE, EXPIRES_AT, VERIFIED)
-		VALUES(#{email}, #{code}, #{expiresAt}, 'N')
-	</insert>
-	
 	
 	<insert id="passwordSaveCode">
 		INSERT INTO EV_PASSWORD_RESET_VERIFICATION(EMAIL, CODE, EXPIRES_AT, VERIFIED)
 		VALUES(#{email}, #{code}, #{expiresAt}, 'N')
 	</insert>
 	
-	
-	
 
-	
-	
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   </mapper>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.evcs.reporting.mapper.ReCommentMapper">
+
+  <select id="selectReCommentsForUser"
+        resultType="com.example.evcs.reporting.model.vo.ReComment">
+  SELECT *
+    FROM (
+      <!-- 1차 페이징 (offset + size) -->
+      SELECT inner_query.*, ROWNUM AS rn
+        FROM (
+          <!-- 실제 데이터 -->
+          SELECT
+            RE_NO           AS reNo,
+            MEMBER_NO       AS memberNo,
+            RE_MEMBER_NO    AS reMemberNo,
+            RE_CONTENT      AS reContent,
+            RE_ENROLLDATE   AS reEnrollDate,
+            RE_STATUS       AS reStatus,
+            RE_END          AS reEnd,
+            COMMENT_GROUP_NO AS commentGroupNo,
+            COMMENT_DEPTH   AS commentDepth
+          FROM EV_RE_COMMENTS01
+          WHERE MEMBER_NO = #{memberNo}
+            AND (
+              #{startDate} IS NULL OR #{startDate} = ''
+              OR RE_ENROLLDATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+            )
+            AND (
+              #{endDate} IS NULL OR #{endDate} = ''
+              OR RE_ENROLLDATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
+            )
+            AND (
+              #{title} IS NULL OR #{title} = ''
+              OR RE_CONTENT LIKE '%' || #{title} || '%'
+            )
+          ORDER BY RE_END DESC
+        ) inner_query
+       WHERE ROWNUM &lt;= #{offset} + #{size}
+    )
+   WHERE rn &gt; #{offset}
+  </select>
+
+  <select id="countReCommentsForUser" resultType="int">
+    SELECT COUNT(*)
+      FROM EV_RE_COMMENTS01
+    WHERE MEMBER_NO = #{memberNo}
+      AND (
+        #{startDate} IS NULL OR #{startDate} = ''
+        OR RE_ENROLLDATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+      )
+      AND (
+        #{endDate} IS NULL OR #{endDate} = ''
+        OR RE_ENROLLDATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
+      )
+      AND (
+        #{title} IS NULL OR #{title} = ''
+        OR RE_CONTENT LIKE '%' || #{title} || '%'
+      )
+  </select>
+
+  <select id="selectReCommentById"
+        resultType="com.example.evcs.reporting.model.vo.ReComment">
+  SELECT
+    RE_NO            AS reNo,
+    MEMBER_NO        AS memberNo,
+    RE_MEMBER_NO     AS reMemberNo,
+    RE_ENROLLDATE    AS reEnrollDate,
+    RE_CONTENT       AS reContent,
+    RE_STATUS        AS reStatus,
+    RE_END           AS reEnd,
+    COMMENT_GROUP_NO AS commentGroupNo,
+    COMMENT_DEPTH    AS commentDepth
+  FROM EV_RE_COMMENTS01
+  WHERE RE_NO = #{reNo}
+  
+  </select>
+  
+    <select id="selectReCommentsForAdim"
+        resultType="com.example.evcs.reporting.model.vo.ReComment">
+  SELECT *
+      FROM (
+        SELECT inner_query.*, ROWNUM AS rn
+          FROM (
+            SELECT
+              re.RE_NO            AS reNo,
+              re.MEMBER_NO        AS memberNo,
+              re.RE_MEMBER_NO     AS reMemberNo,
+              re.RE_CONTENT       AS reContent,
+              re.RE_ENROLLDATE    AS reEnrollDate,
+              re.RE_STATUS        AS reStatus,
+              re.RE_END           AS reEnd,
+              re.COMMENT_GROUP_NO AS commentGroupNo,
+              re.COMMENT_DEPTH    AS commentDepth
+            FROM EV_RE_COMMENTS01 re
+            WHERE
+              (#{title} IS NULL OR #{title} = ''
+               OR re.RE_CONTENT LIKE '%' || #{title} || '%')
+              AND (#{startDate} IS NULL OR #{startDate} = ''
+                   OR re.RE_ENROLLDATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD'))
+              AND (#{endDate}   IS NULL OR #{endDate}   = ''
+                   OR re.RE_ENROLLDATE &lt;= TO_DATE(#{endDate},   'YYYY-MM-DD'))
+            ORDER BY re.RE_ENROLLDATE DESC
+          ) inner_query
+         WHERE ROWNUM &lt;= #{offset} + #{size}
+      )
+     WHERE rn &gt; #{offset}
+  </select>
+
+  <select id="countReCommentsForAdim" resultType="int">
+    SELECT COUNT(*)
+      FROM EV_RE_COMMENTS01 re
+     WHERE
+       (#{title} IS NULL OR #{title} = ''
+        OR re.RE_CONTENT LIKE '%' || #{title} || '%')
+       AND (#{startDate} IS NULL OR #{startDate} = ''
+            OR re.RE_ENROLLDATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD'))
+       AND (#{endDate}   IS NULL OR #{endDate}   = ''
+            OR re.RE_ENROLLDATE &lt;= TO_DATE(#{endDate},   'YYYY-MM-DD'))
+  </select>
+
+</mapper>
