@@ -6,33 +6,42 @@
 <mapper namespace="com.example.evcs.reporting.mapper.ReCommentMapper">
 
   <select id="selectReCommentsForUser"
-          resultType="com.example.evcs.reporting.model.vo.ReComment">
-    SELECT *
-      FROM (
-        SELECT rownum rn, a.*
-          FROM (
-            SELECT
-              RE_NO, MEMBER_NO, RE_CONTENT, RE_STATUS, RE_END,
-              COMMENT_GROUP_NO, COMMENT_DEPTH
-            FROM EV_RE_COMMENTS01
-            WHERE MEMBER_NO = #{memberNo}
-              AND (
-                #{startDate} IS NULL OR #{startDate} = ''
-                OR RE_END &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
-              )
-              AND (
-                #{endDate} IS NULL OR #{endDate} = ''
-                OR RE_END &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
-              )
-              AND (
-                #{keyword} IS NULL OR #{keyword} = ''
-                OR RE_CONTENT LIKE '%' || #{keyword} || '%'
-              )
-            ORDER BY RE_END DESC
-          )
-      )
-    WHERE rn &gt; #{offset}
-      AND rn &lt;= #{offset} + #{size}
+        resultType="com.example.evcs.reporting.model.vo.ReComment">
+  SELECT *
+    FROM (
+      <!-- 1차 페이징 (offset + size) -->
+      SELECT inner_query.*, ROWNUM AS rn
+        FROM (
+          <!-- 실제 데이터 -->
+          SELECT
+            RE_NO           AS reNo,
+            MEMBER_NO       AS memberNo,
+            RE_MEMBER_NO    AS reMemberNo,
+            RE_CONTENT      AS reContent,
+            RE_ENROLLDATE  AS reEnrollDate,
+            RE_STATUS       AS reStatus,
+            RE_END          AS reEnd,
+            COMMENT_GROUP_NO AS commentGroupNo,
+            COMMENT_DEPTH   AS commentDepth
+          FROM EV_RE_COMMENTS01
+          WHERE MEMBER_NO = #{memberNo}
+            AND (
+              #{startDate} IS NULL OR #{startDate} = ''
+              OR RE_END &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+            )
+            AND (
+              #{endDate} IS NULL OR #{endDate} = ''
+              OR RE_END &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
+            )
+            AND (
+              #{keyword} IS NULL OR #{keyword} = ''
+              OR RE_CONTENT LIKE '%' || #{keyword} || '%'
+            )
+          ORDER BY RE_END DESC
+        ) inner_query
+       WHERE ROWNUM &lt;= #{offset} + #{size}
+    )
+   WHERE rn &gt; #{offset}
   </select>
 
   <select id="countReCommentsForUser" resultType="int">
