@@ -50,21 +50,21 @@ public class MemberManagementController {
     
     @PutMapping("/{memberNo}/role")
     public ResponseEntity<?> updateMemberRole(
-            @PathVariable Long memberNo,
+            @PathVariable("memberNo") Long memberNo,  // 명시적으로 파라미터 이름 지정
             @RequestBody Map<String, String> payload) {
-        
         String role = payload.get("role");
-        
+
         if (role == null || (!role.equals("ADMIN") && !role.equals("USER"))) {
             return ResponseEntity.badRequest().body("Invalid role. Role must be either 'ADMIN' or 'USER'");
         }
-        
+
         boolean updated = memberManagementService.updateMemberRole(memberNo, role);
-        
+
         if (updated) {
             return ResponseEntity.ok().body(Map.of("message", "Role updated successfully"));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 }

@@ -14,4 +14,6 @@ public interface AuthService {
 
 	CustomUserDetails getUserDetails();
 
+	void deleteAccount();
+
 }

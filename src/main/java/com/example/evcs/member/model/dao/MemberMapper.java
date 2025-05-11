@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -38,6 +39,10 @@ public interface MemberMapper {
 	void changePassword(MemberDTO member);
 
 	MemberDTO getMemberByMemberNo(Long memberNo);
+
+	int updateMemberStatus(@Param("memberNo") Long memberNo, @Param("status") String status);
+
+	int updateMemberStatusToRemoved(Long memberNo);
 
 
 	
