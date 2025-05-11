@@ -51,21 +51,25 @@ public class ReservationServiceImpl implements ReservationService {
 		if("24개월".equals(period)) {
 			dealPercent += 0.05;
 			months += 24;
-		}else {
+		}else if("30개월".equals(period)) {
 			dealPercent += 0.1;
 			months += 30;
 		}
 		if(hotdeal != null) {
 			dealPercent += hotdeal.getDealPercent()/100.0;
 		}
-		
+		log.info("hotdeal : {}" , hotdeal );
 		// 렌트카 가격 가져오기
 		RentCarInfoDTO rentCar = reservationMapper.selectRentCarInfo(dto.getRentCarNo());
 		int rentCarPrice = rentCar.getRentCarPrice();
 		
 		log.info("rentCarPrice : {}", rentCarPrice);
 		log.info("dealPercent : {}", dealPercent);
-		amount = (int)(Math.round(rentCarPrice * (1 - dealPercent)/months)) ;
+		if(months != 0) {
+			amount = (int)(Math.round(rentCarPrice * (1 - dealPercent)/months)) ;
+		} else {
+			amount = (int)(Math.round(rentCarPrice * (1 - dealPercent))) ;
+		}
 		log.info("amount : {}", amount);
 		log.info("dto.getRentalTime() : {}", dto.getRentalTime());
 		log.info("dto.getReturnTime() : {}", dto.getReturnTime());

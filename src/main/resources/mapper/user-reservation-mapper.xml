@@ -85,21 +85,19 @@
     		parameterType="string"
     		resultType="HotdealDTO"
     >
-    	SELECT 
-    		DEAL_PERCENT dealPercent
-    	FROM
-    		EV_HOT_DEAL
-    	WHERE 1=1
-    		AND (HOT_DEAL_NO) = 
-    			(SELECT 
-    				  HOT_DEAL_NO
-				FROM  
-					EV_ING_HOTDEAL
-				WHERE 1=1
-					AND	RENT_CAR_NO = #{rentCarNo}
-			     	AND SYSDATE BETWEEN START_DATE AND END_DATE
-			     	AND ROWNUM = 1
-				)
+		SELECT 
+		    HD.DEAL_PERCENT AS dealPercent
+		FROM
+		    EV_ING_HOTDEAL IH
+		JOIN 
+		    EV_HOT_DEAL HD
+		ON 
+		    IH.HOT_DEAL_NO = HD.HOT_DEAL_NO
+		WHERE 1=1
+		    AND IH.RENT_CAR_NO =#{rentCarNo}
+		    AND SYSDATE BETWEEN HD.START_DATE AND HD.END_DATE
+		    AND ROWNUM = 1
+
     </select>
     
     <update id="updateReservationToFailed" parameterType="long">
