@@ -156,6 +156,15 @@
 			  		END AS statusName
 			  	  , (SELECT FILE_LOAD FROM EV_CAR_IMAGE I1 WHERE I1.CAR_NO = E1.CAR_NO) fileLoad
 			  	  , E1.CATEGORY_NO categoryNo
+			  	  , CASE 
+			            WHEN EXISTS (
+			                SELECT 1 
+			                FROM EV_RESERVATION_LIST RL 
+			                WHERE RL.RENT_CAR_NO = E1.RENT_CAR_NO 
+			                AND SYSDATE BETWEEN RL.RENTAL_TIME AND RL.RETURN_TIME
+			            ) THEN '가용중'
+			            ELSE '가용 가능'
+			        END AS reserStatus
 		  FROM
 		  	   EV_RENT_CAR_INFO E1
 		  JOIN

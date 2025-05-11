@@ -25,9 +25,9 @@ public class ReservationDTO {
     private String orderId;
     private int amount;
     private String paymentsStatus;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm", timezone="Asia/Seoul")
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss", timezone="Asia/Seoul")
     private LocalDateTime rentalTime;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm", timezone="Asia/Seoul")
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss", timezone="Asia/Seoul")
     private LocalDateTime returnTime;
     private String selectedPeriod;
     private String paymentId;

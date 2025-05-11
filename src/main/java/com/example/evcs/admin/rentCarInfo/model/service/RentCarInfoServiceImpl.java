@@ -125,11 +125,7 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 		
 		PageInfo pageInfo = Pagination.getPageInfo(currentPage,  pageSize, carNoPerPage,totalRentCarNo);
 		
-		log.info("pageInfo : {}",pageInfo);
-		
 		List<RentCarInfoDTO> rentCarInfo = rentCarInfoMapper.getRentCarList(map, rowBounds);
-		
-		log.info("rentCarInfo : {}",rentCarInfo);
 		
 		List<CarInfoDTO> carInfo = rentCarInfoMapper.getCarList(rowBounds);
 		

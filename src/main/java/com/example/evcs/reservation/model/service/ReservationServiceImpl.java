@@ -67,6 +67,8 @@ public class ReservationServiceImpl implements ReservationService {
 		log.info("dealPercent : {}", dealPercent);
 		amount = (int)(Math.round(rentCarPrice * (1 - dealPercent)/months)) ;
 		log.info("amount : {}", amount);
+		log.info("dto.getRentalTime() : {}", dto.getRentalTime());
+		log.info("dto.getReturnTime() : {}", dto.getReturnTime());
 		
     	
         Reservation vo = Reservation.builder()
