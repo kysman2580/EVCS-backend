@@ -8,12 +8,11 @@ import com.example.evcs.mail.dto.PassWordEmailVerifyDTO;
 @Mapper
 public interface EmailMapper {
 
-	void updateEmailVerified(EmailVerifyDTO emailVerifyDTO);
-
 	EmailVerifyDTO getEmailVerification(EmailVerifyDTO emailVerifyDTO);
 
-
 	int existsByEmail(String email);
+
+	void updateEmailVerified(EmailVerifyDTO emailVerifyDTO);
 	
 	void updateCode(EmailVerifyDTO emailVerifyDTO);
 

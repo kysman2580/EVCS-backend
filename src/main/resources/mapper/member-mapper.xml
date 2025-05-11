@@ -19,7 +19,7 @@
 	</insert>
 	
 	<select id="isVerified">
-		  SELECT CASE WHEN VERIFIED = 'Y' THEN 1 ELSE 0 END
+		  SELECT VERIFIED
 		  FROM EV_EMAIL_VERIFICATION
 		  WHERE EMAIL = #{email}
 	</select>

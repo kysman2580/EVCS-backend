@@ -29,6 +29,8 @@ public class JwtUtil {
 	}
 
 	public String getAccessToken(String username) {
+	    log.info("토큰 생성 - 사용자명: {}", username);
+
 		return Jwts.builder()
 				   .subject(username)
 				   .issuedAt(new Date())
