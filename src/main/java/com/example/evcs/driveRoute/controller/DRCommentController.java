@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.evcs.driveRoute.model.dto.DRCommentDTO;
@@ -44,11 +46,19 @@ public class DRCommentController {
 	}
 	
 	@DeleteMapping("/delete/{commentNo}")
-	public ResponseEntity<?> deleteBoard(@PathVariable(name="commentNo") Long commentNo) {
+	public ResponseEntity<?> deleteComment(@PathVariable(name="commentNo") Long commentNo) {
 		
 		log.info("boardNo : {}",commentNo);
 		drCommentService.deleteComment(commentNo);
-		 return ResponseEntity.ok("게시글이 삭제되었습니다."); 
+		return ResponseEntity.ok("댓글이 삭제되었습니다."); 
+	}
+	
+	@PutMapping("/update")
+	public ResponseEntity<?> updateComment(@RequestBody DRCommentDTO drComment) {
+		
+		log.info("drComment : {}", drComment);
+		drCommentService.updateComment(drComment);
+		return ResponseEntity.ok("댓글이 수정되었습니다."); 
 	}
 
 	

@@ -242,60 +242,42 @@
 			RENT_CAR_NO = #{ rentCarNo }
 	</delete>
 
-	<select id="getTimeRentCarInfo"
-				resultType="RentCarInfoDTO">
-		SELECT
-				    CI.RENT_CAR_NO rentCarNo
-				  , CG.CATEGORY_NAME categoryName
-				  , CI.CAR_NO carNo
-				  , CI.RENT_CAR_PRICE rentCarPrice
-				  , G.ALL_ADDRESS enrollPlace
-				  , G.POST_ADD postAdd
-				  , G.GARAGE_NO garageNo
-				  , G.ADDRESS address
-				  , CI.ENROLL_DATE enrollDate
-				  , CI.STATUS status
-				  , (SELECT FILE_LOAD FROM EV_CAR_IMAGE I1 
-				  WHERE CI.CAR_NO = I1.CAR_NO) fileLoad
-		  FROM
-		  		EV_RENT_CAR_INFO CI
-		  JOIN
-		  		EV_CATEGORY CG ON (CG.CATEGORY_NO = CI.CATEGORY_NO)
-		  JOIN
-		  		EV_GARAGE G ON (G.GARAGE_NO = CI.GARAGE_NO)
-		 WHERE
-		 		CI.CATEGORY_NO = 1
-		  AND
-		  		CI.STATUS = 'Y'
-         ORDER
-		 	BY
-		 	   	CI.CAR_NO DESC 
-	</select>	
-		
-	<select id="getCarInfoByCategoryNo"
-				>
-		SELECT
-			      CI.CAR_NO carNo
-			    , CI.COLOR_NO colorNo
-			    , CT.CAR_TYPE_NAME carTypeName
-			    , CC.COMPANY_NAME companyName  
-			    , CI.CAR_NAME  carName
-			    , CI.CAR_YEAR carYear
-			    , CI.CAR_BATTERY carBattery
-			    , CI.ENROLL_DATE enrollDate
-		 FROM
-			    EV_CAR_INFO CI
-		 JOIN
-		 		EV_RENT_CAR_INFO RC ON (RC.CAR_NO = CI.CAR_NO)
-	     JOIN
-	     		EV_CAR_TYPE CT ON (CT.CAR_TYPE_NO = CI.CAR_TYPE_NO)
-	     JOIN
-	     		EV_CAR_COMPANY CC ON (CC.COMPANY_NO = CI.COMPANY_NO)
-		WHERE
-				RC.CATEGORY_NO = '1'
-		ORDER
-		   BY
-		   		CI.CAR_NO DESC 
+	<select id="getTimeRentCarInfo" resultType="RentCarInfoDTO">
+	  SELECT
+		      RC.RENT_CAR_NO         AS rentCarNo,
+		      RC.RENT_CAR_PRICE      AS rentCarPrice,
+		      RC.CAR_NO              AS carNo,
+		      RC.ENROLL_DATE         AS enrollDate,
+		      RC.STATUS              AS status,
+		      G.GARAGE_NO            AS garageNo,
+		      G.ALL_ADDRESS          AS enrollPlace,
+		      G.ADDRESS          	 AS address,
+		      G.POST_ADD             AS postAdd,
+		      CG.CATEGORY_NAME       AS categoryName,
+		      -- 차량 정보
+		      CI.COLOR_NO            AS colorNo,
+		      CI.CAR_NAME            AS carName,
+		      CI.CAR_YEAR            AS carYear,
+		      CI.CAR_BATTERY         AS carBattery,
+		      CT.CAR_TYPE_NAME       AS carTypeName,
+		      CC.COMPANY_NAME        AS companyName,
+		      -- 이미지 서브쿼리
+		      (SELECT FILE_LOAD 
+		       FROM EV_CAR_IMAGE I1 
+		       WHERE I1.CAR_NO = RC.CAR_NO AND ROWNUM = 1) AS fileLoad
+	  FROM
+		      EV_RENT_CAR_INFO RC
+	  JOIN 	  EV_CAR_INFO CI ON CI.CAR_NO = RC.CAR_NO
+	  JOIN    EV_CAR_TYPE CT ON CT.CAR_TYPE_NO = CI.CAR_TYPE_NO
+	  JOIN    EV_CAR_COMPANY CC ON CC.COMPANY_NO = CI.COMPANY_NO
+	  JOIN    EV_CATEGORY CG ON CG.CATEGORY_NO = RC.CATEGORY_NO
+	  JOIN    EV_GARAGE G ON G.GARAGE_NO = RC.GARAGE_NO
+	  WHERE
+		      RC.CATEGORY_NO = 1
+		      AND RC.STATUS = 'Y'
+	  ORDER 
+	     BY
+	     	  RC.CAR_NO DESC
 	</select>
 
 	<select id="getOptions"

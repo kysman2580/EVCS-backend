@@ -25,6 +25,7 @@ public class RentCarInfoDTO {
 	private Date enrollDate;
 	private String status;
 	private String enrollPlace;
+	private String address;
 	private String postAdd;
 	private String statusName;
 	private String fileLoad;
@@ -35,9 +36,9 @@ public class RentCarInfoDTO {
 	private String hotdealNo;
 	private String regionSido;
 	private String ingHotdeal;
-	
 	private String categoryNo;
 	private String carTypeNo;
+	private int carBattery;
 	private String companyNo;
 	private String carTypeName;
 	private String companyName;
