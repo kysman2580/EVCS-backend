@@ -57,12 +57,11 @@
 	  WHERE 1=1
 	  	AND E1.CATEGORY_NO = #{category}
 	  	AND NOT EXISTS (
-		      SELECT 1 
-		      FROM EV_RESERVATION_LIST RL 
-		      WHERE RL.RENT_CAR_NO = E1.RENT_CAR_NO
-		        AND SYSDATE BETWEEN RL.RENTAL_TIME AND RL.RETURN_TIME
-		  )
-			
+            SELECT 1 
+            FROM EV_RESERVATION_LIST RL 
+            WHERE RL.RENT_CAR_NO = E1.RENT_CAR_NO
+              AND SYSDATE BETWEEN RL.RENTAL_TIME AND RL.RETURN_TIME
+              AND PAYMENTS_STATUS = 'COMPLETED')
 	</select>
 	
 	<select id="selectRentCarByRentCarNo"

@@ -45,7 +45,6 @@ public interface RentCarInfoMapper {
 	int deleteRentCar(String rentCarNo);
 
 
-	List<RentCarInfoDTO> getTimeRentCarInfo();
 
 	List<CarCompanyDTO> getCompanyInfo();
 	
@@ -59,5 +58,7 @@ public interface RentCarInfoMapper {
 	List<RentCarOptionDTO> getRentCarOptions(String rentCarNo);
 	
 	int deleteCarOptions(String rentCarNo);
+
+	List<RentCarInfoDTO> getTimeRentCarInfo(Map<String, Object> dateMap);
 	
 }

@@ -45,5 +45,6 @@ public class RentCarInfoDTO {
 	private int dealPercent;
 	private List<Integer> optionNos;
 	private String reserStatus;
+	
 }
 

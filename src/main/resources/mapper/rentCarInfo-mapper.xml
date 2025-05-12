@@ -251,7 +251,7 @@
 			RENT_CAR_NO = #{ rentCarNo }
 	</delete>
 
-	<select id="getTimeRentCarInfo" resultType="RentCarInfoDTO">
+	<select id="getTimeRentCarInfo" parameterType="map" resultType="RentCarInfoDTO">
 	  SELECT
 		      RC.RENT_CAR_NO         AS rentCarNo,
 		      RC.RENT_CAR_PRICE      AS rentCarPrice,
@@ -274,6 +274,26 @@
 		      (SELECT FILE_LOAD 
 		       FROM EV_CAR_IMAGE I1 
 		       WHERE I1.CAR_NO = RC.CAR_NO AND ROWNUM = 1) AS fileLoad
+       			, CASE
+			    WHEN EXISTS (
+			      SELECT 1
+			      FROM EV_ING_HOTDEAL ih
+			      JOIN EV_HOT_DEAL   h  ON ih.HOT_DEAL_NO = h.HOT_DEAL_NO
+			      WHERE ih.RENT_CAR_NO = RC.RENT_CAR_NO
+			        AND h.STATUS = 'Y'                           
+			        AND SYSDATE BETWEEN h.START_DATE AND h.END_DATE     
+			    )
+		   		THEN 1
+		   		ELSE 0
+  				END AS ingHotdeal
+	  			, (SELECT H.DEAL_PERCENT
+			   FROM EV_ING_HOTDEAL IH
+			   JOIN EV_HOT_DEAL H ON IH.HOT_DEAL_NO = H.HOT_DEAL_NO
+			   WHERE IH.RENT_CAR_NO = RC.RENT_CAR_NO
+			     AND H.STATUS = 'Y'
+			     AND SYSDATE BETWEEN H.START_DATE AND H.END_DATE
+			     AND ROWNUM = 1
+			  ) AS dealPercent
 	  FROM
 		      EV_RENT_CAR_INFO RC
 	  JOIN 	  EV_CAR_INFO CI ON CI.CAR_NO = RC.CAR_NO
@@ -281,9 +301,17 @@
 	  JOIN    EV_CAR_COMPANY CC ON CC.COMPANY_NO = CI.COMPANY_NO
 	  JOIN    EV_CATEGORY CG ON CG.CATEGORY_NO = RC.CATEGORY_NO
 	  JOIN    EV_GARAGE G ON G.GARAGE_NO = RC.GARAGE_NO
-	  WHERE
+	 WHERE
 		      RC.CATEGORY_NO = 1
 		      AND RC.STATUS = 'Y'
+			  AND  NOT EXISTS (
+			        SELECT 1 
+			        FROM EV_RESERVATION_LIST R
+			        WHERE R.RENT_CAR_NO = RC.RENT_CAR_NO
+			          AND R.RENTAL_TIME &lt;= #{endDate}
+			          AND R.RETURN_TIME &gt;= #{startDate}
+			          AND PAYMENTS_STATUS = 'COMPLETED'
+			    )
 	  ORDER 
 	     BY
 	     	  RC.CAR_NO DESC

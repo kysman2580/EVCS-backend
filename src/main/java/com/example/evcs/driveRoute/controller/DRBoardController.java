@@ -35,9 +35,7 @@ public class DRBoardController {
 	public ResponseEntity<?> insertBoard(@ModelAttribute @Valid DRBoardDTO drBoard,
 									     @RequestParam("boardFiles") MultipartFile[] boardFiles,
 									     @RequestParam("drFile") MultipartFile drFile) {
-		log.info("drBoard : {},{} ,boardFiles : {}, drFile : {}",drBoard.getBoardContent(),drBoard.getBoardWriter(),boardFiles,drFile);
 		drBoardService.insertBoard(drBoard,boardFiles,drFile);
-		
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body("게시글이 등록되었습니다");
 	}

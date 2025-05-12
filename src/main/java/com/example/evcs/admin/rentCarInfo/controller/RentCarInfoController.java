@@ -1,9 +1,11 @@
 package com.example.evcs.admin.rentCarInfo.controller;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -90,9 +92,13 @@ public class RentCarInfoController {
 	}
 	
 	@GetMapping("/timeRentCarInfo")
-	public ResponseEntity<?> getTimeRentCarInfo(){
+	public ResponseEntity<?> getTimeRentCarInfo(@RequestParam(name="startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+												@RequestParam(name="endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate){
 		log.info("값이 들어오나요???");
-		Map<String, Object> allCarInfo = rentCarInfoService.getTimeRentCarInfo();
+		Map<String,Object> dateMap = new HashMap<>();
+		dateMap.put("startDate", startDate);
+		dateMap.put("endDate", endDate);
+		Map<String, Object> allCarInfo = rentCarInfoService.getTimeRentCarInfo(dateMap);
 		log.info("allCarInfo : {} " ,allCarInfo);
 		return ResponseEntity.status(HttpStatus.OK).body(allCarInfo);
 	}

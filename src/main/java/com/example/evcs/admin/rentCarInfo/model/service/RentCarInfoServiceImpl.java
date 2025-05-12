@@ -201,10 +201,12 @@ public class RentCarInfoServiceImpl implements RentCarInfoService {
 
 
 	@Override
-	public Map<String, Object> getTimeRentCarInfo() {
+	public Map<String, Object> getTimeRentCarInfo(Map<String,Object> dateMap) {
 		Map<String, Object> result = new HashMap();
 		
-		List<RentCarInfoDTO> timeRentCarResult = rentCarInfoMapper.getTimeRentCarInfo();
+		log.info("atemap::: {}",dateMap);
+		
+		List<RentCarInfoDTO> timeRentCarResult = rentCarInfoMapper.getTimeRentCarInfo(dateMap);
 		
 		log.info("시간별 렌트카 목록 : {}",timeRentCarResult);
 		result.put("timeRentCarResult", timeRentCarResult);
