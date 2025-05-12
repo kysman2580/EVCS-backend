@@ -22,10 +22,11 @@ public interface RentCarInfoService {
 
 	public void deleteRentCar(RentCarInfoDTO rentCarInfo);
 
-	public Map<String, Object> getTimeRentCarInfo();
 	
 	public List<RentCarOptionDTO> getOptions();
 
 	public List<RentCarOptionDTO> getRentCarOptions(String rentCarNo);
+
+	public Map<String, Object> getTimeRentCarInfo(Map<String, Object> dateMap);
 
 }

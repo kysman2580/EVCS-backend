@@ -3,7 +3,6 @@ package com.example.evcs.driveRoute.model.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
@@ -34,34 +33,24 @@ public class DRBoardServiceImpl implements DRBoardService {
 	@Override
 	public void insertBoard(DRBoardDTO drBoard, MultipartFile[] boardFiles, MultipartFile drFile) {
 		
-		/*
-		 * memberNo 존재하는지, 게시글 내용이 존재하는지 , 
-		 * 게시판 이미지들, 드라이브루트 이미지 존재하는지 확인
-		 */
 		CustomUserDetails user = authServiceImpl.getUserDetails();
 		Long memberNo = user.getMemberNo();
-		//Long memberNo = drBoard.getBoardWriter();
 		if(memberNo == null) {
 			throw new NonExistingException("존재하지 않는 회원입니다.");
 		}
-		
 		for(MultipartFile file: boardFiles) {
 			if(file == null || file.isEmpty()) {
 				throw new NoFileException("이미지가 존재하지 않습니다.");
 			}
 		}
-		
 		if(drFile == null || drFile.isEmpty()) {
 			throw new NoFileException("드라이브 경로를 선택해주세요.");
 		}
-		
 		
 		DRBoardVo drBoardData = DRBoardVo.builder()
 				 						 .boardWriter(memberNo)
 				 						 .boardContent(drBoard.getBoardContent())
 				 						 .build();
-		
-		
 		int result = drBoardMapper.insertBoard(drBoardData);
 		
 		if(result == 1) {
@@ -78,17 +67,12 @@ public class DRBoardServiceImpl implements DRBoardService {
 			}
 			
 			String driveRouteFilePath = driveRouteFile.saveFile(drFile);
-			
 			DRBoardVo driveRouteFileData = DRBoardVo.builder()
 											   .boardNo(boardNo)
 											   .driveRouteImage(driveRouteFilePath)
 											   .build();
 			drBoardMapper.insertDriveRouteFile(driveRouteFileData);
-			
 		}
-		
-		
-		
 	}
 
 	@Override
@@ -112,7 +96,6 @@ public class DRBoardServiceImpl implements DRBoardService {
 		return map;
 	}
 	
-
 	@Override
 	public void updateBoard(DRBoardDTO drBoard, MultipartFile[] boardFiles, MultipartFile drFile) {
 	    CustomUserDetails user = authServiceImpl.getUserDetails();
@@ -188,8 +171,6 @@ public class DRBoardServiceImpl implements DRBoardService {
 											 .boardNo(boardNo)
 											 .build();
 		drBoardMapper.boardLikes(boardLikesData);
-		
-		
 	}
 
 	@Override
