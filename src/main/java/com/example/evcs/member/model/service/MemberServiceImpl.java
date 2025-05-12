@@ -53,7 +53,6 @@ public class MemberServiceImpl implements MemberService {
 								   .build();
 
 		mapper.signUp(memberValue);
-		log.info("{}", member);
 
 		return ResponseEntity.ok("이메일 인증 및 회원가입 성공");
 	}

@@ -19,7 +19,7 @@
 	</insert>
 	
 	<select id="isVerified">
-		  SELECT CASE WHEN VERIFIED = 'Y' THEN 1 ELSE 0 END
+		  SELECT VERIFIED
 		  FROM EV_EMAIL_VERIFICATION
 		  WHERE EMAIL = #{email}
 	</select>
@@ -38,6 +38,7 @@
 		       EMAIL_VERIFIED as emailVerified,
 		       MEMBER_NICKNAME as memberNickname,
 		       ROLE as role,
+               MEMBER_STATUS as memberStatus,
 		       CREATED_AT as createdAt
 		FROM EV_MEMBER
 		WHERE EMAIL = #{email}
@@ -79,6 +80,20 @@
         WHERE 
             MEMBER_NO = #{memberNo}
     </select>
+    
+    
+    <update id="updateMemberStatus">
+	    UPDATE EV_MEMBER
+	    SET MEMBER_STATUS = #{status}
+	    WHERE MEMBER_NO = #{memberNo}
+	</update>
+	
+	
+	<update id="updateMemberStatusToRemoved">
+		UPDATE EV_MEMBER 
+		SET MEMBER_STATUS = 'R' 
+		WHERE MEMBER_NO = #{memberNo}
+	</update>
   
   </mapper>
   

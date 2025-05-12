@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.evcs.reporting.mapper.ReportBulletinMapper">
+  <insert id="insertReportBulletin"
+        parameterType="com.example.evcs.reporting.model.vo.Report"
+        useGeneratedKeys="true" keyProperty="rpNo" keyColumn="RP_NO">
+  INSERT INTO EV_RP_BULLETIN (
+    RP_NO,
+    MEMBER_NO,
+    RP_B_NO,
+    RP_TITLE,
+    RP_MEMBER_NO,
+    RP_CONTENT,
+    RP_ENROLLDATE,
+    RP_STATUS
+  ) VALUES (
+    EV_RP_BULLETIN_SEQ.NEXTVAL,
+    #{reporterId},
+    0,
+    #{title},
+    #{reportedId},
+    #{content},
+    SYSTIMESTAMP,
+    'P'
+  )
+  </insert>
+</mapper>
