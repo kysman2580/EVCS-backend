@@ -122,4 +122,10 @@
             OR re.RE_ENROLLDATE &lt;= TO_DATE(#{endDate},   'YYYY-MM-DD'))
   </select>
 
+  <update id="updateReportComStatusForUser">
+    UPDATE EV_RE_COMMENTS01
+    SET RE_STATUS = #{status}
+    WHERE RE_NO = #{reNo}
+      AND MEMBER_NO = #{memberNo}
+  </update>
 </mapper>

@@ -29,4 +29,6 @@ public interface ReCommentService {
             String title);
 
     ReComment getReCommentById(Long reNo);
+    
+    void updateReportComStatusForUser(Long rpNo, Long memberNo, String status);
 }

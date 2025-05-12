@@ -1,6 +1,7 @@
 package com.example.evcs.reporting.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -38,6 +39,9 @@ public interface ReCommentMapper {
             @Param("endDate")   String endDate,
             @Param("title")   String title
      );
+     
 
     ReComment selectReCommentById(@Param("reNo") Long reNo);
+    
+    int updateReportComStatusForUser(Map<String, Object> map);
 }

@@ -110,5 +110,12 @@
   )
   WHERE rn &gt; #{offset}
   </select>
-
+  
+  <update id="updateReportStatusForUser">
+    UPDATE EV_RP_BULLETIN
+    SET RP_STATUS = #{status}
+    WHERE RP_NO = #{rpNo}
+      AND MEMBER_NO = #{memberNo}
+  </update>
+  
 </mapper>
